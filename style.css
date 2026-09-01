@@ -3,7 +3,7 @@
   --bg: #fcfcfa;
   --text: #000000;
   --muted: #707070;
-  --accent: #2c7a4b;
+  --accent: #707070;
   --max-width: 560px;
 }
 /* dark theme — applied when the toggle checkbox is checked */
@@ -11,7 +11,7 @@
   --bg: #000000;
   --text: #f2f2f0;
   --muted: #8f8f8a;
-  --accent: #7ddba3;
+  --accent: #8f8f8a;
 }
 
 /* ---------- base ---------- */
@@ -73,6 +73,11 @@ h1 {
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.05;
+}
+.tagline {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 .lede {
   margin-top: 0.9rem;
