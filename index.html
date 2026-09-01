@@ -3,95 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="portfolio of gnan reddy b — student.">
-  <title>myPortfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta name="description" content="gnan reddy b — backend developer.">
+  <title>gnan reddy b</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&display=swap"
     rel="stylesheet"
-  />
+  >
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <input type="checkbox" id="theme-switch" class="theme-switch">
   <label for="theme-switch" class="theme-toggle" title="Toggle dark/light mode">
-    <span class="on-light">[ dark ]</span><span class="on-dark">[ light ]</span>
+    <span class="on-light">dark</span><span class="on-dark">light</span>
   </label>
 
-  <header class="intro">
-    <h1>gnan reddy b<span class="cursor" aria-hidden="true">▊</span></h1>
-    <p class="role">student</p>
-  </header>
-
   <main>
+    <h1>gnan reddy b</h1>
+    <p class="lede">i build backend systems, with a pinch of ai.</p>
 
-    <section id="about">
-      <h2><span class="path">~/</span>about</h2>
-      <p>
-        hi! i'm interested in building backend systems with a pinch of ai. 
-        i like to read manga/manhwa, watch anime, do gym and play badminton.
+    <div class="rows">
+      <p class="row">
+        <span class="label">stack</span>
+        <span>python, go, postgresql</span>
       </p>
-    </section>
-
-    <section id="skills">
-      <h2><span class="path">~/</span>skills</h2>
-      <ul class="skills">
-        <li>python</li>
-        <li>golang</li>
-        <li>postgresql</li>
-        <li>html</li>
-        <li>css</li>
-        <li>git</li>
-      </ul>
-    </section>
-
-    <section id="projects">
-      <h2><span class="path">~/</span>projects</h2>
-      <ul class="projects">
-        <li>
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13/calculatorCLI" class="project-name">calculatorCLI</a>
-          <p>a simple cli based calculator written in golang.</p>
-        </li>
-        <li>
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13/myPortfolio" class="project-name">myPortfolio</a>
-          <p>my portfolio website written in html and css.</p>
-        </li>
-      </ul>
-    </section>
-
-    <section id="references">
-      <h2><span class="path">~/</span>references</h2>
-      <ul class="projects">
-        <li>
-          <span class="reference-name">resume</span>
-          <p>coming soon.</p>
-        </li>
-        <li>
-          <a target="_blank" rel="noopener noreferrer" href="https://leetcode.com/u/gnanreddy13/" class="project-name">leetcode</a>
-          <p>my leetcode progress so far.</p>
-        </li>
-        <li>
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13" class="project-name">github</a>
-          <p>codebase of all my projects so far.</p>
-        </li>
-      </ul>
-    </section>
-
-    <section id="contact">
-      <h2><span class="path">~/</span>contact</h2>
-      <ul class="links">
-        <li><span class="label">email</span> <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a></li>
-        <li><span class="label">linkedin</span> <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin.com/in/gnanreddy13</a></li>
-      </ul>
-    </section>
-
+      <p class="row">
+        <span class="label">projects</span>
+        <span>
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13/calculatorCLI">calculator-cli</a>,
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13">more on github</a>
+        </span>
+      </p>
+      <p class="row">
+        <span class="label">find me</span>
+        <span>
+          <a href="mailto:gnanreddy13@gmail.com">email</a>,
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13">github</a>,
+          <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>,
+          <a target="_blank" rel="noopener noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>,
+          <span class="soon">resume soon</span>
+        </span>
+      </p>
+    </div>
   </main>
-
-  <footer>
-    <p>© gnanreddy13</p>
-  </footer>
-
 </body>
 </html>
