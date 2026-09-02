@@ -7,11 +7,126 @@
   <title>gnan reddy b</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&display=swap"
-    rel="stylesheet"
-  >
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- tokens ---------- */
+    :root {
+      --bg: #fcfcfa;
+      --text: #000000;
+      --muted: #707070;
+      --max-width: 560px;
+    }
+    :root:has(.theme-switch:checked) {
+      --bg: #000000;
+      --text: #f2f2f0;
+      --muted: #8f8f8a;
+    }
+
+    /* ---------- base ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Geist", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body { transition: none; }
+    }
+    main {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+
+    /* ---------- theme toggle ---------- */
+    .theme-switch {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.85rem;
+      user-select: none;
+    }
+    .theme-switch:focus-visible + .theme-toggle {
+      outline: 2px solid var(--muted);
+      outline-offset: 3px;
+    }
+    .on-dark { display: none; }
+    :root:has(.theme-switch:checked) .on-light { display: none; }
+    :root:has(.theme-switch:checked) .on-dark { display: inline; }
+
+    /* ---------- hero ---------- */
+    h1 {
+      font-size: clamp(2.1rem, 8vw, 3.4rem);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+    }
+    .tagline {
+      margin-top: 0.4rem;
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+    .lede {
+      margin-top: 0.9rem;
+      font-size: 1.05rem;
+    }
+
+    /* ---------- rows ---------- */
+    .rows {
+      margin-top: 2.75rem;
+      font-size: 1.05rem;
+    }
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+    .row + .row {
+      margin-top: 0.65rem;
+    }
+    .label,
+    .soon {
+      color: var(--muted);
+    }
+    .label {
+      flex: 0 0 5.5rem;
+    }
+
+    /* ---------- links ---------- */
+    a {
+      color: var(--text);
+      text-decoration: underline;
+      text-decoration-color: var(--muted);
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--muted);
+    }
+    a:focus-visible {
+      color: var(--muted);
+      outline: 2px solid var(--muted);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+  </style>
 </head>
 <body>
   <input type="checkbox" id="theme-switch" class="theme-switch" checked>
@@ -31,18 +146,19 @@
       </p>
       <p class="row">
         <span class="label">projects</span>
-        <span>
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13/calculatorCLI">calculatorCLI</a>
-          <!-- <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13">more on github</a> -->
-        </span>
+        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculatorCLI">calculatorCLI</a>
+      </p>
+      <p class="row">
+        <span class="label">hobbies</span>
+        <span>fitness, sports, music, gaming, reading, photography</span>
       </p>
       <p class="row">
         <span class="label">find me</span>
         <span>
           <a href="mailto:gnanreddy13@gmail.com">email</a>,
-          <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>,
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gnanreddy13">github</a>,
-          <a target="_blank" rel="noopener noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>,
+          <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>,
+          <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>,
+          <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>,
           <span class="soon">resume soon...</span>
         </span>
       </p>
