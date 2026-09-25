@@ -41,7 +41,6 @@
     }
     body {
       font-family: "Geist", system-ui, sans-serif;
-      font-size: 1rem;
       line-height: 1.5;
       background: var(--bg);
       color: var(--text);
@@ -51,9 +50,6 @@
       justify-content: center;
       padding: 2rem 1.25rem;
       transition: background 0.2s ease, color 0.2s ease;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      body { transition: none; }
     }
     main {
       width: 100%;
@@ -74,6 +70,7 @@
       color: var(--muted);
       font-size: 0.85rem;
       user-select: none;
+      transition: color 0.2s ease;
     }
     .theme-switch:focus-visible + .theme-toggle {
       outline: 2px solid var(--muted);
@@ -94,6 +91,7 @@
       margin-top: 0.25rem;
       font-size: 1.2rem;
       color: var(--muted);
+      transition: color 0.2s ease;
     }
     .contact {
       margin-top: 0.375rem;
@@ -103,6 +101,7 @@
       flex-wrap: wrap;
       align-items: baseline;
       column-gap: 0.6rem;
+      transition: color 0.2s ease;
     }
     .contact a {
       color: var(--muted);
@@ -134,6 +133,11 @@
     }
     .label {
       color: var(--muted);
+      transition: color 0.2s ease;
+    }
+    .stacked > * {
+      grid-column: 1 / -1;
+      margin-top: 1.125rem;
     }
     .project {
       display: block;
@@ -143,20 +147,18 @@
     }
     .stack {
       color: var(--muted);
+      transition: color 0.2s ease;
     }
     .desc {
       display: block;
       color: var(--muted);
+      transition: color 0.2s ease;
     }
     @media (max-width: 480px) {
       .rows {
         grid-template-columns: 7.5rem 1fr;
         column-gap: 1rem;
       }
-    }
-    .stacked > * {
-      grid-column: 1 / -1;
-      margin-top: 1.125rem;
     }
 
     /* ---------- links ---------- */
@@ -166,6 +168,7 @@
       text-decoration-color: var(--muted);
       text-decoration-thickness: 1.5px;
       text-underline-offset: 3px;
+      transition: color 0.15s ease, text-decoration-color 0.15s ease;
     }
     a:hover,
     a:focus-visible {
@@ -176,12 +179,17 @@
       outline-offset: 3px;
       border-radius: 2px;
     }
+
+    /* ---------- motion ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      body, .theme-toggle, .tagline, .contact, .label, .stack, .desc, a { transition: none; }
+    }
   </style>
 </head>
 <body>
   <input type="checkbox" id="theme-switch" class="theme-switch" autocomplete="off">
   <label for="theme-switch" class="theme-toggle" title="Toggle dark/light mode">
-    <span class="on-light">Dark</span><span class="on-dark">Light</span>
+    <span class="on-light">dark</span><span class="on-dark">light</span>
   </label>
   <script>
     (function () {
@@ -198,39 +206,39 @@
 
   <main>
     <h1>Gnan Reddy B</h1>
-    <p class="tagline">CS Student</p>
+    <p class="tagline">cs student</p>
     <p class="contact">
-      <a target="_blank" rel="noreferrer" href="https://drive.google.com/file/d/1m-ThC7JAQPEsB9NZI6yTi2Ij51UCft2T/view?usp=drive_link">Resume</a>
+      <a target="_blank" rel="noreferrer" href="https://drive.google.com/file/d/1m-ThC7JAQPEsB9NZI6yTi2Ij51UCft2T/view?usp=drive_link">resume</a>
       <span class="sep" aria-hidden="true">|</span>
       <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
       <span class="sep" aria-hidden="true">|</span>
-      <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">LinkedIn</a>
+      <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>
       <span class="sep" aria-hidden="true">|</span>
-      <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">GitHub</a>
+      <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
       <span class="sep" aria-hidden="true">|</span>
-      <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">LeetCode</a>
+      <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>
     </p>
     <p class="lede">I'm interested in building software systems. I also play badminton and lift.</p>
 
     <div class="rows">
       <p class="row">
-        <span class="label">Languages</span>
+        <span class="label">languages</span>
         <span>Python, Go</span>
       </p>
       <p class="row">
-        <span class="label">Frameworks & Libraries</span>
+        <span class="label">frameworks & libraries</span>
         <span>chi</span>
       </p>
       <p class="row">
-        <span class="label">Databases</span>
+        <span class="label">databases</span>
         <span>PostgreSQL</span>
       </p>
       <p class="row">
-        <span class="label">Infrastructure</span>
+        <span class="label">infrastructure</span>
         <span>Docker, Kafka</span>
       </p>
       <p class="row">
-        <span class="label">Tools</span>
+        <span class="label">tools</span>
         <span>Git, GitHub, VS Code</span>
       </p>
       <p class="row stacked">
@@ -238,12 +246,12 @@
           <span class="project">
             <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
             <span class="stack">· Go</span>
-            <span class="desc">Reads a matrix from standard input and prints it back</span>
+            <span class="desc">reads a matrix from standard input and prints it back</span>
           </span>
           <span class="project">
             <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli</a>
             <span class="stack">· Go</span>
-            <span class="desc">A command-line calculator</span>
+            <span class="desc">a command-line calculator</span>
           </span>
         </span>
       </p>
