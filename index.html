@@ -100,10 +100,15 @@
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
-      column-gap: 0.6rem;
-      transition: color 0.2s ease;
+      column-gap: 1.5rem;
+      /* clip the separator that would start a wrapped line;
+         the padding keeps focus outlines visible */
+      overflow-x: clip;
+      padding-left: 0.4rem;
+      margin-left: -0.4rem;
     }
     .contact a {
+      position: relative;
       color: var(--muted);
       text-decoration-color: transparent;
     }
@@ -111,8 +116,16 @@
     .contact a:focus-visible {
       color: var(--text);
     }
-    .contact .sep {
+    .contact a + a::before {
+      content: "|";
+      content: "|" / "";
+      position: absolute;
+      left: -0.75rem;
+      transform: translateX(-50%);
+      color: var(--muted);
       opacity: 0.4;
+      pointer-events: none;
+      transition: color 0.2s ease;
     }
     .lede {
       margin-top: 0.75rem;
@@ -182,7 +195,7 @@
 
     /* ---------- motion ---------- */
     @media (prefers-reduced-motion: reduce) {
-      body, .theme-toggle, .tagline, .contact, .label, .stack, .desc, a { transition: none; }
+      body, .theme-toggle, .tagline, .contact a + a::before, .label, .stack, .desc, a { transition: none; }
     }
   </style>
 </head>
@@ -209,13 +222,9 @@
     <p class="tagline">cs student</p>
     <p class="contact">
       <a target="_blank" rel="noreferrer" href="https://drive.google.com/file/d/1m-ThC7JAQPEsB9NZI6yTi2Ij51UCft2T/view?usp=drive_link">resume</a>
-      <span class="sep" aria-hidden="true">|</span>
       <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
-      <span class="sep" aria-hidden="true">|</span>
       <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>
-      <span class="sep" aria-hidden="true">|</span>
       <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
-      <span class="sep" aria-hidden="true">|</span>
       <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>
     </p>
     <p class="lede">I'm interested in building software systems. I also play badminton and lift.</p>
