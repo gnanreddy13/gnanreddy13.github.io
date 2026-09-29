@@ -169,14 +169,17 @@
       margin-top: 0.75rem;
     }
     .stack {
-      display: block;
+      display: inline;
       font-family: var(--mono);
       font-size: 0.9em;
       color: var(--muted);
       transition: color 0.2s ease;
     }
+    .stack::before {
+      content: "· ";
+    }
     .desc {
-      display: block;
+      display: inline;
       color: var(--muted);
       transition: color 0.2s ease;
     }
