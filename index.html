@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gnan Reddy B</title>
+  <title>gnan reddy bobba</title>
   <meta name="description" content="portfolio">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='system-ui,sans-serif' font-size='20' font-weight='600' text-anchor='middle' fill='%23f2f2f0'%3EG%3C/text%3E%3C/svg%3E">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://gnanreddy13.github.io/">
-  <meta property="og:title" content="Gnan Reddy B">
+  <meta property="og:title" content="gnan reddy bobba">
   <meta property="og:description" content="portfolio">
   <meta property="og:image" content="https://gnanreddy13.github.io/assets/blacksquare.jpeg">
   <meta name="twitter:card" content="summary">
@@ -87,9 +87,9 @@
 
     /* ---------- hero ---------- */
     h1 {
-      font-size: clamp(2.1rem, 8vw, 3.4rem);
+      font-size: clamp(1.75rem, 6vw, 2.2rem);
       font-weight: 600;
-      letter-spacing: -0.035em;
+      letter-spacing: -0.025em;
       line-height: 1.05;
     }
     .tagline {
@@ -143,14 +143,9 @@
     .rows {
       margin-top: 1.5rem;
       font-size: 1.05rem;
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      align-items: baseline;
-      column-gap: 1.5rem;
-      row-gap: 0.375rem;
     }
-    .row {
-      display: contents;
+    .row + .row {
+      margin-top: 0.375rem;
     }
     .label {
       font-family: var(--mono);
@@ -158,9 +153,8 @@
       color: var(--muted);
       transition: color 0.2s ease;
     }
-    .stacked > * {
-      grid-column: 1 / -1;
-      margin-top: 1.125rem;
+    .row.stacked {
+      margin-top: 1.5rem;
     }
     .project {
       display: block;
@@ -182,12 +176,6 @@
       display: inline;
       color: var(--muted);
       transition: color 0.2s ease;
-    }
-    @media (max-width: 480px) {
-      .rows {
-        grid-template-columns: 8.5rem 1fr;
-        column-gap: 1rem;
-      }
     }
 
     /* ---------- links ---------- */
@@ -217,7 +205,7 @@
 </head>
 <body>
   <input type="checkbox" id="theme-switch" class="theme-switch" autocomplete="off">
-  <label for="theme-switch" class="theme-toggle" title="Toggle dark/light mode">
+  <label for="theme-switch" class="theme-toggle" title="toggle dark/light mode">
     <span class="on-light">dark</span><span class="on-dark">light</span>
   </label>
   <script>
@@ -234,8 +222,8 @@
   </script>
 
   <main>
-    <h1>Gnan Reddy B</h1>
-    <p class="tagline">CS student</p>
+    <h1>gnan reddy bobba</h1>
+    <p class="tagline">cs student</p>
     <p class="contact">
       <a target="_blank" rel="noreferrer" href="https://drive.google.com/file/d/1m-ThC7JAQPEsB9NZI6yTi2Ij51UCft2T/view?usp=drive_link">resume</a>
       <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
@@ -243,40 +231,40 @@
       <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
       <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>
     </p>
-    <p class="lede">I'm interested in building software systems. I also play badminton and lift.</p>
+    <p class="lede">i'm interested in building software systems. i also play badminton and lift.</p>
 
     <div class="rows">
       <p class="row">
-        <span class="label">languages</span>
-        <span>Python, Go</span>
+        <span class="label">languages:</span>
+        <span>python, go</span>
       </p>
       <p class="row">
-        <span class="label">frameworks & libraries</span>
+        <span class="label">frameworks & libraries:</span>
         <span>chi</span>
       </p>
       <p class="row">
-        <span class="label">databases</span>
-        <span>PostgreSQL</span>
+        <span class="label">databases:</span>
+        <span>postgresql</span>
       </p>
       <p class="row">
-        <span class="label">infrastructure</span>
-        <span>Docker, Apache Kafka</span>
+        <span class="label">infrastructure:</span>
+        <span>docker, apache kafka</span>
       </p>
       <p class="row">
-        <span class="label">tools</span>
-        <span>Git, GitHub, VS Code</span>
+        <span class="label">tools:</span>
+        <span>git, github, vs code</span>
       </p>
       <p class="row stacked">
         <span>
           <span class="project">
             <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system</a>
             <span class="desc">ingests text and images, answers questions with source citations</span>
-            <span class="stack">Go, Python, PostgreSQL (pgvector), Apache Kafka, MinIO (S3), Docker</span>
+            <span class="stack">go, python, postgresql (pgvector), apache kafka, minio (s3), docker</span>
           </span>
           <span class="project">
             <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
             <span class="desc">reads a matrix from standard input and prints it back</span>
-            <span class="stack">Go</span>
+            <span class="stack">go</span>
           </span>
         </span>
       </p>
