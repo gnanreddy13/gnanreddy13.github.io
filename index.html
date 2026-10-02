@@ -66,17 +66,17 @@
       pointer-events: none;
     }
     .theme-toggle {
-      position: fixed;
-      top: 1.25rem;
-      right: 1.5rem;
       cursor: pointer;
       color: var(--muted);
       font-family: var(--mono);
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       user-select: none;
       transition: color 0.2s ease;
     }
-    .theme-switch:focus-visible + .theme-toggle {
+    .theme-toggle:hover {
+      color: var(--text);
+    }
+    :root:has(.theme-switch:focus-visible) .theme-toggle {
       outline: 2px solid var(--muted);
       outline-offset: 3px;
     }
@@ -91,15 +91,21 @@
       letter-spacing: -0.025em;
       line-height: 1.05;
     }
-    .tagline {
+    .tagline-row {
       margin-top: 0.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .tagline {
       font-family: var(--mono);
       font-size: 1.1rem;
       color: var(--muted);
       transition: color 0.2s ease;
     }
     .contact {
-      margin-top: 0.375rem;
+      margin-top: 0.25rem;
       font-family: var(--mono);
       font-size: 0.85rem;
       color: var(--muted);
@@ -134,7 +140,7 @@
       transition: color 0.2s ease;
     }
     .lede {
-      margin-top: 0.75rem;
+      margin-top: 0.25rem;
       font-size: 1.05rem;
     }
 
@@ -159,7 +165,7 @@
       display: block;
     }
     .project + .project {
-      margin-top: 0.5rem;
+      margin-top: 0.25rem;
     }
     .stack {
       display: inline;
@@ -204,9 +210,6 @@
 </head>
 <body>
   <input type="checkbox" id="theme-switch" class="theme-switch" autocomplete="off">
-  <label for="theme-switch" class="theme-toggle" title="toggle dark/light mode">
-    <span class="on-light">dark</span><span class="on-dark">light</span>
-  </label>
   <script>
     (function () {
       var toggle = document.getElementById("theme-switch");
@@ -222,7 +225,12 @@
 
   <main>
     <h1>gnan reddy bobba</h1>
-    <p class="tagline">cs student</p>
+    <div class="tagline-row">
+      <p class="tagline">cs student</p>
+      <label for="theme-switch" class="theme-toggle" title="toggle dark/light mode">
+        <span class="on-light">[dark]</span><span class="on-dark">[light]</span>
+      </label>
+    </div>
     <p class="contact">
       <a target="_blank" rel="noreferrer" href="https://drive.google.com/file/d/1m-ThC7JAQPEsB9NZI6yTi2Ij51UCft2T/view?usp=drive_link">resume</a>
       <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
@@ -230,7 +238,7 @@
       <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
       <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>
     </p>
-    <p class="lede">i'm interested in building software systems. i also play badminton and lift.</p>
+    <p class="lede">hello! i like to build software systems and lift as well.</p>
 
     <div class="rows">
       <p class="row">
@@ -238,16 +246,8 @@
         <span>python, go</span>
       </p>
       <p class="row">
-        <span class="label">frameworks & libraries:</span>
-        <span>chi</span>
-      </p>
-      <p class="row">
-        <span class="label">databases:</span>
-        <span>postgresql</span>
-      </p>
-      <p class="row">
-        <span class="label">infrastructure:</span>
-        <span>docker, apache kafka</span>
+        <span class="label">technologies:</span>
+        <span>chi, postgresql, docker, apache kafka</span>
       </p>
       <p class="row">
         <span class="label">tools:</span>
@@ -263,6 +263,11 @@
           <span class="project">
             <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
             <span class="desc">reads a matrix from standard input and prints it back</span>
+            <span class="stack">go</span>
+          </span>
+          <span class="project">
+            <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli</a>
+            <span class="desc">interactive terminal calculator for basic arithmetic</span>
             <span class="stack">go</span>
           </span>
         </span>
