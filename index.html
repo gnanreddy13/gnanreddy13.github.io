@@ -13,7 +13,7 @@
   <meta name="twitter:card" content="summary">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* ---------- tokens ---------- */
     :root {
@@ -22,7 +22,6 @@
       --muted: #707070;
       --subtle: #c4c4c4;
       --max-width: 560px;
-      --mono: "Geist Mono", ui-monospace, monospace;
       color-scheme: light;
     }
     :root:has(.theme-switch:checked) {
@@ -68,8 +67,7 @@
     .theme-toggle {
       cursor: pointer;
       color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       user-select: none;
       transition: color 0.2s ease;
     }
@@ -86,7 +84,7 @@
 
     /* ---------- hero ---------- */
     h1 {
-      font-size: clamp(1.75rem, 6vw, 2.2rem);
+      font-size: clamp(1.4rem, 5vw, 1.75rem);
       font-weight: 600;
       letter-spacing: -0.025em;
       line-height: 1.05;
@@ -99,88 +97,39 @@
       gap: 1rem;
     }
     .tagline {
-      font-family: var(--mono);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--muted);
       transition: color 0.2s ease;
     }
-    .contact {
+    .intro {
+      margin-top: 1.5rem;
+    }
+    .lede + .lede {
       margin-top: 0.25rem;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      column-gap: 1.5rem;
-      /* clip the separator that would start a wrapped line;
-         the padding keeps focus outlines visible */
-      overflow-x: clip;
-      padding-left: 0.4rem;
-      margin-left: -0.4rem;
-    }
-    .contact a {
-      position: relative;
-      color: var(--muted);
-      text-decoration-color: transparent;
-    }
-    .contact a:hover,
-    .contact a:focus-visible {
-      color: var(--text);
-    }
-    .contact a + a::before {
-      content: "|";
-      content: "|" / "";
-      position: absolute;
-      left: -0.75rem;
-      transform: translateX(-50%);
-      color: var(--muted);
-      opacity: 0.4;
-      pointer-events: none;
-      transition: color 0.2s ease;
     }
     .lede {
-      margin-top: 0.25rem;
       font-size: 1.05rem;
+      color: var(--muted);
+      transition: color 0.2s ease;
     }
 
-    /* ---------- rows ---------- */
-    .rows {
-      margin-top: 1rem;
+    /* ---------- projects ---------- */
+    .projects {
+      margin-top: 1.5rem;
       font-size: 1.05rem;
     }
-    .row + .row {
-      margin-top: 0.25rem;
-    }
-    .label {
-      font-family: var(--mono);
-      font-size: 0.9em;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-    .row.stacked {
-      margin-top: 1rem;
-    }
-    .project {
-      display: block;
-    }
+    .lede + .project,
     .project + .project {
       margin-top: 0.25rem;
-    }
-    .stack {
-      display: inline;
-      font-family: var(--mono);
-      font-size: 0.9em;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-    .stack::before {
-      content: "· ";
     }
     .desc {
       display: inline;
       color: var(--muted);
       transition: color 0.2s ease;
+    }
+
+    .contact {
+      margin-top: 1.5rem;
     }
 
     /* ---------- links ---------- */
@@ -204,7 +153,7 @@
 
     /* ---------- motion ---------- */
     @media (prefers-reduced-motion: reduce) {
-      body, .theme-toggle, .tagline, .contact a + a::before, .label, .stack, .desc, a { transition: none; }
+      body, .theme-toggle, .tagline, .lede, .desc, a { transition: none; }
     }
   </style>
 </head>
@@ -231,52 +180,34 @@
         <span class="on-light">[dark]</span><span class="on-dark">[light]</span>
       </label>
     </div>
-    <p class="contact">
-      <a target="_blank" rel="noreferrer" href="https://docs.google.com/document/d/1kjDllUaDYIrKvqEvqd_zN2LhioJ85M1gkqFNDDjMJLs/edit?usp=sharing">resume</a>
-      <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
-      <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>
-      <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
-      <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>
-    </p>
-    <p class="lede">hi. i build backend systems & i lift.</p>
+    <div class="intro">
+      <p class="lede">hi. i build backend systems & i lift.</p>
+      <p class="lede">i work with go (chi), python, sql, postgresql (pgvector), kafka, minio, and docker.</p>
+    </div>
 
-    <div class="rows">
-      <p class="row">
-        <span class="label">languages:</span>
-        <span>go, python, sql</span>
+    <div class="projects">
+      <p class="lede">so far i've built:</p>
+      <p class="project">
+        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system</a>
+        <span class="desc">ingests text and images, answers questions with source citations (still building)</span>
       </p>
-      <p class="row">
-        <span class="label">backend:</span>
-        <span>chi, postgresql (pgvector), apache kafka</span>
+      <p class="project">
+        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
+        <span class="desc">reads a matrix from standard input and prints it back</span>
       </p>
-      <p class="row">
-        <span class="label">infra:</span>
-        <span>docker, minio (s3)</span>
-      </p>
-      <p class="row">
-        <span class="label">tools:</span>
-        <span>git, github, vs code</span>
-      </p>
-      <p class="row stacked">
-        <span>
-          <span class="project">
-            <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system</a>
-            <span class="desc">ingests text and images, answers questions with source citations</span>
-            <span class="stack">go, python, postgresql (pgvector), apache kafka, minio (s3), docker</span>
-          </span>
-          <span class="project">
-            <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
-            <span class="desc">reads a matrix from standard input and prints it back</span>
-            <span class="stack">go</span>
-          </span>
-          <span class="project">
-            <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli</a>
-            <span class="desc">interactive terminal calculator for basic arithmetic</span>
-            <span class="stack">go</span>
-          </span>
-        </span>
+      <p class="project">
+        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli</a>
+        <span class="desc">interactive terminal calculator for basic arithmetic</span>
       </p>
     </div>
+
+    <p class="lede contact">
+      say hi at <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
+      or on <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>.
+      i code on <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
+      and grind <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>.
+      <a target="_blank" rel="noreferrer" href="https://docs.google.com/document/d/1kjDllUaDYIrKvqEvqd_zN2LhioJ85M1gkqFNDDjMJLs/edit?usp=sharing">resume</a>'s here.
+    </p>
   </main>
 </body>
 </html>
