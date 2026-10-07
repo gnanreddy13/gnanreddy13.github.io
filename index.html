@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
   <title>gnanreddy13</title>
   <meta name="description" content="portfolio">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ctext x='16' y='20' font-family='system-ui,sans-serif' font-size='22' font-weight='600' text-anchor='middle' fill='%23f2f2f0'%3Eg%3C/text%3E%3C/svg%3E">
@@ -13,201 +14,127 @@
   <meta name="twitter:card" content="summary">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* ---------- tokens ---------- */
-    :root {
-      --bg: #fcfcfa;
-      --text: #000000;
-      --muted: #707070;
-      --subtle: #c4c4c4;
-      --max-width: 560px;
-      color-scheme: light;
-    }
-    :root:has(.theme-switch:checked) {
-      --bg: #000000;
-      --text: #f2f2f0;
-      --muted: #8f8f8a;
-      --subtle: #3a3a38;
-      color-scheme: dark;
-    }
-
-    /* ---------- base ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html {
-      font-size: 90%;
-    }
-    body {
-      font-family: "Geist", system-ui, sans-serif;
-      line-height: 1.5;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1.25rem;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-    main {
-      width: 100%;
-      max-width: var(--max-width);
-    }
-
-    /* ---------- theme toggle ---------- */
-    .theme-switch {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .theme-toggle {
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 0.95rem;
-      user-select: none;
-      transition: color 0.2s ease;
-    }
-    .theme-toggle:hover {
-      color: var(--text);
-    }
-    :root:has(.theme-switch:focus-visible) .theme-toggle {
-      outline: 2px solid var(--muted);
-      outline-offset: 3px;
-    }
-    .on-dark { display: none; }
-    :root:has(.theme-switch:checked) .on-light { display: none; }
-    :root:has(.theme-switch:checked) .on-dark { display: inline; }
-
-    /* ---------- hero ---------- */
-    h1 {
-      font-size: clamp(1.4rem, 5vw, 1.75rem);
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      line-height: 1.05;
-    }
-    .tagline-row {
-      margin-top: 0.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-    }
-    .tagline {
-      font-size: 1.05rem;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-    .intro {
-      margin-top: 1.5rem;
-    }
-    .lede + .lede {
-      margin-top: 0.25rem;
-    }
-    .lede {
-      font-size: 1.05rem;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-
-    /* ---------- projects ---------- */
-    .projects {
-      margin-top: 1.5rem;
-      font-size: 1.05rem;
-    }
-    .lede + .project,
-    .project + .project {
-      margin-top: 0.25rem;
-    }
-    .desc {
-      display: inline;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-
-    .contact {
-      margin-top: 1.5rem;
-    }
-
-    /* ---------- links ---------- */
-    a {
-      color: var(--text);
-      text-decoration: underline;
-      text-decoration-color: var(--subtle);
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 3px;
-      transition: color 0.15s ease, text-decoration-color 0.15s ease;
-    }
-    a:hover,
-    a:focus-visible {
-      text-decoration-color: currentColor;
-    }
-    a:focus-visible {
-      outline: 2px solid var(--muted);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
-
-    /* ---------- motion ---------- */
-    @media (prefers-reduced-motion: reduce) {
-      body, .theme-toggle, .tagline, .lede, .desc, a { transition: none; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
+  <link rel="stylesheet" href="style.css?v=1">
+  <script src="app.js?v=1" defer></script>
 </head>
 <body>
-  <input type="checkbox" id="theme-switch" class="theme-switch" autocomplete="off">
-  <script>
-    (function () {
-      var toggle = document.getElementById("theme-switch");
-      var saved = null;
-      try { saved = localStorage.getItem("theme"); } catch (e) {}
-      toggle.checked = saved ? saved === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches;
-      toggle.addEventListener("change", function () {
-        try { localStorage.setItem("theme", toggle.checked ? "dark" : "light"); } catch (e) {}
-      });
-    })();
-  </script>
+  <!-- icon sprite (feather-style stroke icons) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></symbol>
+    <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  </svg>
 
   <main>
-    <h1>gnan reddy bobba</h1>
-    <div class="tagline-row">
+    <!-- 1. who -->
+    <header class="head">
+      <h1>gnan reddy bobba</h1>
       <p class="tagline">cs student</p>
-      <label for="theme-switch" class="theme-toggle" title="toggle dark/light mode">
-        <span class="on-light">[dark]</span><span class="on-dark">[light]</span>
-      </label>
-    </div>
+    </header>
+
+    <!-- 2. what i do + tools (tap a skill to highlight it in the projects) -->
     <div class="intro">
       <p class="lede">hi. i build backend systems & i lift.</p>
-      <p class="lede">i work with go (chi), python, sql, postgresql (pgvector), kafka, minio, and docker.</p>
+      <div class="stack">
+        <p class="label">stack</p>
+        <ul class="skills">
+          <!-- data-skill words must match the data-tag values on the project hashtags below -->
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="go chi">go <span>chi</span></button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="python">python</button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="postgresql pgvector">postgresql <span>pgvector</span></button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button></li>
+          <li><button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="projects">
-      <p class="lede">so far i've built:</p>
-      <p class="project">
-        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system</a>
-        <span class="desc">ingests text and images, answers questions with source citations (still building)</span>
-      </p>
-      <p class="project">
-        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan</a>
-        <span class="desc">reads a matrix from standard input and prints it back</span>
-      </p>
-      <p class="project">
-        <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli</a>
-        <span class="desc">interactive terminal calculator for basic arithmetic</span>
-      </p>
-    </div>
+    <!-- 3. proof: active / completed (set data-status to "active" or "done") -->
+    <section class="projects">
+      <div class="label-row">
+        <div class="ptabs" role="group" aria-label="project status">
+          <button class="ptab" type="button" aria-pressed="true" data-s="active">active <span></span></button>
+          <button class="ptab" type="button" aria-pressed="false" data-s="done">completed <span></span></button>
+        </div>
+        <a class="more" id="pmore" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13?tab=repositories&sort=updated">see more<svg class="i sm"><use href="#i-ext"/></svg></a>
+      </div>
+      <div class="pwrap" id="pw">
+        <div class="plist" id="plist" role="group" tabindex="0" aria-label="projects, scrollable">
+          <p class="project" data-status="active">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
+            <!-- PLACEHOLDER tags: replace with the tools this project really uses -->
+            <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="docker">#docker</span></span>
+          </p>
+          <p class="project" data-status="done">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
+            <!-- PLACEHOLDER tags -->
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+          </p>
+          <p class="project" data-status="done">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
+            <!-- PLACEHOLDER tags -->
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+          </p>
+          <p class="pempty" id="pempty" hidden>nothing here yet</p>
+        </div>
+        <button class="arr u" type="button" data-for="plist" data-dir="-1" aria-label="scroll projects up" title="up"><svg class="i"><use href="#i-up"/></svg></button>
+        <button class="arr d" type="button" data-for="plist" data-dir="1" aria-label="scroll projects down" title="down"><svg class="i"><use href="#i-down"/></svg></button>
+      </div>
+    </section>
 
-    <p class="lede contact">
-      say hi at <a href="mailto:gnanreddy13@gmail.com">gnanreddy13@gmail.com</a>
-      or on <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/">linkedin</a>.
-      i code on <a target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13">github</a>
-      and grind <a target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/">leetcode</a>.
-      <a target="_blank" rel="noreferrer" href="https://docs.google.com/document/d/1kjDllUaDYIrKvqEvqd_zN2LhioJ85M1gkqFNDDjMJLs/edit?usp=sharing">resume</a>'s here.
-    </p>
+    <!-- 4. consistency -->
+    <section class="activity">
+      <div class="label-row">
+        <p class="label">past year</p>
+        <span class="readout" id="rd" aria-live="polite"><svg class="i" aria-hidden="true"><use id="rd-u" href="#i-github"/></svg><span id="rd-t"></span></span>
+      </div>
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-head">
+            <svg class="i" aria-hidden="true"><use href="#i-github"/></svg>
+            <span class="stat" id="s-gh"></span>
+          </div>
+          <div class="sc" id="sc-gh" data-l="0" data-r="0">
+            <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, scrollable"></div>
+            <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+            <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <svg class="i" aria-hidden="true"><use href="#i-code"/></svg>
+            <span class="stat" id="s-lc"></span>
+          </div>
+          <div class="sc" id="sc-lc" data-l="0" data-r="0">
+            <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, scrollable"></div>
+            <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+            <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. next step -->
+    <section class="contact">
+      <p class="label">say hi</p>
+      <nav class="links" aria-label="contact">
+        <a class="cl" href="mailto:gnanreddy13@gmail.com" title="gnanreddy13@gmail.com"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg>email</a>
+        <a class="cl" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/"><svg class="i" aria-hidden="true"><use href="#i-linkedin"/></svg>linkedin</a>
+        <a class="cl" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg>github</a>
+        <a class="cl" target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/"><svg class="i" aria-hidden="true"><use href="#i-code"/></svg>leetcode</a>
+        <a class="cl" target="_blank" rel="noreferrer" href="https://docs.google.com/document/d/1kjDllUaDYIrKvqEvqd_zN2LhioJ85M1gkqFNDDjMJLs/edit?usp=sharing"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>resume</a>
+      </nav>
+    </section>
   </main>
 </body>
 </html>

@@ -1,0 +1,521 @@
+/* ---------- tokens (dark only) ---------- */
+:root {
+  --bg: #000000;
+  --text: #f2f2f0;
+  --muted: #8f8f8a;
+  --subtle: #3a3a38;
+
+  /* accent: active status, selected states, focus, hover */
+  --accent: #8f8f8a;
+  --accent-soft: rgba(143, 143, 138, 0.18);
+  --on-accent: #000000;
+
+  /* activity grid levels (GitHub's dark palette) */
+  --l0: #17191c;
+  --l1: #0e4429;
+  --l2: #006d32;
+  --l3: #26a641;
+  --l4: #39d353;
+
+  /* brand colours (contact icons only; github and resume stay neutral) */
+  --c-mail: #ff6b5e;
+  --c-li: #5aa9f5;
+  --c-lc: #ffa116;
+
+  /* type scale: four sizes only */
+  --fs-xl: clamp(1.5rem, 5.5vw, 1.85rem);   /* name */
+  --fs-md: 1.1rem;                          /* intro, tagline, icons */
+  --fs-sm: 0.95rem;                         /* projects, contact names on desktop */
+  --fs-xs: 0.85rem;                         /* labels, chips, tags, readouts */
+  --lh-tight: 1.1;
+  --lh: 1.5;
+
+  /* spacing: one unit; three tiers (tight / medium / large) are multiples of it */
+  --u: 1rem;
+  --label-gap: 0.5rem;
+  --plist-h: 15rem;                         /* max height of the projects box; it shrinks to fit the screen */
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --t: 0.2s;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (max-height: 700px) {
+  :root { --u: 0.65rem; --label-gap: 0.35rem; }
+}
+@media (min-width: 800px) and (min-height: 800px) {
+  :root { --u: 1.15rem; }
+}
+
+/* ---------- base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
+html {
+  font-size: 90%;
+  -webkit-text-size-adjust: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--bg);
+}
+body {
+  font-family: "Geist", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: var(--lh);
+  background: var(--bg);
+  color: var(--text);
+  position: fixed;                          /* pinned to the screen: nothing can bounce or drift */
+  inset: 0;
+  overflow-y: auto;                         /* only switched on by fit() when content truly overflows */
+  overscroll-behavior: none;
+  padding: 0.6rem 1.25rem;
+}
+main {
+  width: 100%;
+  max-width: 38rem;
+  height: 100%;
+  margin: 0 auto;
+  padding-block: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  animation: rise 0.5s var(--ease) both;
+}
+/* spacers center the content vertically, and collapse to nothing when space is tight */
+main::before,
+main::after { content: ""; flex: 1 1 0; min-height: 0; }
+main > * { flex: none; }
+
+/* ---------- spacing tiers ---------- */
+.intro    { margin-top: calc(var(--u) * 0.8); }   /* tight: identity block */
+.stack    { margin-top: calc(var(--u) * 1.1); }   /* medium: inside a group */
+.projects,
+.activity,
+.contact  { margin-top: calc(var(--u) * 2); }     /* large: between groups */
+
+/* ---------- icons: always 1em so they match adjacent text ---------- */
+.i {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.15em;
+  flex: none;
+}
+.i.sm {
+  width: 0.75em; height: 0.75em; vertical-align: -0.02em; margin-left: 0.2em;
+  transition: transform var(--t) var(--ease);
+}
+
+/* ---------- scroll arrows: shown only when there is more in that direction ---------- */
+.arr {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: var(--fs-md);
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t) var(--ease), color var(--t) var(--ease), visibility 0s linear var(--t);
+}
+.arr svg { transition: transform var(--t) var(--ease); }
+.arr:active { color: var(--accent); }
+.arr:active svg { transform: scale(0.85); }
+.arr:focus-visible { color: var(--text); outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
+@media (hover: hover) {
+  .arr:hover { color: var(--text); }
+}
+.sc[data-l="1"] .arr.l,
+.sc[data-r="1"] .arr.r,
+.pwrap[data-t="1"] .arr.u,
+.pwrap[data-b="1"] .arr.d {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--t) var(--ease), color var(--t) var(--ease), visibility 0s;
+}
+
+/* ---------- xs: section labels (quieter than interactive items) ---------- */
+.label {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  opacity: 0.75;
+  margin-bottom: var(--label-gap);
+}
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--label-gap);
+  flex: none;
+}
+.label-row .label { margin-bottom: 0; }
+.more {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  margin: -0.35rem 0;
+  transition: color var(--t) var(--ease);
+}
+.more:active { color: var(--text); }
+@media (hover: hover) { .more:hover { color: var(--text); } }
+
+/* ---------- 1. who ---------- */
+h1 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: var(--lh-tight);
+  text-wrap: balance;
+}
+.tagline {
+  margin-top: 0.3rem;
+  font-size: var(--fs-md);
+  line-height: var(--lh);
+  color: var(--muted);
+}
+
+/* ---------- 2. what: intro + skill chips ---------- */
+.lede {
+  font-size: var(--fs-md);
+  line-height: var(--lh);
+  color: var(--text);
+}
+.skills {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.skills button.chip {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  color: var(--text);
+  background: none;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--subtle);
+  border-radius: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.skills button.chip span { color: var(--muted); margin-left: 0.3rem; transition: color var(--t) var(--ease); }
+.skills button.chip:active { border-color: var(--muted); }
+.skills button.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.skills button.chip[aria-pressed="true"],
+.skills button.chip[aria-pressed="true"]:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.skills button.chip[aria-pressed="true"] span { color: var(--on-accent); opacity: 0.75; }
+@media (hover: hover) {
+  .skills button.chip:not([aria-pressed="true"]):hover { border-color: var(--muted); }
+}
+
+/* ---------- 3. proof: projects (tabs + scrollable list that shrinks to fit) ---------- */
+main > .projects {
+  flex: 0 1 auto;
+  min-height: 7.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.ptabs { display: flex; gap: 1.1rem; }
+.ptab {
+  position: relative;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0.35rem 0;
+  margin: -0.35rem 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color var(--t) var(--ease);
+}
+.ptab span {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-left: 0.15rem;
+  padding: 0 0.3rem;
+  text-align: center;
+  border-radius: 3px;
+  opacity: 0.6;
+  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), opacity var(--t) var(--ease);
+}
+.ptab span.hit  { opacity: 1; background: var(--accent); color: var(--on-accent); }
+.ptab span.none { opacity: 0.3; }
+.ptab[aria-pressed="true"] { color: var(--text); }
+.ptab[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0.2rem;
+  height: 1px;
+  background: var(--accent);
+}
+.ptab:active { color: var(--text); }
+.ptab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+@media (hover: hover) { .ptab:hover { color: var(--text); } }
+
+.pwrap {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 5.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.plist {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: var(--plist-h);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.plist::-webkit-scrollbar { display: none; }
+.plist:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.plist.fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
+}
+.plist.fade-t {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem);
+  mask-image: linear-gradient(to bottom, transparent, #000 1.75rem);
+}
+.plist.fade-t.fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
+}
+.pwrap .arr { right: 0; width: 1.75rem; height: 1.75rem; }
+.pwrap .arr.u { top: 0; }
+.pwrap .arr.d { bottom: 0; }
+@media (pointer: coarse) {
+  .pwrap .arr { width: 2.5rem; height: 2.5rem; }
+}
+
+.project,
+.project a.name,
+.project .desc {
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+}
+.project:not([hidden]) ~ .project:not([hidden]) { margin-top: 0.6rem; }
+.project a.name { font-family: var(--mono); }
+.project .desc {
+  color: var(--muted);
+  margin-left: 0.3rem;
+  text-wrap: pretty;
+}
+.pempty { font-size: var(--fs-sm); color: var(--muted); }
+
+/* hashtags: inline after the description; the selected skill's tags turn accent */
+.tags { display: inline; }
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--muted);
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 3px;
+  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), opacity var(--t) var(--ease);
+}
+.projects.filtering .tag { opacity: 0.45; }
+.projects.filtering .tag.on {
+  opacity: 1;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
+.readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--t) var(--ease);
+}
+.readout.show { opacity: 1; }
+.readout span { overflow: hidden; text-overflow: ellipsis; }
+
+.panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
+.panel { min-width: 0; }
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 1.4em;
+  color: var(--muted);
+  font-size: var(--fs-md);
+}
+.stat {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  min-height: 1.4em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.sc { position: relative; margin-top: 0.6rem; }
+.sc .arr { top: 0; bottom: 0; width: 1.6rem; }
+.sc .arr.l {
+  left: 0;
+  place-items: center start;
+  background: linear-gradient(to right, var(--bg) 35%, transparent);
+}
+.sc .arr.r {
+  right: 0;
+  place-items: center end;
+  background: linear-gradient(to left, var(--bg) 35%, transparent);
+}
+.bars {
+  --w: 25;                                  /* weeks visible at once (keep in sync with vis() in app.js) */
+  --gap: 2px;
+  --cell: calc((100cqw - (var(--w) - 1) * var(--gap)) / var(--w));
+  container-type: inline-size;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  cursor: grab;
+}
+@media (max-width: 480px) {
+  .bars { --w: 15; }                        /* about 3 months on phones: bigger, tappable cells */
+}
+.bars::-webkit-scrollbar { display: none; }
+.bars.dragging { cursor: grabbing; }
+.bars:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  grid-auto-columns: var(--cell);
+  gap: var(--gap);
+  width: max-content;
+  min-height: calc(var(--cell) * 7 + var(--gap) * 6);
+}
+.bars i {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 2px;
+  background: var(--l0);
+}
+.bars i[data-l="1"] { background: var(--l1); }
+.bars i[data-l="2"] { background: var(--l2); }
+.bars i[data-l="3"] { background: var(--l3); }
+.bars i[data-l="4"] { background: var(--l4); }
+.bars i.sk { background: var(--l0); opacity: 0.6; }
+.bars i.on { outline: 1.5px solid var(--text); outline-offset: 0; position: relative; z-index: 1; }
+.bars.anim i { animation: pop 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
+
+/* ---------- 5. next step: contact (icon + name, brand-coloured icons) ---------- */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.4rem;
+  row-gap: 0;
+}
+.cl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color var(--t) var(--ease);
+}
+.cl .i { transition: transform var(--t) var(--ease); }
+.cl[href^="mailto"] .i       { color: var(--c-mail); }
+.cl[href*="linkedin.com"] .i { color: var(--c-li); }
+.cl[href*="leetcode.com"] .i { color: var(--c-lc); }
+/* github and resume icons stay neutral */
+.cl:active { color: var(--text); }
+.cl:active .i { transform: scale(0.85); }
+@media (hover: hover) { .cl:hover { color: var(--text); } }
+@media (pointer: coarse) { .cl { padding: 0.65rem 0; } }
+
+/* desktop: contact names one step larger, since there is room */
+@media (min-width: 481px) {
+  .cl { font-size: var(--fs-sm); }
+}
+/* phones: icon above name so all five fit in one row */
+@media (max-width: 480px) {
+  .links { flex-wrap: nowrap; justify-content: space-between; column-gap: 0; }
+  .cl { flex-direction: column; gap: 0.3rem; padding: 0.55rem 0; min-width: 0; }
+}
+@media (max-width: 360px) {
+  .cl { font-size: 0.78rem; }
+}
+
+/* ---------- text links ---------- */
+a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--subtle);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--t) var(--ease);
+}
+a:active { text-decoration-color: var(--accent); }
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+@media (hover: hover) {
+  a:hover { text-decoration-color: var(--accent); }
+  a:hover .i.sm { transform: translate(1px, -1px); }
+}
+a.more, a.cl { text-decoration: none; }
+
+/* ---------- keyframes ---------- */
+@keyframes rise { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop  { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+
+/* ---------- reduced motion: everything instant ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
