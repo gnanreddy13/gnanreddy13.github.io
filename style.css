@@ -17,12 +17,8 @@
   --l3: #26a641;
   --l4: #39d353;
 
-  /* brand colours (contact icons only; github and resume stay neutral) */
-  --c-mail: #ff6b5e;
-  --c-li: #5aa9f5;
+  /* leetcode: orange for the solved total, difficulty colours for easy / medium / hard */
   --c-lc: #ffa116;
-
-  /* leetcode difficulty colours */
   --c-easy: #00b8a3;
   --c-medium: #ffc01e;
   --c-hard: #ff375f;
@@ -112,7 +108,7 @@ main > * { flex: none; }
   width: 0.75em; height: 0.75em; vertical-align: -0.02em; margin-left: 0.2em;
   transition: transform var(--t) var(--ease);
 }
-/* the LeetCode logo is a filled shape, so it is drawn a little smaller than the outline icons */
+/* official logos are filled shapes, so they are drawn a little smaller than the outline icons */
 .i.lc { width: 0.9em; height: 0.9em; }
 
 /* ---------- scroll arrows: shown only when there is more in that direction ---------- */
@@ -163,7 +159,7 @@ main > * { flex: none; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: calc(var(--u) * 0.8);
+  margin-bottom: calc(var(--u) * 0.8);      /* matches the gap between projects */
   flex: none;
 }
 .label-row .label { margin-bottom: 0; }
@@ -194,6 +190,15 @@ h1 {
   line-height: var(--lh);
   color: var(--muted);
 }
+.clock {
+  margin-top: 0.3rem;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.clock .dim { color: var(--muted); }
 
 /* ---------- 2. what: intro + skill chips ---------- */
 .lede {
@@ -401,6 +406,7 @@ main > .projects {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#solved-n { color: var(--c-lc); }
 
 .sc { position: relative; margin-top: 0.6rem; }
 .sc .arr { top: 0; bottom: 0; width: 1.6rem; }
@@ -433,6 +439,10 @@ main > .projects {
 .sub .e { color: var(--c-easy); }
 .sub .m { color: var(--c-medium); }
 .sub .h { color: var(--c-hard); }
+.sub .w { display: inline; }
+@media (max-width: 480px) {
+  .sub .w { display: none; }                       /* phones: 76 e 25 m 8 h */
+}
 
 .bars {
   --w: 25;                                  /* weeks visible at once (keep in sync with vis() in app.js) */
@@ -478,7 +488,7 @@ main > .projects {
 .bars i.on { outline: 1.5px solid var(--text); outline-offset: 0; position: relative; z-index: 1; }
 .bars.anim i { animation: pop 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
 
-/* ---------- 5. next step: contact (icon + name, brand-coloured icons) ---------- */
+/* ---------- 5. next step: contact (neutral icons + names) ---------- */
 .links {
   display: flex;
   flex-wrap: wrap;
@@ -501,10 +511,7 @@ main > .projects {
   transition: color var(--t) var(--ease);
 }
 .cl .i { transition: transform var(--t) var(--ease); }
-.cl[href^="mailto"] .i       { color: var(--c-mail); }
-.cl[href*="linkedin.com"] .i { color: var(--c-li); }
-.cl[href*="leetcode.com"] .i { color: var(--c-lc); }
-/* github and resume icons stay neutral */
+/* icons inherit the muted colour and brighten with the label on hover */
 .cl:active { color: var(--text); }
 .cl:active .i { transform: scale(0.85); }
 @media (hover: hover) { .cl:hover { color: var(--text); } }
