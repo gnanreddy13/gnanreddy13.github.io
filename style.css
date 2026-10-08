@@ -18,7 +18,7 @@
   --l4: #39d353;
 
   /* type scale: the name, then three close body sizes */
-  --fs-xl: clamp(1.3rem, 5vw, 1.5rem);      /* name */
+  --fs-xl: clamp(1.45rem, 5.5vw, 1.7rem);   /* name */
   --fs-md: 1.1rem;                          /* icon and arrow size only */
   --fs-sm: 1rem;                            /* prose: tagline, intro, stack sentence, descriptions, project names */
   --fs-ui: 0.95rem;                         /* single-line UI: clock, stack note, tabs, see more, labels */
@@ -26,10 +26,11 @@
   --lh-tight: 1.1;
   --lh: 1.5;
 
-  /* spacing: one unit; three tiers (tight / medium / large) are multiples of it */
+  /* spacing: one unit; two tiers (tight / large) are multiples of it */
   --u: 1rem;
   --label-gap: 0.5rem;
   --plist-h: 15rem;                         /* max height of the projects box; it shrinks to fit the screen */
+  --arr-w: 1.75rem;                         /* project arrow strip at the right edge of the list */
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t: 0.2s;
@@ -41,6 +42,9 @@
 }
 @media (min-width: 800px) and (min-height: 800px) {
   :root { --u: 1.15rem; }
+}
+@media (pointer: coarse) {
+  :root { --arr-w: 2.25rem; }
 }
 
 /* ---------- base ---------- */
@@ -82,7 +86,6 @@ main > * { flex: none; }
 
 /* ---------- spacing tiers ---------- */
 .intro    { margin-top: calc(var(--u) * 0.8); }   /* tight: identity block */
-.stack    { margin-top: calc(var(--u) * 1); }     /* medium: inside a group */
 .projects,
 .activity,
 .contact  { margin-top: calc(var(--u) * 1.7); }   /* large: between groups */
@@ -193,20 +196,15 @@ h1 {
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
-.clock .dim { color: var(--muted); }
+.clock .rel { display: block; color: var(--muted); }   /* the time difference sits on its own line */
 
-/* ---------- 2. what: intro + skills as a sentence ---------- */
+/* ---------- 2. what: about + skills as one paragraph ---------- */
 .lede {
   font-size: var(--fs-sm);
   line-height: var(--lh);
   color: var(--text);
 }
-.work {
-  font-size: var(--fs-sm);
-  line-height: var(--lh);
-  color: var(--text);
-}
-.work .chip {
+.lede .chip {
   font-family: var(--mono);
   font-size: inherit;
   line-height: inherit;
@@ -223,17 +221,16 @@ h1 {
   touch-action: manipulation;
   transition: text-decoration-color var(--t) var(--ease);
 }
-.work .chip[aria-pressed="true"] {
+.lede .chip[aria-pressed="true"] {
   text-decoration-color: var(--accent);
   text-decoration-thickness: 2px;                  /* thicker as well as green, so the selection reads on phones */
 }
-.work .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
-@media (hover: hover) { .work .chip:hover { text-decoration-color: var(--text); } }
-.work .chip[aria-pressed="true"]:hover { text-decoration-color: var(--accent); }
-/* the note sits flush under the sentence: same left edge, tight gap */
+.lede .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (hover: hover) { .lede .chip:hover { text-decoration-color: var(--text); } }
+.lede .chip[aria-pressed="true"]:hover { text-decoration-color: var(--accent); }
+/* the note sits on its own line, flush under the paragraph */
 .snote {
   margin: 0.2rem 0 0;
-  padding: 0;
   font-family: var(--mono);
   font-size: var(--fs-ui);
   line-height: 1.4;
@@ -298,6 +295,7 @@ main > .projects {
   flex: 0 1 auto;
   min-height: 0;
   max-height: var(--plist-h);
+  padding-right: var(--arr-w);              /* reserved strip: the arrows live here, never over the text */
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scrollbar-width: none;
@@ -317,13 +315,10 @@ main > .projects {
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
 }
-/* project arrows sit in the horizontal centre */
-.pwrap .arr { left: 0; right: 0; margin: 0 auto; width: 1.75rem; height: 1.75rem; }
+/* project arrows sit at the right edge: up at the top corner, down at the bottom corner */
+.pwrap .arr { right: 0; width: var(--arr-w); height: var(--arr-w); }
 .pwrap .arr.u { top: 0; }
 .pwrap .arr.d { bottom: 0; }
-@media (pointer: coarse) {
-  .pwrap .arr { width: 2.5rem; height: 2.5rem; }
-}
 
 .project,
 .project a.name,

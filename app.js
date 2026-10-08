@@ -1,7 +1,7 @@
 function $(id) { return document.getElementById(id); }
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// ---------- clock: my time (IST) and how far the visitor is from it ----------
+// ---------- clock: my time (IST) on one line, how far the visitor is from it on the next ----------
 function renderClock() {
   var now = new Date();
   var t = now.toLocaleTimeString("en", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit" }).toLowerCase();
@@ -10,7 +10,7 @@ function renderClock() {
   var a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
   var span = (h ? h + "h" : "") + (h && m ? " " : "") + (m ? m + "m" : "");
   var rel = diff === 0 ? "same time as me" : "you're " + span + (diff < 0 ? " behind" : " ahead");
-  $("clock").innerHTML = t + " ist · " + d + '<span class="dim"> · ' + rel + "</span>";
+  $("clock").innerHTML = t + " ist · " + d + '<span class="rel">' + rel + "</span>";
 }
 renderClock();
 setInterval(renderClock, 15000);
