@@ -414,8 +414,9 @@ main > .projects {
   background: linear-gradient(to left, var(--bg) 35%, transparent);
 }
 
-/* under each graph: window total (changes with scroll), then one permanent line */
+/* under each graph: total, range, then one permanent line (all one row each) */
 .stat,
+.rng,
 .sub {
   font-family: var(--mono);
   font-size: var(--fs-xs);
@@ -424,10 +425,11 @@ main > .projects {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis;          /* safety net only; the formats are built to fit */
   min-width: 0;
 }
 .stat { margin-top: 0.5rem; color: var(--text); }
+.rng,
 .sub  { color: var(--muted); }
 .sub .w { display: inline; }
 @media (max-width: 600px) {

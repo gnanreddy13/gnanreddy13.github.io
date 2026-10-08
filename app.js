@@ -19,6 +19,7 @@ setInterval(renderClock, 15000);
 var LABEL = { gh: ["contribution", "contributions"], lc: ["submission", "submissions"] };
 var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
+var hov = { gh: false, lc: false };          // mouse is over that graph
 
 // hover result line under "past year": GitHub day on the left, LeetCode day on the right.
 // It is the only thing that line ever shows, so it can't clash with the permanent facts.
@@ -46,12 +47,26 @@ function skeleton(which) {
   for (var i = 0; i < n; i++) h += '<i class="sk"></i>';
   $("b-" + which).innerHTML = '<div class="track">' + h + '</div>';
 }
-// the year is shown only when the date is not in the current year
+
+// ---------- dates: the year appears only where it is needed ----------
+function yr(s) { return new Date(s + "T00:00:00Z").getUTCFullYear(); }
+function md(s) {
+  return new Date(s + "T00:00:00Z")
+    .toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" }).toLowerCase();
+}
+// phones get a short year ('25) so the line fits; wider screens get the full year
+function ys(y, full) { return (full || window.innerWidth > 600) ? String(y) : "'" + String(y).slice(2); }
+
+// single day (the hover line has room, so the full year)
 function niceDate(s) {
-  var d = new Date(s + "T00:00:00Z");
-  var o = { month: "short", day: "numeric", timeZone: "UTC" };
-  if (d.getUTCFullYear() !== new Date().getFullYear()) o.year = "numeric";
-  return d.toLocaleDateString("en", o);
+  var y = yr(s);
+  return y === new Date().getFullYear() ? md(s) : md(s) + " " + ys(y, true);
+}
+// range: year only on an end that isn't this year, written once if both ends share a past year
+function niceRange(a, b) {
+  var cur = new Date().getFullYear(), ya = yr(a), yb = yr(b);
+  if (ya === yb) return md(a) + "–" + md(b) + (ya === cur ? "" : " " + ys(ya));
+  return md(a) + (ya === cur ? "" : " " + ys(ya)) + "–" + md(b) + (yb === cur ? "" : " " + ys(yb));
 }
 
 function unmark() {
@@ -73,7 +88,9 @@ function pick(which, el) {
   owner = which;
 }
 
-// total at rest, window range while sliding; arrows show which directions have more
+// total + range under the graph:
+//   at rest             -> past-year total, full span
+//   hovering / sliding  -> total and range of the weeks currently in view
 function update(which) {
   var days = shown[which];
   if (!days) return;
@@ -92,9 +109,13 @@ function update(which) {
   atEnd[which] = bars.scrollLeft + bars.clientWidth >= bars.scrollWidth - 2;
   sc.dataset.l = bars.scrollLeft > 2 ? "1" : "0";
   sc.dataset.r = atEnd[which] ? "0" : "1";
-  setStat(which, atEnd[which]
-    ? year + " " + lab(which, year) + (stale[which] || "")
-    : total + " · " + days[lo].date.slice(5) + "–" + days[Math.max(lo, hi - 1)].date.slice(5));
+
+  var live = !atEnd[which] || hov[which];      // sliding away from today, or mouse over the graph
+  var shownTotal = live ? total : year;
+  setStat(which, shownTotal + " " + lab(which, shownTotal) + (live ? "" : (stale[which] || "")));
+  $("r-" + which).textContent = live
+    ? niceRange(days[lo].date, days[Math.max(lo, hi - 1)].date)
+    : niceRange(days[0].date, days[n - 1].date);
 }
 
 function draw(which) {
@@ -122,7 +143,7 @@ function draw(which) {
   bars.scrollLeft = keep !== null ? keep : bars.scrollWidth;   // open on today
 
   var last = days[n - 1].date;
-  stale[which] = (Date.now() - Date.parse(last)) / 864e5 > 3 ? " · as of " + last.slice(5) : "";
+  stale[which] = (Date.now() - Date.parse(last)) / 864e5 > 3 ? " · as of " + md(last) : "";
   update(which);
 }
 
@@ -131,11 +152,17 @@ function draw(which) {
   var bars = $("b-" + which);
   var down = false, moved = false, sx = 0, sl = 0, ticking = false;
 
+  bars.addEventListener("pointerenter", function (e) {
+    if (e.pointerType === "mouse") { hov[which] = true; update(which); }
+  });
   bars.addEventListener("pointerover", function (e) {
     if (e.pointerType === "mouse" && !down && e.target.tagName === "I" && e.target.dataset.d) pick(which, e.target);
   });
   bars.addEventListener("pointerleave", function (e) {
-    if (e.pointerType === "mouse" && !down && owner === which) clearAll();
+    if (e.pointerType !== "mouse") return;
+    hov[which] = false;
+    update(which);
+    if (!down && owner === which) clearAll();
   });
   bars.addEventListener("click", function (e) {
     if (moved) return;
@@ -160,7 +187,7 @@ function draw(which) {
     setTimeout(function () { moved = false; }, 0);
   });
 
-  // keep the window total in sync while scrolling (one update per frame)
+  // keep the total and range in sync while scrolling (one update per frame)
   bars.addEventListener("scroll", function () {
     if (ticking) return;
     ticking = true;
@@ -242,7 +269,7 @@ function renderGh() {
     if (!isNaN(d)) {
       var o = { month: "short", day: "numeric" };
       if (d.getFullYear() !== new Date().getFullYear()) o.year = "numeric";   // year only when not this year
-      $("gh-push").textContent = "last push " + d.toLocaleDateString("en", o).toLowerCase();
+      $("gh-push").textContent = "last push " + d.toLocaleDateString("en", o).replace(",", "").toLowerCase();
     }
   }
 }
