@@ -112,6 +112,8 @@ main > * { flex: none; }
   width: 0.75em; height: 0.75em; vertical-align: -0.02em; margin-left: 0.2em;
   transition: transform var(--t) var(--ease);
 }
+/* the LeetCode logo is a filled shape, so it is drawn a little smaller than the outline icons */
+.i.lc { width: 0.9em; height: 0.9em; }
 
 /* ---------- scroll arrows: shown only when there is more in that direction ---------- */
 .arr {
@@ -354,6 +356,13 @@ main > .projects {
 }
 
 /* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
+.activity > .label { margin-bottom: 0.15rem; }
+.rd-row {
+  display: flex;
+  align-items: center;
+  min-height: 1.4em;           /* fixed height, so nothing shifts when text appears */
+  margin-bottom: 0.4rem;
+}
 .rd {
   min-width: 0;
   font-family: var(--mono);
@@ -366,7 +375,8 @@ main > .projects {
   text-overflow: ellipsis;
 }
 .rd.r { margin-left: auto; }                       /* pushes it to the right side */
-#rd-solved { display: inline-flex; align-items: center; gap: 0.4rem; }
+#rd-solved { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--c-lc); }
+#rd-solved > span { color: var(--text); }
 #rd-solved .dim { color: var(--muted); }
 .rd .e { color: var(--c-easy); }
 .rd .m { color: var(--c-medium); }

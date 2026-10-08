@@ -6,15 +6,14 @@ var LABEL = { gh: ["contribution", "contributions"], lc: ["submission", "submiss
 var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 
-// the row above the graphs:
-//   rest  = "past year" on the left + LeetCode solved on the right
+// the line under "past year":
+//   rest  = LeetCode solved on the right
 //   gh    = hovered GitHub day, on the left
 //   lc    = hovered LeetCode day, on the right
-var elLabel = $("rd-label"), elGh = $("rd-gh"), elSolved = $("rd-solved"), elLc = $("rd-lc");
+var elGh = $("rd-gh"), elSolved = $("rd-solved"), elLc = $("rd-lc");
 var owner = null, lcStats = null;
 
 function showRow(mode, text) {
-  elLabel.hidden = mode !== "rest";
   elSolved.hidden = !(mode === "rest" && lcStats);
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
@@ -209,7 +208,7 @@ loadActivity("gh", [
 ]);
 loadActivity("lc", [["leetcode.json", same]]);
 
-// LeetCode solved total; if the file is missing, only "past year" shows at rest
+// LeetCode solved total; if the file is missing, the line stays empty at rest
 fetch("leetcode-stats.json", { cache: "no-cache" })
   .then(function (r) { if (!r.ok) throw 0; return r.json(); })
   .then(function (s) { lcStats = s; renderSolved(); if (owner === null) showDefault(); })
