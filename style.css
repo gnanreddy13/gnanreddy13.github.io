@@ -489,21 +489,25 @@ main > .projects {
 .bars i.on { outline: 1.5px solid var(--text); outline-offset: 0; position: relative; z-index: 1; }
 .bars.anim i { animation: pop 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
 
-/* ---------- 5. next step: contact, one sentence with inline links ---------- */
-.say {
-  font-size: var(--fs-sm);
-  line-height: var(--lh);
-  color: var(--text);
-  text-wrap: pretty;
+/* ---------- 5. next step: contact (logo, name, arrow if it leaves the site) ---------- */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.2rem;
+  row-gap: 0;
 }
 .cl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-family: var(--mono);
-  white-space: nowrap;                       /* a logo, name and arrow never split across lines */
-  padding: 0.2rem 0;                         /* a taller tap area without changing line spacing */
+  font-size: var(--fs-ui);
+  line-height: 1.4;
+  white-space: nowrap;
+  padding: 0.35rem 0;                        /* taller tap area */
 }
-.cl .i.lc,
-.cl .i:not(.sm):not(.lc) { margin-right: 0.3em; }   /* logo sits slightly apart from the name */
-@media (pointer: coarse) { .cl { padding: 0.3rem 0; } }
+.cl .i.sm { margin-left: 0; }                /* the flex gap already spaces the arrow */
+@media (pointer: coarse) { .cl { padding: 0.5rem 0; } }
 
 /* ---------- text links: solid muted underline at rest, white on hover ---------- */
 a {
