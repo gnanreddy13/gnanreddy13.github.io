@@ -489,47 +489,21 @@ main > .projects {
 .bars i.on { outline: 1.5px solid var(--text); outline-offset: 0; position: relative; z-index: 1; }
 .bars.anim i { animation: pop 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
 
-/* ---------- 5. next step: contact (neutral icons + names) ---------- */
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  column-gap: 1.4rem;
-  row-gap: 0;
+/* ---------- 5. next step: contact, one sentence with inline links ---------- */
+.say {
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+  color: var(--text);
+  text-wrap: pretty;
 }
 .cl {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
-  color: var(--muted);
-  text-decoration: none;
-  padding: 0.4rem 0;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  transition: color var(--t) var(--ease);
+  white-space: nowrap;                       /* a logo, name and arrow never split across lines */
+  padding: 0.2rem 0;                         /* a taller tap area without changing line spacing */
 }
-.cl .i { transition: transform var(--t) var(--ease); }
-/* icons inherit the muted colour and brighten with the label on hover */
-.cl:active { color: var(--text); }
-.cl:active .i { transform: scale(0.85); }
-@media (hover: hover) { .cl:hover { color: var(--text); } }
-@media (pointer: coarse) { .cl { padding: 0.65rem 0; } }
-
-/* desktop: contact names use the prose size, since there is room */
-@media (min-width: 481px) {
-  .cl { font-size: var(--fs-sm); }
-}
-/* phones: icon above name so all five fit in one row */
-@media (max-width: 480px) {
-  .links { flex-wrap: nowrap; justify-content: space-between; column-gap: 0; }
-  .cl { flex-direction: column; gap: 0.3rem; padding: 0.55rem 0; min-width: 0; }
-}
-@media (max-width: 360px) {
-  .cl { font-size: 0.78rem; }
-}
+.cl .i.lc,
+.cl .i:not(.sm):not(.lc) { margin-right: 0.3em; }   /* logo sits slightly apart from the name */
+@media (pointer: coarse) { .cl { padding: 0.3rem 0; } }
 
 /* ---------- text links: solid muted underline at rest, white on hover ---------- */
 a {
@@ -550,7 +524,7 @@ a:focus-visible {
   a:hover { text-decoration-color: var(--text); }
   a:hover .i.sm { transform: translate(1px, -1px); }
 }
-a.more, a.cl { text-decoration: none; }
+a.more { text-decoration: none; }
 
 /* ---------- keyframes ---------- */
 @keyframes rise { from { opacity: 0; } to { opacity: 1; } }
