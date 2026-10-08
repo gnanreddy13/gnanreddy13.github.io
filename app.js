@@ -55,7 +55,7 @@ function pick(which, el) {
   owner = which;
 }
 
-// window total follows what is currently in view; arrows show which directions have more
+// total at rest, window range while sliding; arrows show which directions have more
 function update(which) {
   var days = shown[which];
   if (!days) return;
@@ -69,11 +69,13 @@ function update(which) {
   var lo = Math.max(0, w0 * 7 - off), hi = Math.min(n, (w0 + cols) * 7 - off);
   var total = 0;
   for (var i = lo; i < hi; i++) total += days[i].count;
+  var year = 0;
+  for (var j = 0; j < n; j++) year += days[j].count;
   atEnd[which] = bars.scrollLeft + bars.clientWidth >= bars.scrollWidth - 2;
   sc.dataset.l = bars.scrollLeft > 2 ? "1" : "0";
   sc.dataset.r = atEnd[which] ? "0" : "1";
   setStat(which, atEnd[which]
-    ? total + " " + lab(which, total) + (stale[which] || "")
+    ? year + " " + lab(which, year) + (stale[which] || "")
     : total + " · " + days[lo].date.slice(5) + "–" + days[Math.max(lo, hi - 1)].date.slice(5));
 }
 
