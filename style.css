@@ -338,6 +338,7 @@ main > .projects {
 .project .desc {
   color: var(--muted);
   margin-left: 0.5rem;
+  margin-right: 0.6rem;
   text-wrap: pretty;
 }
 .pempty { font-family: var(--mono); font-size: var(--fs-sm); color: var(--muted); }
@@ -350,7 +351,7 @@ main > .projects {
   font-size: var(--fs-xs);
   line-height: 1.4;
   color: var(--muted);
-  margin-left: 0.6rem;
+  margin-right: 0.6rem;
   transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
 }
 .projects.filtering .tag { opacity: 0.55; }
