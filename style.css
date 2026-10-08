@@ -17,11 +17,12 @@
   --l3: #26a641;
   --l4: #39d353;
 
-  /* type scale: the name, then two close body sizes */
+  /* type scale: the name, then three close body sizes */
   --fs-xl: clamp(1.3rem, 5vw, 1.5rem);      /* name */
   --fs-md: 1.1rem;                          /* icon and arrow size only */
-  --fs-sm: 0.95rem;                         /* prose: tagline, intro, stack sentence, descriptions, project names */
-  --fs-xs: 0.9rem;                          /* data and UI: labels, tags, hints, clock, everything under the graphs */
+  --fs-sm: 1rem;                            /* prose: tagline, intro, stack sentence, descriptions, project names */
+  --fs-ui: 0.95rem;                         /* single-line UI: clock, stack note, tabs, see more, labels */
+  --fs-xs: 0.9rem;                          /* tight data: graph text, panel headers, hover line, tags */
   --lh-tight: 1.1;
   --lh: 1.5;
 
@@ -143,7 +144,7 @@ main > * { flex: none; }
 /* ---------- section labels ---------- */
 .label {
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   letter-spacing: 0.02em;
   color: var(--muted);
@@ -159,7 +160,7 @@ main > * { flex: none; }
 .label-row .label { margin-bottom: 0; }
 .more {
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   color: var(--muted);
   text-decoration: none;
@@ -187,7 +188,7 @@ h1 {
 .clock {
   margin-top: 0.3rem;
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
   color: var(--text);
@@ -234,7 +235,7 @@ h1 {
   margin: 0.2rem 0 0;
   padding: 0;
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   color: var(--muted);
 }
@@ -250,7 +251,7 @@ main > .projects {
 .ptab {
   position: relative;
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   color: var(--muted);
   background: none;
@@ -499,7 +500,7 @@ main > .projects {
   align-items: center;
   gap: 0.45rem;
   font-family: var(--mono);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-ui);
   line-height: 1.4;
   color: var(--muted);
   text-decoration: none;
