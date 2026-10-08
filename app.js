@@ -6,28 +6,18 @@ var LABEL = { gh: ["contribution", "contributions"], lc: ["submission", "submiss
 var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 
-// the line under "past year":
-//   rest  = LeetCode solved on the right
-//   gh    = hovered GitHub day, on the left
-//   lc    = hovered LeetCode day, on the right
-var elGh = $("rd-gh"), elSolved = $("rd-solved"), elLc = $("rd-lc");
-var owner = null, lcStats = null;
+// hover result line under "past year": GitHub day on the left, LeetCode day on the right.
+// It is the only thing that line ever shows, so it can't clash with the permanent facts.
+var elGh = $("rd-gh"), elLc = $("rd-lc");
+var owner = null;
 
 function showRow(mode, text) {
-  elSolved.hidden = !(mode === "rest" && lcStats);
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
   if (mode === "gh") elGh.textContent = text;
   if (mode === "lc") elLc.textContent = text;
 }
 function showDefault() { showRow("rest"); }
-function renderSolved() {
-  $("rd-solved-t").innerHTML =
-    Number(lcStats.solved) + ' <span class="dim">solved ·</span> ' +
-    '<span class="e">' + Number(lcStats.easy) + 'e</span> ' +
-    '<span class="m">' + Number(lcStats.medium) + 'm</span> ' +
-    '<span class="h">' + Number(lcStats.hard) + 'h</span>';
-}
 
 function vis() { return window.innerWidth <= 480 ? 15 : 25; }   // keep in sync with --w in style.css
 function lab(which, n) { return LABEL[which][n === 1 ? 0 : 1]; }
@@ -36,11 +26,7 @@ function valid(a) {
          typeof a[0].date === "string" && typeof a[0].count === "number";
 }
 function dow(s) { return new Date(s + "T00:00:00Z").getUTCDay(); }   // 0 = Sunday
-function setStat(which, text) {
-  var el = $("s-" + which);
-  el.dataset.summary = text;
-  el.textContent = text;
-}
+function setStat(which, text) { $("s-" + which).textContent = text; }
 function skeleton(which) {
   var h = "", n = vis() * 7;
   for (var i = 0; i < n; i++) h += '<i class="sk"></i>';
@@ -69,7 +55,7 @@ function pick(which, el) {
   owner = which;
 }
 
-// summary follows what is currently in view; arrows show which directions have more
+// window total follows what is currently in view; arrows show which directions have more
 function update(which) {
   var days = shown[which];
   if (!days) return;
@@ -154,7 +140,7 @@ function draw(which) {
     setTimeout(function () { moved = false; }, 0);
   });
 
-  // keep the readout in sync while scrolling (one update per frame)
+  // keep the window total in sync while scrolling (one update per frame)
   bars.addEventListener("scroll", function () {
     if (ticking) return;
     ticking = true;
@@ -207,13 +193,53 @@ loadActivity("gh", [
     function (d) { return d.contributions; }]              // fallback
 ]);
 loadActivity("lc", [["leetcode.json", same]]);
+showDefault();
 
-// LeetCode solved total; if the file is missing, the line stays empty at rest
+// ---------- permanent facts (never touched by hover) ----------
+// LeetCode: solved total in the header, easy/medium/hard under the graph
+var lcStats = null;
+function renderSolved() {
+  $("solved-n").textContent = Number(lcStats.solved) + " solved";
+  $("solved-d").innerHTML =
+    '<span class="e">' + Number(lcStats.easy) + 'e</span> ' +
+    '<span class="m">' + Number(lcStats.medium) + 'm</span> ' +
+    '<span class="h">' + Number(lcStats.hard) + 'h</span>';
+}
 fetch("leetcode-stats.json", { cache: "no-cache" })
   .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-  .then(function (s) { lcStats = s; renderSolved(); if (owner === null) showDefault(); })
+  .then(function (s) { lcStats = s; renderSolved(); })
+  .catch(function () {});                                  // file missing: those spots stay empty
+
+// GitHub: public repo count in the header, last push date under the graph.
+// Cached copy shows instantly; if the API is rate-limited or offline, the last known values stay.
+var gh = {};
+try { gh = JSON.parse(localStorage.getItem("gh-facts")) || {}; } catch (e) {}
+function renderGh() {
+  if (typeof gh.repos === "number") $("gh-repos").textContent = gh.repos + (gh.repos === 1 ? " repo" : " repos");
+  if (gh.pushed) {
+    var d = new Date(gh.pushed);
+    if (!isNaN(d)) {
+      $("gh-push").textContent = "last push " +
+        d.toLocaleDateString("en", { month: "short", day: "numeric" }).toLowerCase();
+    }
+  }
+}
+function saveGh() { try { localStorage.setItem("gh-facts", JSON.stringify(gh)); } catch (e) {} }
+renderGh();
+fetch("https://api.github.com/users/gnanreddy13")
+  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+  .then(function (u) {
+    if (typeof u.public_repos !== "number") throw 0;
+    gh.repos = u.public_repos; saveGh(); renderGh();
+  })
   .catch(function () {});
-showDefault();
+fetch("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1")
+  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+  .then(function (list) {
+    if (!Array.isArray(list) || !list[0] || !list[0].pushed_at) throw 0;
+    gh.pushed = list[0].pushed_at; saveGh(); renderGh();
+  })
+  .catch(function () {});
 
 // ---------- projects: scrollable list with edge fades + arrows ----------
 var plist = $("plist"), pw = $("pw");

@@ -357,10 +357,12 @@ main > .projects {
 
 /* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
 .activity > .label { margin-bottom: 0.15rem; }
+
+/* hover result: its own line under "past year" (fixed height, so nothing shifts) */
 .rd-row {
   display: flex;
   align-items: center;
-  min-height: 1.4em;           /* fixed height, so nothing shifts when text appears */
+  min-height: 1.4em;
   margin-bottom: 0.4rem;
 }
 .rd {
@@ -375,15 +377,11 @@ main > .projects {
   text-overflow: ellipsis;
 }
 .rd.r { margin-left: auto; }                       /* pushes it to the right side */
-#rd-solved { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--c-lc); }
-#rd-solved > span { color: var(--text); }
-#rd-solved .dim { color: var(--muted); }
-.rd .e { color: var(--c-easy); }
-.rd .m { color: var(--c-medium); }
-.rd .h { color: var(--c-hard); }
 
 .panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
 .panel { min-width: 0; }
+
+/* permanent fact in the panel header: repo count / solved total */
 .panel-head {
   display: flex;
   align-items: center;
@@ -392,17 +390,18 @@ main > .projects {
   color: var(--muted);
   font-size: var(--fs-md);
 }
-.stat {
+.fact {
+  min-width: 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: 1.4;
-  min-height: 1.4em;
   font-variant-numeric: tabular-nums;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
+
 .sc { position: relative; margin-top: 0.6rem; }
 .sc .arr { top: 0; bottom: 0; width: 1.6rem; }
 .sc .arr.l {
@@ -415,6 +414,26 @@ main > .projects {
   place-items: center end;
   background: linear-gradient(to left, var(--bg) 35%, transparent);
 }
+
+/* under each graph: window total (changes with scroll), then one permanent line */
+.stat,
+.sub {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  min-height: 1.4em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.stat { margin-top: 0.5rem; color: var(--text); }
+.sub  { color: var(--muted); }
+.sub .e { color: var(--c-easy); }
+.sub .m { color: var(--c-medium); }
+.sub .h { color: var(--c-hard); }
+
 .bars {
   --w: 25;                                  /* weeks visible at once (keep in sync with vis() in app.js) */
   --gap: 2px;

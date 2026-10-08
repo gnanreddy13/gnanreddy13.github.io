@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=5">
-  <script src="app.js?v=4" defer></script>
+  <link rel="stylesheet" href="style.css?v=6">
+  <script src="app.js?v=6" defer></script>
 </head>
 <body>
   <!-- icon sprite (feather-style stroke icons; i-code is the filled LeetCode logo) -->
@@ -78,12 +78,12 @@
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
             <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
           </p>
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
             <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
           </p>
           <p class="pempty" id="pempty" hidden>nothing here yet</p>
         </div>
@@ -92,43 +92,47 @@
       </div>
     </section>
 
-    <!-- 4. consistency -->
+    <!-- 4. consistency
+         zones: hover result (row under the label) / permanent facts (panel header, last line) / window total (under graph) -->
     <section class="activity">
       <p class="label">past year</p>
       <div class="rd-row">
         <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
-        <span class="rd r" id="rd-solved" hidden><svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg><span id="rd-solved-t"></span></span>
         <span class="rd r" id="rd-lc" hidden aria-live="polite"></span>
       </div>
       <div class="panels">
         <div class="panel">
           <div class="panel-head">
             <svg class="i" aria-hidden="true"><use href="#i-github"/></svg>
-            <span class="stat" id="s-gh"></span>
+            <span class="fact" id="gh-repos"></span>
           </div>
           <div class="sc" id="sc-gh" data-l="0" data-r="0">
             <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, scrollable"></div>
             <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
             <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
           </div>
+          <p class="stat" id="s-gh"></p>
+          <p class="sub" id="gh-push"></p>
         </div>
         <div class="panel">
           <div class="panel-head">
             <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
-            <span class="stat" id="s-lc"></span>
+            <span class="fact" id="solved-n"></span>
           </div>
           <div class="sc" id="sc-lc" data-l="0" data-r="0">
             <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, scrollable"></div>
             <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
             <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
           </div>
+          <p class="stat" id="s-lc"></p>
+          <p class="sub" id="solved-d"></p>
         </div>
       </div>
     </section>
 
     <!-- 5. next step -->
     <section class="contact">
-      <p class="label">say hi</p>
+      <p class="label">let's connect</p>
       <nav class="links" aria-label="contact">
         <a class="cl" href="mailto:gnanreddy13@gmail.com" title="gnanreddy13@gmail.com"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg>email</a>
         <a class="cl" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/"><svg class="i" aria-hidden="true"><use href="#i-linkedin"/></svg>linkedin</a>
