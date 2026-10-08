@@ -81,10 +81,10 @@ main > * { flex: none; }
 
 /* ---------- spacing tiers ---------- */
 .intro    { margin-top: calc(var(--u) * 0.8); }   /* tight: identity block */
-.stack    { margin-top: calc(var(--u) * 1.1); }   /* medium: inside a group */
+.stack    { margin-top: calc(var(--u) * 1); }     /* medium: inside a group */
 .projects,
 .activity,
-.contact  { margin-top: calc(var(--u) * 2); }     /* large: between groups */
+.contact  { margin-top: calc(var(--u) * 1.7); }   /* large: between groups */
 
 /* ---------- icons: always 1em so they match adjacent text ---------- */
 .i {
@@ -149,6 +149,7 @@ main > * { flex: none; }
   color: var(--muted);
   margin-bottom: var(--label-gap);
 }
+.label .note { margin-left: 0.6rem; opacity: 0.6; }
 .label-row {
   display: flex;
   justify-content: space-between;
@@ -194,7 +195,7 @@ h1 {
 }
 .clock .dim { color: var(--muted); }
 
-/* ---------- 2. what: intro + skill chips ---------- */
+/* ---------- 2. what: intro + skills (text, underlined when selected, like the tabs) ---------- */
 .lede {
   font-size: var(--fs-md);
   line-height: var(--lh);
@@ -204,36 +205,35 @@ h1 {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0 1.1rem;
 }
 .skills button.chip {
+  position: relative;
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1;
-  color: var(--text);
+  line-height: 1.4;
+  color: var(--muted);
   background: none;
-  padding: 0.45rem 0.65rem;
-  border: 1px solid var(--subtle);
-  border-radius: 5px;
+  border: 0;
+  padding: 0.4rem 0;
   white-space: nowrap;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), border-color var(--t) var(--ease);
+  transition: color var(--t) var(--ease);
 }
-.skills button.chip span { color: var(--muted); margin-left: 0.3rem; transition: color var(--t) var(--ease); }
-.skills button.chip:active { border-color: var(--muted); }
-.skills button.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.skills button.chip[aria-pressed="true"],
-.skills button.chip[aria-pressed="true"]:hover {
+.skills button.chip span { margin-left: 0.3rem; opacity: 0.6; }
+.skills button.chip[aria-pressed="true"] { color: var(--text); }
+.skills button.chip[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0.2rem;
+  height: 1px;
   background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
 }
-.skills button.chip[aria-pressed="true"] span { color: var(--on-accent); opacity: 0.75; }
-@media (hover: hover) {
-  .skills button.chip:not([aria-pressed="true"]):hover { border-color: var(--muted); }
-}
+.skills button.chip:active { color: var(--text); }
+.skills button.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+@media (hover: hover) { .skills button.chip:hover { color: var(--text); } }
 
 /* ---------- 3. proof: projects (tabs + scrollable list that shrinks to fit) ---------- */
 main > .projects {
@@ -312,7 +312,8 @@ main > .projects {
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
 }
-.pwrap .arr { right: 0; width: 1.75rem; height: 1.75rem; }
+/* project arrows sit in the horizontal centre */
+.pwrap .arr { left: 0; right: 0; margin: 0 auto; width: 1.75rem; height: 1.75rem; }
 .pwrap .arr.u { top: 0; }
 .pwrap .arr.d { bottom: 0; }
 @media (pointer: coarse) {
@@ -357,7 +358,7 @@ main > .projects {
 /* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
 .activity > .label { margin-bottom: 0.15rem; }
 
-/* hover result: its own line under "past year" (fixed height, so nothing shifts) */
+/* hint at rest, hover result otherwise: its own line under "past year" (fixed height, so nothing shifts) */
 .rd-row {
   display: flex;
   align-items: center;
@@ -376,6 +377,7 @@ main > .projects {
   text-overflow: ellipsis;
 }
 .rd.r { margin-left: auto; }                       /* pushes it to the right side */
+.rd.hint { color: var(--muted); }
 
 .panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
 .panel { min-width: 0; }

@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=12">
-  <script src="app.js?v=10" defer></script>
+  <link rel="stylesheet" href="style.css?v=13">
+  <script src="app.js?v=11" defer></script>
 </head>
 <body>
   <!-- icon sprite: github, linkedin, mail and leetcode (i-code) are official filled logos; the rest are stroke icons -->
@@ -46,7 +46,7 @@
     <div class="intro">
       <p class="lede">hi. i build backend systems & i lift.</p>
       <div class="stack">
-        <p class="label">stack</p>
+        <p class="label">stack <span class="note">tap to see which projects use it</span></p>
         <ul class="skills">
           <!-- data-skill words must match the data-tag values on the project hashtags below -->
           <li><button class="chip" type="button" aria-pressed="false" data-skill="go chi">go <span>chi</span></button></li>
@@ -73,18 +73,16 @@
         <div class="plist" id="plist" role="group" tabindex="0" aria-label="projects, scrollable">
           <p class="project" data-status="active">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
-            <!-- PLACEHOLDER tags: replace with the tools this project really uses -->
+            <!-- PLACEHOLDER tags: still guesses, replace with the tools this project really uses -->
             <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="docker">#docker</span></span>
           </p>
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
-            <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
           </p>
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
-            <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
           </p>
           <p class="pempty" id="pempty" hidden>nothing here yet</p>
         </div>
@@ -94,11 +92,12 @@
     </section>
 
     <!-- 4. consistency
-         zones: hover result (row under the label) / permanent facts (panel header, last line)
+         zones: hint / hover result (row under the label) / permanent facts (panel header, last line)
          / total + range under each graph (year at rest, visible window while hovering or sliding) -->
     <section class="activity">
       <p class="label">past year</p>
       <div class="rd-row">
+        <span class="rd hint" id="rd-hint"></span>
         <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
         <span class="rd r" id="rd-lc" hidden aria-live="polite"></span>
       </div>

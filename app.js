@@ -21,12 +21,18 @@ var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 var hov = { gh: false, lc: false };          // mouse is over that graph
 
-// hover result line under "past year": GitHub day on the left, LeetCode day on the right.
-// It is the only thing that line ever shows, so it can't clash with the permanent facts.
-var elGh = $("rd-gh"), elLc = $("rd-lc");
+// the line under "past year": a hint at rest, the hovered day otherwise
+// (GitHub day on the left, LeetCode day on the right)
+var elGh = $("rd-gh"), elLc = $("rd-lc"), elHint = $("rd-hint");
 var owner = null;
 
+// the hint matches the device: touch screens have no hover
+elHint.textContent = window.matchMedia("(hover: none)").matches
+  ? "tap a day, swipe to scroll back"
+  : "hover a day for details, drag to scroll back";
+
 function showRow(mode, text) {
+  elHint.hidden = mode !== "rest";
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
   if (mode === "gh") elGh.textContent = text;
@@ -304,7 +310,7 @@ plist.addEventListener("scroll", plistFade, { passive: true });
 new ResizeObserver(plistFade).observe(plist);
 plistFade();
 
-// ---------- skill chips highlight matching project hashtags ----------
+// ---------- skills highlight matching project hashtags ----------
 var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
 var tags = Array.prototype.slice.call(document.querySelectorAll(".tag"));
 var projectsEl = document.querySelector(".projects");
@@ -346,7 +352,7 @@ ptabs.forEach(function (t) {
   t.addEventListener("click", function () { showStatus(t.dataset.s); });
 });
 
-// tab badges: totals normally, matches while a skill chip is selected
+// tab badges: totals normally, matches while a skill is selected
 function updateCounts() {
   var filtering = !!activeChip;
   ptabs.forEach(function (t) {
