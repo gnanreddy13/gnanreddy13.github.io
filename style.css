@@ -17,12 +17,6 @@
   --l3: #26a641;
   --l4: #39d353;
 
-  /* leetcode: orange for the solved total, difficulty colours for easy / medium / hard */
-  --c-lc: #ffa116;
-  --c-easy: #00b8a3;
-  --c-medium: #ffc01e;
-  --c-hard: #ff375f;
-
   /* type scale: four sizes only */
   --fs-xl: clamp(1.5rem, 5.5vw, 1.85rem);   /* name */
   --fs-md: 1.1rem;                          /* intro, tagline, icons */
@@ -406,7 +400,6 @@ main > .projects {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#solved-n { color: var(--c-lc); }
 
 .sc { position: relative; margin-top: 0.6rem; }
 .sc .arr { top: 0; bottom: 0; width: 1.6rem; }
@@ -436,12 +429,9 @@ main > .projects {
 }
 .stat { margin-top: 0.5rem; color: var(--text); }
 .sub  { color: var(--muted); }
-.sub .e { color: var(--c-easy); }
-.sub .m { color: var(--c-medium); }
-.sub .h { color: var(--c-hard); }
 .sub .w { display: inline; }
-@media (max-width: 480px) {
-  .sub .w { display: none; }                       /* phones: 76 e 25 m 8 h */
+@media (max-width: 600px) {
+  .sub .w { display: none; }                       /* narrow screens: 76 e · 25 m · 8 h */
 }
 
 .bars {

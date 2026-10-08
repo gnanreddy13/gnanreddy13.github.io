@@ -46,8 +46,12 @@ function skeleton(which) {
   for (var i = 0; i < n; i++) h += '<i class="sk"></i>';
   $("b-" + which).innerHTML = '<div class="track">' + h + '</div>';
 }
+// the year is shown only when the date is not in the current year
 function niceDate(s) {
-  return new Date(s + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
+  var d = new Date(s + "T00:00:00Z");
+  var o = { month: "short", day: "numeric", timeZone: "UTC" };
+  if (d.getUTCFullYear() !== new Date().getFullYear()) o.year = "numeric";
+  return d.toLocaleDateString("en", o);
 }
 
 function unmark() {
@@ -212,15 +216,15 @@ loadActivity("lc", [["leetcode.json", same]]);
 showDefault();
 
 // ---------- permanent facts (never touched by hover) ----------
-// LeetCode: solved total in the header; easy / medium / hard counts under the graph,
-// numbers neutral and only the words coloured (phones show just the first letter)
+// LeetCode: solved total in the header; easy · medium · hard counts under the graph
+// (narrow screens show just the first letter of each word)
 var lcStats = null;
 function renderSolved() {
   $("solved-n").textContent = Number(lcStats.solved) + " solved";
   $("solved-d").innerHTML =
-    Number(lcStats.easy)   + ' <span class="e">e<span class="w">asy</span></span> ' +
-    Number(lcStats.medium) + ' <span class="m">m<span class="w">edium</span></span> ' +
-    Number(lcStats.hard)   + ' <span class="h">h<span class="w">ard</span></span>';
+    Number(lcStats.easy)   + ' e<span class="w">asy</span> · ' +
+    Number(lcStats.medium) + ' m<span class="w">edium</span> · ' +
+    Number(lcStats.hard)   + ' h<span class="w">ard</span>';
 }
 fetch("leetcode-stats.json", { cache: "no-cache" })
   .then(function (r) { if (!r.ok) throw 0; return r.json(); })
@@ -236,8 +240,9 @@ function renderGh() {
   if (gh.pushed) {
     var d = new Date(gh.pushed);
     if (!isNaN(d)) {
-      $("gh-push").textContent = "last push " +
-        d.toLocaleDateString("en", { month: "short", day: "numeric" }).toLowerCase();
+      var o = { month: "short", day: "numeric" };
+      if (d.getFullYear() !== new Date().getFullYear()) o.year = "numeric";   // year only when not this year
+      $("gh-push").textContent = "last push " + d.toLocaleDateString("en", o).toLowerCase();
     }
   }
 }
