@@ -29,7 +29,7 @@ var owner = null;
 // the hint matches the device: touch screens have no hover
 elHint.textContent = window.matchMedia("(hover: none)").matches
   ? "tap a day, swipe to scroll back"
-  : "hover a day for details, drag to scroll back";
+  : "hover a day, drag to scroll back";
 
 function showRow(mode, text) {
   elHint.hidden = mode !== "rest";
