@@ -5,9 +5,8 @@
   --muted: #8f8f8a;
   --subtle: #3a3a38;
 
-  /* accent: selected states, focus, hover */
+  /* accent: selected states, focus, hover, matches */
   --accent: #3fb950;
-  --accent-soft: rgba(63, 185, 80, 0.18);
   --on-accent: #000000;
 
   /* activity grid levels (GitHub's dark palette) */
@@ -42,6 +41,9 @@
 }
 @media (min-width: 800px) and (min-height: 800px) {
   :root { --u: 1.15rem; }
+}
+@media (min-height: 800px) {
+  :root { --plist-h: 20rem; }               /* taller screens have room for a bigger projects box */
 }
 @media (pointer: coarse) {
   :root { --arr-w: 2.25rem; }
@@ -266,11 +268,11 @@ main > .projects {
   margin-left: 0.15rem;
   padding: 0 0.3rem;
   text-align: center;
-  border-radius: 3px;
   opacity: 0.6;
-  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), opacity var(--t) var(--ease);
+  transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
 }
-.ptab span.hit  { opacity: 1; background: var(--accent); color: var(--on-accent); }
+/* a skill is selected: a count with matches is plain green text, one without fades (no filled badge) */
+.ptab span.hit  { opacity: 1; color: var(--accent); }
 .ptab span.none { opacity: 0.3; }
 .ptab[aria-pressed="true"] { color: var(--text); }
 .ptab[aria-pressed="true"]::after {
@@ -327,7 +329,7 @@ main > .projects {
   line-height: var(--lh);
 }
 .project:not([hidden]) ~ .project:not([hidden]) { margin-top: calc(var(--u) * 0.8); }
-.project a.name { font-family: var(--mono); }
+.project a.name { font-family: var(--mono); transition: color var(--t) var(--ease), text-decoration-color var(--t) var(--ease); }
 .project .desc {
   color: var(--muted);
   margin-left: 0.5rem;
@@ -335,7 +337,7 @@ main > .projects {
 }
 .pempty { font-family: var(--mono); font-size: var(--fs-sm); color: var(--muted); }
 
-/* hashtags: inline after the description; the selected skill's tags turn accent */
+/* hashtags: inline after the description; no boxes, a match is just green text */
 .tags { display: inline; }
 .tag {
   display: inline-block;
@@ -343,17 +345,16 @@ main > .projects {
   font-size: var(--fs-xs);
   line-height: 1.4;
   color: var(--muted);
-  padding: 0 0.3rem;
-  margin-left: 0.3rem;
-  border-radius: 3px;
-  transition: background-color var(--t) var(--ease), color var(--t) var(--ease), opacity var(--t) var(--ease);
+  margin-left: 0.6rem;
+  transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
 }
 .projects.filtering .tag { opacity: 0.45; }
 .projects.filtering .tag.on {
   opacity: 1;
   color: var(--accent);
-  background: var(--accent-soft);
 }
+/* the matching project's name turns green too, so the matching row reads at a glance */
+.projects.filtering .project:has(.tag.on) a.name { color: var(--accent); }
 
 /* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
 .activity > .label { margin-bottom: 0.15rem; }
