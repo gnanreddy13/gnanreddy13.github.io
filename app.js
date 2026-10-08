@@ -265,7 +265,8 @@ fetch("leetcode-stats.json", { cache: "no-cache" })
   .catch(function () {});                                  // file missing: those spots stay empty
 
 // GitHub: public repo count in the header, last push date under the graph.
-// Cached copy shows instantly; if the API is rate-limited or offline, the last known values stay.
+// Source order: github-stats.json (written nightly by the Action), then the live API as a fallback.
+// A cached copy shows instantly, and if everything fails the last known values stay.
 var gh = {};
 try { gh = JSON.parse(localStorage.getItem("gh-facts")) || {}; } catch (e) {}
 function renderGh() {
@@ -280,21 +281,23 @@ function renderGh() {
   }
 }
 function saveGh() { try { localStorage.setItem("gh-facts", JSON.stringify(gh)); } catch (e) {} }
+function takeGh(s) {
+  if (!s || typeof s.repos !== "number" || !s.pushed) throw 0;
+  gh.repos = s.repos; gh.pushed = s.pushed; saveGh(); renderGh();
+}
 renderGh();
-fetch("https://api.github.com/users/gnanreddy13")
+fetch("github-stats.json", { cache: "no-cache" })
   .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-  .then(function (u) {
-    if (typeof u.public_repos !== "number") throw 0;
-    gh.repos = u.public_repos; saveGh(); renderGh();
-  })
-  .catch(function () {});
-fetch("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1")
-  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-  .then(function (list) {
-    if (!Array.isArray(list) || !list[0] || !list[0].pushed_at) throw 0;
-    gh.pushed = list[0].pushed_at; saveGh(); renderGh();
-  })
-  .catch(function () {});
+  .then(takeGh)
+  .catch(function () {
+    // file missing: fall back to the live API
+    Promise.all([
+      fetch("https://api.github.com/users/gnanreddy13").then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+      fetch("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1").then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    ]).then(function (res) {
+      takeGh({ repos: res[0].public_repos, pushed: res[1][0] && res[1][0].pushed_at });
+    }).catch(function () {});
+  });
 
 // ---------- projects: scrollable list with edge fades + arrows ----------
 var plist = $("plist"), pw = $("pw");

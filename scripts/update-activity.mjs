@@ -41,6 +41,27 @@ async function github() {
   return map;
 }
 
+// public repo count + the most recent push to a public repo
+async function githubStats() {
+  const headers = {
+    Authorization: `bearer ${TOKEN}`,
+    Accept: "application/vnd.github+json",
+    "User-Agent": "activity-script",
+  };
+  const u = await fetch(`https://api.github.com/users/${GH_USER}`, { headers });
+  if (!u.ok) throw new Error("github user: " + u.status);
+  const user = await u.json();
+  const r = await fetch(
+    `https://api.github.com/users/${GH_USER}/repos?type=owner&sort=pushed&per_page=1`,
+    { headers }
+  );
+  if (!r.ok) throw new Error("github repos: " + r.status);
+  const list = await r.json();
+  if (typeof user.public_repos !== "number" || !list[0]?.pushed_at)
+    throw new Error("github: unexpected response");
+  return { repos: user.public_repos, pushed: list[0].pushed_at };
+}
+
 async function leetcode() {
   const query = `query($u:String!,$y:Int){matchedUser(username:$u){userCalendar(year:$y){submissionCalendar}}}`;
   const y = new Date().getUTCFullYear();
@@ -97,11 +118,13 @@ for (const [file, fn] of [["github.json", github], ["leetcode.json", leetcode]])
   }
 }
 
-try {
-  writeFileSync("leetcode-stats.json", JSON.stringify(await leetcodeStats()));
-  console.log("wrote leetcode-stats.json");
-} catch (e) {
-  console.error("failed: leetcode-stats.json", e.message); // old file stays untouched
+for (const [file, fn] of [["leetcode-stats.json", leetcodeStats], ["github-stats.json", githubStats]]) {
+  try {
+    writeFileSync(file, JSON.stringify(await fn()));
+    console.log("wrote", file);
+  } catch (e) {
+    console.error("failed:", file, e.message); // old file stays untouched
+  }
 }
 
 if (failures === 2) process.exit(1);
