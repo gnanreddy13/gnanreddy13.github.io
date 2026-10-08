@@ -8,6 +8,18 @@ var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 var rd = $("rd"), rdU = $("rd-u"), rdT = $("rd-t"), owner = null;
 
+// default readout: LeetCode solved total (from leetcode-stats.json); a day readout replaces it while hovering
+var lcStats = null;
+function showDefault() {
+  if (lcStats) {
+    rdU.setAttribute("href", ICON.lc);
+    rdT.textContent = lcStats.solved + " solved · " + lcStats.easy + "e " + lcStats.medium + "m " + lcStats.hard + "h";
+    rd.classList.add("show");
+  } else {
+    rd.classList.remove("show");
+  }
+}
+
 function vis() { return window.innerWidth <= 480 ? 15 : 25; }   // keep in sync with --w in style.css
 function lab(which, n) { return LABEL[which][n === 1 ? 0 : 1]; }
 function valid(a) {
@@ -29,17 +41,20 @@ function niceDate(s) {
   return new Date(s + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
-// the single day readout (top right of the "past year" row)
+// the single readout (top right of the "past year" row)
 function clearAll() {
   ["gh", "lc"].forEach(function (w) {
     var p = $("b-" + w).querySelector(".on");
     if (p) p.classList.remove("on");
   });
-  rd.classList.remove("show");
   owner = null;
+  showDefault();
 }
 function pick(which, el) {
-  clearAll();
+  ["gh", "lc"].forEach(function (w) {
+    var p = $("b-" + w).querySelector(".on");
+    if (p) p.classList.remove("on");
+  });
   el.classList.add("on");
   var n = Number(el.dataset.c);
   rdU.setAttribute("href", ICON[which]);
@@ -151,7 +166,7 @@ function draw(which) {
   }).observe(bars);
 });
 document.addEventListener("pointerdown", function (e) {
-  if (!e.target.closest(".bars")) clearAll();
+  if (owner !== null && !e.target.closest(".bars")) clearAll();
 });
 
 // cached copy shows instantly; each source is tried in order; failure is stated, never faked
@@ -186,6 +201,12 @@ loadActivity("gh", [
     function (d) { return d.contributions; }]              // fallback
 ]);
 loadActivity("lc", [["leetcode.json", same]]);
+
+// LeetCode solved total; if the file is missing, the readout stays hidden until a day is picked
+fetch("leetcode-stats.json", { cache: "no-cache" })
+  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+  .then(function (s) { lcStats = s; if (owner === null) showDefault(); })
+  .catch(function () {});
 
 // ---------- projects: scrollable list with edge fades + arrows ----------
 var plist = $("plist"), pw = $("pw");

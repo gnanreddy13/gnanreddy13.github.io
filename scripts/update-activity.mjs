@@ -66,6 +66,24 @@ async function leetcode() {
   return map;
 }
 
+async function leetcodeStats() {
+  const query = `query($u:String!){matchedUser(username:$u){submitStatsGlobal{acSubmissionNum{difficulty count}}}}`;
+  const r = await fetch("https://leetcode.com/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Referer: "https://leetcode.com",
+      "User-Agent": "Mozilla/5.0",
+    },
+    body: JSON.stringify({ query, variables: { u: LC_USER } }),
+  });
+  const j = await r.json();
+  const rows = j?.data?.matchedUser?.submitStatsGlobal?.acSubmissionNum;
+  if (!rows) throw new Error("leetcode: no stats returned");
+  const get = (d) => rows.find((x) => x.difficulty === d)?.count ?? 0;
+  return { solved: get("All"), easy: get("Easy"), medium: get("Medium"), hard: get("Hard") };
+}
+
 let failures = 0;
 for (const [file, fn] of [["github.json", github], ["leetcode.json", leetcode]]) {
   try {
@@ -78,4 +96,12 @@ for (const [file, fn] of [["github.json", github], ["leetcode.json", leetcode]])
     console.error("failed:", file, e.message); // old file stays untouched
   }
 }
+
+try {
+  writeFileSync("leetcode-stats.json", JSON.stringify(await leetcodeStats()));
+  console.log("wrote leetcode-stats.json");
+} catch (e) {
+  console.error("failed: leetcode-stats.json", e.message); // old file stays untouched
+}
+
 if (failures === 2) process.exit(1);
