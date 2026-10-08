@@ -163,7 +163,7 @@ main > * { flex: none; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--label-gap);
+  margin-bottom: calc(var(--u) * 0.8);
   flex: none;
 }
 .label-row .label { margin-bottom: 0; }
@@ -326,7 +326,7 @@ main > .projects {
   font-size: var(--fs-sm);
   line-height: var(--lh);
 }
-.project:not([hidden]) ~ .project:not([hidden]) { margin-top: 0.6rem; }
+.project:not([hidden]) ~ .project:not([hidden]) { margin-top: calc(var(--u) * 0.8); }
 .project a.name { font-family: var(--mono); }
 .project .desc {
   color: var(--muted);
