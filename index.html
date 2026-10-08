@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=1">
-  <script src="app.js?v=2" defer></script>
+  <link rel="stylesheet" href="style.css?v=4">
+  <script src="app.js?v=3" defer></script>
 </head>
 <body>
   <!-- icon sprite (feather-style stroke icons) -->
@@ -71,19 +71,19 @@
       <div class="pwrap" id="pw">
         <div class="plist" id="plist" role="group" tabindex="0" aria-label="projects, scrollable">
           <p class="project" data-status="active">
-            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations (still building)</span>
             <!-- PLACEHOLDER tags: replace with the tools this project really uses -->
             <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="docker">#docker</span></span>
           </p>
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
             <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
           </p>
           <p class="project" data-status="done">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
             <!-- PLACEHOLDER tags -->
-            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+            <span class="tags"><span class="tag" data-tag="python">#python</span></span>
           </p>
           <p class="pempty" id="pempty" hidden>nothing here yet</p>
         </div>
@@ -95,8 +95,10 @@
     <!-- 4. consistency -->
     <section class="activity">
       <div class="label-row">
-        <p class="label">past year</p>
-        <span class="readout" id="rd" aria-live="polite"><svg class="i" aria-hidden="true"><use id="rd-u" href="#i-github"/></svg><span id="rd-t"></span></span>
+        <p class="label" id="rd-label">past year</p>
+        <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
+        <span class="rd r" id="rd-solved" hidden><svg class="i" aria-hidden="true"><use href="#i-code"/></svg><span id="rd-solved-t"></span></span>
+        <span class="rd r" id="rd-lc" hidden aria-live="polite"></span>
       </div>
       <div class="panels">
         <div class="panel">

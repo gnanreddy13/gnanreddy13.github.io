@@ -5,9 +5,9 @@
   --muted: #8f8f8a;
   --subtle: #3a3a38;
 
-  /* accent: active status, selected states, focus, hover */
-  --accent: #8f8f8a;
-  --accent-soft: rgba(143, 143, 138, 0.18);
+  /* accent: selected states, focus, hover */
+  --accent: #3fb950;
+  --accent-soft: rgba(63, 185, 80, 0.18);
   --on-accent: #000000;
 
   /* activity grid levels (GitHub's dark palette) */
@@ -21,6 +21,11 @@
   --c-mail: #ff6b5e;
   --c-li: #5aa9f5;
   --c-lc: #ffa116;
+
+  /* leetcode difficulty colours */
+  --c-easy: #00b8a3;
+  --c-medium: #ffc01e;
+  --c-hard: #ff375f;
 
   /* type scale: four sizes only */
   --fs-xl: clamp(1.5rem, 5.5vw, 1.85rem);   /* name */
@@ -143,14 +148,13 @@ main > * { flex: none; }
   transition: opacity var(--t) var(--ease), color var(--t) var(--ease), visibility 0s;
 }
 
-/* ---------- xs: section labels (quieter than interactive items) ---------- */
+/* ---------- xs: section labels ---------- */
 .label {
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: 1.4;
   letter-spacing: 0.02em;
   color: var(--muted);
-  opacity: 0.75;
   margin-bottom: var(--label-gap);
 }
 .label-row {
@@ -324,7 +328,7 @@ main > .projects {
 .project a.name { font-family: var(--mono); }
 .project .desc {
   color: var(--muted);
-  margin-left: 0.3rem;
+  margin-left: 0.5rem;
   text-wrap: pretty;
 }
 .pempty { font-size: var(--fs-sm); color: var(--muted); }
@@ -350,10 +354,7 @@ main > .projects {
 }
 
 /* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
-.readout {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+.rd {
   min-width: 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
@@ -362,11 +363,14 @@ main > .projects {
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity var(--t) var(--ease);
+  text-overflow: ellipsis;
 }
-.readout.show { opacity: 1; }
-.readout span { overflow: hidden; text-overflow: ellipsis; }
+.rd.r { margin-left: auto; }                       /* pushes it to the right side */
+#rd-solved { display: inline-flex; align-items: center; gap: 0.4rem; }
+#rd-solved .dim { color: var(--muted); }
+.rd .e { color: var(--c-easy); }
+.rd .m { color: var(--c-medium); }
+.rd .h { color: var(--c-hard); }
 
 .panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
 .panel { min-width: 0; }

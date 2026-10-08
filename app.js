@@ -3,21 +3,31 @@ var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------- activity grids (past year, scrollable; 15 weeks visible on phones, 25 on desktop) ----------
 var LABEL = { gh: ["contribution", "contributions"], lc: ["submission", "submissions"] };
-var ICON = { gh: "#i-github", lc: "#i-code" };
 var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
-var rd = $("rd"), rdU = $("rd-u"), rdT = $("rd-t"), owner = null;
 
-// default readout: LeetCode solved total (from leetcode-stats.json); a day readout replaces it while hovering
-var lcStats = null;
-function showDefault() {
-  if (lcStats) {
-    rdU.setAttribute("href", ICON.lc);
-    rdT.textContent = lcStats.solved + " solved · " + lcStats.easy + "e " + lcStats.medium + "m " + lcStats.hard + "h";
-    rd.classList.add("show");
-  } else {
-    rd.classList.remove("show");
-  }
+// the row above the graphs:
+//   rest  = "past year" on the left + LeetCode solved on the right
+//   gh    = hovered GitHub day, on the left
+//   lc    = hovered LeetCode day, on the right
+var elLabel = $("rd-label"), elGh = $("rd-gh"), elSolved = $("rd-solved"), elLc = $("rd-lc");
+var owner = null, lcStats = null;
+
+function showRow(mode, text) {
+  elLabel.hidden = mode !== "rest";
+  elSolved.hidden = !(mode === "rest" && lcStats);
+  elGh.hidden = mode !== "gh";
+  elLc.hidden = mode !== "lc";
+  if (mode === "gh") elGh.textContent = text;
+  if (mode === "lc") elLc.textContent = text;
+}
+function showDefault() { showRow("rest"); }
+function renderSolved() {
+  $("rd-solved-t").innerHTML =
+    Number(lcStats.solved) + ' <span class="dim">solved ·</span> ' +
+    '<span class="e">' + Number(lcStats.easy) + 'e</span> ' +
+    '<span class="m">' + Number(lcStats.medium) + 'm</span> ' +
+    '<span class="h">' + Number(lcStats.hard) + 'h</span>';
 }
 
 function vis() { return window.innerWidth <= 480 ? 15 : 25; }   // keep in sync with --w in style.css
@@ -41,25 +51,22 @@ function niceDate(s) {
   return new Date(s + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
-// the single readout (top right of the "past year" row)
-function clearAll() {
+function unmark() {
   ["gh", "lc"].forEach(function (w) {
     var p = $("b-" + w).querySelector(".on");
     if (p) p.classList.remove("on");
   });
+}
+function clearAll() {
+  unmark();
   owner = null;
   showDefault();
 }
 function pick(which, el) {
-  ["gh", "lc"].forEach(function (w) {
-    var p = $("b-" + w).querySelector(".on");
-    if (p) p.classList.remove("on");
-  });
+  unmark();
   el.classList.add("on");
   var n = Number(el.dataset.c);
-  rdU.setAttribute("href", ICON[which]);
-  rdT.textContent = niceDate(el.dataset.d) + " · " + n + " " + lab(which, n);
-  rd.classList.add("show");
+  showRow(which, niceDate(el.dataset.d) + " · " + n + " " + lab(which, n));
   owner = which;
 }
 
@@ -202,11 +209,12 @@ loadActivity("gh", [
 ]);
 loadActivity("lc", [["leetcode.json", same]]);
 
-// LeetCode solved total; if the file is missing, the readout stays hidden until a day is picked
+// LeetCode solved total; if the file is missing, only "past year" shows at rest
 fetch("leetcode-stats.json", { cache: "no-cache" })
   .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-  .then(function (s) { lcStats = s; if (owner === null) showDefault(); })
+  .then(function (s) { lcStats = s; renderSolved(); if (owner === null) showDefault(); })
   .catch(function () {});
+showDefault();
 
 // ---------- projects: scrollable list with edge fades + arrows ----------
 var plist = $("plist"), pw = $("pw");
