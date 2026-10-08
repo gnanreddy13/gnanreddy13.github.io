@@ -19,7 +19,7 @@
   /* type scale: the name, then three close body sizes */
   --fs-xl: clamp(1.45rem, 5.5vw, 1.7rem);   /* name */
   --fs-md: 1.1rem;                          /* icon and arrow size only */
-  --fs-sm: 1rem;                            /* prose: tagline, intro, stack sentence, descriptions, project names */
+  --fs-sm: 1rem;                            /* prose: tagline, intro, descriptions, project names */
   --fs-ui: 0.95rem;                         /* single-line UI: clock, stack note, tabs, see more, labels */
   --fs-xs: 0.9rem;                          /* tight data: graph text, panel headers, hover line, tags */
   --lh-tight: 1.1;
@@ -36,8 +36,8 @@
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: dark;
 }
-@media (max-height: 700px) {
-  :root { --u: 0.65rem; --label-gap: 0.35rem; }
+@media (max-height: 760px) {
+  :root { --u: 0.65rem; --label-gap: 0.35rem; }   /* compact spacing on typical phones */
 }
 @media (min-width: 800px) and (min-height: 800px) {
   :root { --u: 1.15rem; }
@@ -90,7 +90,7 @@ main > * { flex: none; }
 .intro    { margin-top: calc(var(--u) * 0.8); }   /* tight: identity block */
 .projects,
 .activity,
-.contact  { margin-top: calc(var(--u) * 1.7); }   /* large: between groups */
+.contact  { margin-top: calc(var(--u) * 1.4); }   /* large: between groups */
 
 /* ---------- icons: always 1em so they match adjacent text ---------- */
 .i {
@@ -169,6 +169,7 @@ main > * { flex: none; }
   line-height: 1.4;
   color: var(--muted);
   text-decoration: none;
+  white-space: nowrap;
   padding: 0.35rem 0;
   margin: -0.35rem 0;
   transition: color var(--t) var(--ease);
@@ -247,6 +248,9 @@ main > .projects {
   flex-direction: column;
 }
 .ptabs { display: flex; gap: 1.1rem; }
+@media (max-width: 360px) {
+  .ptabs { gap: 0.8rem; }
+}
 .ptab {
   position: relative;
   font-family: var(--mono);
@@ -255,6 +259,7 @@ main > .projects {
   color: var(--muted);
   background: none;
   border: 0;
+  white-space: nowrap;
   padding: 0.35rem 0;
   margin: -0.35rem 0;
   cursor: pointer;

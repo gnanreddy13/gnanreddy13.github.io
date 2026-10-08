@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=20">
   <script src="app.js?v=13" defer></script>
 </head>
 <body>
@@ -54,7 +54,7 @@
         <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> and
         <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button>.
       </p>
-      <p class="snote">tap a skill to see which projects use it</p>
+      <p class="snote">tap a skill to see where it's used</p>
     </div>
 
     <!-- 3. proof: active / completed (set data-status to "active" or "done") -->
@@ -70,7 +70,6 @@
         <div class="plist" id="plist" role="group" tabindex="0" aria-label="projects, scrollable">
           <p class="project" data-status="active">
             <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
-            <!-- PLACEHOLDER tags: still guesses, replace with the tools this project really uses -->
             <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="sql">#sql</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="kafka">#kafka</span><span class="tag" data-tag="docker">#docker</span></span>
           </p>
           <p class="project" data-status="done">
