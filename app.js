@@ -153,10 +153,10 @@ function draw(which) {
   update(which);
 }
 
-// interactions: hover/tap reads a day, swipe/drag scrolls
+// interactions: hover/tap reads a day, swipe/drag scrolls, arrow keys walk the days
 ["gh", "lc"].forEach(function (which) {
   var bars = $("b-" + which);
-  var down = false, moved = false, sx = 0, sl = 0, ticking = false;
+  var down = false, moved = false, sx = 0, sl = 0, ticking = false, keying = false, keyTimer = null;
 
   bars.addEventListener("pointerenter", function (e) {
     if (e.pointerType === "mouse") { hov[which] = true; update(which); }
@@ -199,10 +199,38 @@ function draw(which) {
     ticking = true;
     requestAnimationFrame(function () {
       ticking = false;
-      if (owner === which) clearAll();
+      if (owner === which && !keying) clearAll();
       update(which);
     });
   }, { passive: true });
+
+  // keyboard: up/down = a day, left/right = a week, home/end = ends, esc = clear
+  bars.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === "Escape") { clearAll(); return; }
+    var cells = bars.querySelectorAll("i[data-d]");
+    if (!cells.length) return;
+    var step = { ArrowUp: -1, ArrowDown: 1, ArrowLeft: -7, ArrowRight: 7 }[e.key];
+    var cur = bars.querySelector(".on");
+    var i = cur ? Array.prototype.indexOf.call(cells, cur) : cells.length - 1;   // first press lands on today
+    if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = cells.length - 1;
+    else if (step !== undefined) { if (cur) i = Math.max(0, Math.min(cells.length - 1, i + step)); }
+    else return;
+    e.preventDefault();
+
+    var el = cells[i];
+    keying = true;                                  // the scroll below must not clear the selection
+    clearTimeout(keyTimer);
+    var br = bars.getBoundingClientRect(), r = el.getBoundingClientRect(), pad = 30;   // clear of the edge arrows
+    if (r.left < br.left + pad) bars.scrollLeft -= br.left + pad - r.left;
+    else if (r.right > br.right - pad) bars.scrollLeft += r.right - (br.right - pad);
+    pick(which, el);
+    keyTimer = setTimeout(function () { keying = false; }, 150);
+  });
+  bars.addEventListener("blur", function () {
+    if (owner === which && !down) clearAll();       // tabbing away clears the selected day
+  });
 
   // on resize (or crossing the phone breakpoint), stay on today if we were on today
   new ResizeObserver(function () {
