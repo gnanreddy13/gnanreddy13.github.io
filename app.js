@@ -2,6 +2,7 @@
 (function () {
 
 function $(id) { return document.getElementById(id); }
+function icon(id) { return '<svg class="i" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; }
 function getJSON(url, opts) {
   return fetch(url, opts).then(function (r) {
     if (!r.ok) throw new Error(url + ": " + r.status);
@@ -19,7 +20,6 @@ function renderClock() {
   var a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
   var span = (h ? h + "h" : "") + (h && m ? " " : "") + (m ? m + "m" : "");
   var rel = diff === 0 ? "same time as me" : "you're " + span + (diff < 0 ? " behind" : " ahead");
-  var icon = function (id) { return '<svg class="i" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; };
   $("clock").innerHTML = icon("clock") + t + " ist · " + icon("cal") + d + '<span class="rel">' + rel + "</span>";
 }
 renderClock();
@@ -45,8 +45,8 @@ function showRow(mode, text) {
   elHint.hidden = mode !== "rest";
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
-  if (mode === "gh") elGh.textContent = text;
-  if (mode === "lc") elLc.textContent = text;
+  if (mode === "gh") elGh.innerHTML = icon("cal") + text;   // text is built from dates and numbers only
+  if (mode === "lc") elLc.innerHTML = icon("cal") + text;
 }
 function showDefault() { showRow("rest"); }
 

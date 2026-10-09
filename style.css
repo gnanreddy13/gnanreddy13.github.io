@@ -390,6 +390,7 @@ main > .projects {
 }
 .rd.r { margin-left: auto; }                       /* pushes it to the right side */
 .rd.hint { color: var(--muted); }
+.rd .i { margin-right: 0.4em; color: var(--muted); }   /* calendar icon before the hovered day, like the clock */
 
 .panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
 .panel { min-width: 0; }
