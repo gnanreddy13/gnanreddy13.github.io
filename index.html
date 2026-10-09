@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
   <link rel="stylesheet" href="style.css?v=70">
-  <script src="app.js?v=40" defer></script>
+  <script src="app.js?v=41" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels, .mnote, .player { display: none; }</style></noscript>
 </head>
@@ -119,12 +119,12 @@
 
     <!-- right on wide screens: what i do -->
     <div class="col-work">
-      <!-- 3. proof: active / completed (set data-status to "active" or "done") -->
+      <!-- 3. proof: building / built tabs (set data-status to "active" or "done") -->
       <section class="projects">
         <div class="label-row">
           <div class="ptabs" role="group" aria-label="project status">
-            <button class="ptab" type="button" aria-pressed="true" data-s="active">active <span></span></button>
-            <button class="ptab" type="button" aria-pressed="false" data-s="done">completed <span></span></button>
+            <button class="ptab" type="button" aria-pressed="true" data-s="active">building <span></span></button>
+            <button class="ptab" type="button" aria-pressed="false" data-s="done">built <span></span></button>
           </div>
           <a class="more" id="pmore" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13?tab=repositories&sort=updated">see more<svg class="i sm"><use href="#i-ext"/></svg></a>
         </div>

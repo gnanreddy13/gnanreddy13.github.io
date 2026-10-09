@@ -357,7 +357,7 @@ chips.forEach(function (c) {
   c.addEventListener("click", function () { highlight(activeChip === c ? null : c); });
 });
 
-// ---------- projects: active / completed tabs ----------
+// ---------- projects: building / built tabs ----------
 var ptabs = Array.prototype.slice.call(document.querySelectorAll(".ptab"));
 var pmore = $("pmore"), pempty = $("pempty");
 var pbar = document.createElement("span");
@@ -413,7 +413,7 @@ ptabs.forEach(function (t) {
 function updateCounts() {
   var filtering = !!activeChip;
   ptabs.forEach(function (t) {
-    var s = t.dataset.s, name = s === "done" ? "completed" : "active";
+    var s = t.dataset.s, name = s === "done" ? "built" : "building";
     var items = document.querySelectorAll('.project[data-status="' + s + '"]');
     var total = items.length, hits = 0;
     Array.prototype.forEach.call(items, function (p) {
