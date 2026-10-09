@@ -17,8 +17,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=61">
-  <script src="app.js?v=31" defer></script>
+  <link rel="stylesheet" href="style.css?v=63">
+  <script src="app.js?v=32" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels, .player { display: none; }</style></noscript>
 </head>
@@ -73,6 +73,7 @@
       <section class="now">
         <p class="label">now</p>
         <p class="now-text">building the multimodal rag system, and learning concurrency &amp; backend with go</p>
+        <p class="label fold-label" id="music-label" hidden>music</p>   <!-- phones only: folds the player -->
         <!-- mini player: nothing plays until pressed; the file only downloads then (preload="none") -->
         <div class="player" id="player">
           <!-- the album: a sleeve with the record half out; it slides further out and spins while playing -->
@@ -145,41 +146,44 @@
            zones: hint (under the label) / panel header (permanent fact on the left, hovered day on the right while hovering)
            / total + range under each graph (year at rest, visible window while hovering or sliding) -->
       <section class="activity">
-        <p class="label">past year</p>
+        <p class="label" id="act-label">past year</p>
         <noscript><p class="rd hint">turn on javascript to see the activity graphs</p></noscript>
-        <div class="rd-row">
-          <span class="rd hint" id="rd-hint"></span>
-        </div>
-        <div class="panels">
-          <div class="panel">
-            <div class="panel-head">
-              <svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>
-              <span class="fact" id="gh-repos"></span>
-              <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
-            </div>
-            <div class="sc" id="sc-gh" data-l="0" data-r="0">
-              <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, arrow keys to browse days"></div>
-              <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
-              <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
-            </div>
-            <p class="stat" id="s-gh"></p>
-            <p class="rng" id="r-gh"></p>
-            <p class="sub" id="gh-push"></p>
+        <!-- on phones this folds away under the label (see folds in app.js) -->
+        <div class="fold-body" id="act-body">
+          <div class="rd-row">
+            <span class="rd hint" id="rd-hint"></span>
           </div>
-          <div class="panel">
-            <div class="panel-head">
-              <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
-              <span class="fact" id="solved-n"></span>
-              <span class="rd" id="rd-lc" hidden aria-live="polite"></span>
+          <div class="panels">
+            <div class="panel">
+              <div class="panel-head">
+                <svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>
+                <span class="fact" id="gh-repos"></span>
+                <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
+              </div>
+              <div class="sc" id="sc-gh" data-l="0" data-r="0">
+                <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, arrow keys to browse days"></div>
+                <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+                <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+              </div>
+              <p class="stat" id="s-gh"></p>
+              <p class="rng" id="r-gh"></p>
+              <p class="sub" id="gh-push"></p>
             </div>
-            <div class="sc" id="sc-lc" data-l="0" data-r="0">
-              <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, arrow keys to browse days"></div>
-              <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
-              <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+            <div class="panel">
+              <div class="panel-head">
+                <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
+                <span class="fact" id="solved-n"></span>
+                <span class="rd" id="rd-lc" hidden aria-live="polite"></span>
+              </div>
+              <div class="sc" id="sc-lc" data-l="0" data-r="0">
+                <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, arrow keys to browse days"></div>
+                <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+                <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+              </div>
+              <p class="stat" id="s-lc"></p>
+              <p class="rng" id="r-lc"></p>
+              <p class="sub" id="solved-d"></p>
             </div>
-            <p class="stat" id="s-lc"></p>
-            <p class="rng" id="r-lc"></p>
-            <p class="sub" id="solved-d"></p>
           </div>
         </div>
       </section>

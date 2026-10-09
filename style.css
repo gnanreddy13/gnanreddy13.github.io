@@ -293,6 +293,34 @@ h1 {
   .chip:hover:not([aria-pressed="true"]) { text-decoration-color: var(--text); }   /* hover brightens, like every other hover */
 }
 
+/* ---------- folds (phones only): a label becomes a toggle; collapsed, it shows a short summary ---------- */
+.fold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: var(--tap) 0;
+  margin: calc(var(--tap) * -1) 0;          /* taller tap area without moving the line */
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.fold .i { transition: transform var(--t) var(--ease); }
+.fold[aria-expanded="true"] .i { transform: rotate(90deg); }   /* › becomes ⌄ when open */
+.fold-sum { color: var(--faint); }
+@media (hover: hover) { .fold:hover { color: var(--text); } }
+.fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
+.fold-label:not([hidden]) + .player { margin-top: 0; }
+
+/* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
+@media (max-width: 600px) {
+  .clock .rel,                              /* "you're 9h 30m behind": the time itself is enough */
+  .setup { display: none; }                 /* the setup sign-off */
+}
+
 /* ---------- now: what i'm up to these days ---------- */
 .now-text {
   font-size: var(--fs-sm);
@@ -665,6 +693,7 @@ a {
 a:active { text-decoration-color: var(--accent); }
 /* one focus ring for everything you can tab to (the graph arrows use an inset version) */
 a:focus-visible,
+.fold:focus-visible,
 .rpt:focus-visible,
 .chip:focus-visible,
 .ptab:focus-visible,

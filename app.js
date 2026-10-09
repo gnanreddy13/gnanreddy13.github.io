@@ -158,6 +158,7 @@ function draw(which) {
   var last = days[n - 1].date;
   stale[which] = (Date.now() - Date.parse(last)) / 864e5 > 3 ? " · as of " + md(last) : "";
   update(which);
+  refreshFolds();
 }
 
 // interactions: hover/tap reads a day, swipe/drag scrolls, arrow keys walk the days
@@ -292,6 +293,7 @@ function renderSolved() {
   $("solved-n").textContent = Number(lcStats.solved) + " solved";
   $("solved-d").textContent =
     Number(lcStats.easy) + " easy · " + Number(lcStats.medium) + " medium · " + Number(lcStats.hard) + " hard";
+  refreshFolds();
 }
 renderSolved();
 getJSON("leetcode-stats.json", { cache: "no-cache" })
@@ -475,5 +477,61 @@ rpt.addEventListener("click", function () { setLoop(!audio.loop, true); });
 audio.addEventListener("ended", function () { audio.currentTime = 0; tick(); });   // played once: back to the start, ring empty
 audio.addEventListener("play", function () { want = true; setPlaying(true); requestAnimationFrame(tick); });
 audio.addEventListener("pause", function () { want = false; setPlaying(false); tick(); });
+
+// ---------- folds: on phones, "past year" and the music player start collapsed behind their label ----------
+var phone = window.matchMedia("(max-width: 600px)");
+var folds;                                          // filled below; refreshFolds() may be called before that
+function refreshFolds() { if (folds) folds.forEach(function (f) { f.render(); }); }
+
+function makeFold(label, body, name, summary, phoneOnlyLabel) {
+  var btn = document.createElement("button"), open = false;
+  btn.type = "button";
+  btn.className = "fold";
+  btn.setAttribute("aria-controls", body.id);
+  function render() {
+    if (!phone.matches) return;
+    btn.setAttribute("aria-expanded", String(open));
+    btn.innerHTML = icon("right");
+    btn.appendChild(document.createTextNode(name));
+    var s = open ? "" : summary();
+    if (s) {
+      var sum = document.createElement("span");
+      sum.className = "fold-sum";
+      sum.textContent = "· " + s;
+      btn.appendChild(sum);
+    }
+    body.hidden = !open;
+  }
+  function apply() {                                // switch between phone (fold) and wider screens (plain label, always open)
+    if (phone.matches) {
+      label.hidden = false;
+      label.textContent = "";
+      label.appendChild(btn);
+      render();
+    } else {
+      label.textContent = name;
+      label.hidden = !!phoneOnlyLabel;
+      body.hidden = false;
+    }
+  }
+  btn.addEventListener("click", function () { open = !open; render(); });
+  phone.addEventListener("change", apply);
+  apply();
+  return { render: render };
+}
+
+folds = [
+  makeFold($("act-label"), $("act-body"), "past year", function () {
+    var parts = [];
+    if (shown.gh) {
+      var t = 0;
+      shown.gh.forEach(function (d) { t += d.count; });
+      parts.push(t + " " + lab("gh", t));
+    }
+    if (lcStats && typeof lcStats.solved === "number") parts.push(Number(lcStats.solved) + " solved");
+    return parts.join(" · ");
+  }),
+  makeFold($("music-label"), player, "music", function () { return "cipher by lemmino"; }, true)
+];
 
 })();
