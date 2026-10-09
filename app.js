@@ -360,6 +360,19 @@ chips.forEach(function (c) {
 // ---------- projects: active / completed tabs ----------
 var ptabs = Array.prototype.slice.call(document.querySelectorAll(".ptab"));
 var pmore = $("pmore"), pempty = $("pempty");
+var pbar = document.createElement("span");
+pbar.className = "pbar";
+pbar.setAttribute("aria-hidden", "true");
+ptabs[0].parentNode.appendChild(pbar);
+function placeBar() {                               // the underline sits under the selected tab, as wide as it (sub-pixel exact)
+  var row = pbar.parentNode.getBoundingClientRect();
+  ptabs.forEach(function (t) {
+    if (t.getAttribute("aria-pressed") !== "true") return;
+    var r = t.getBoundingClientRect();
+    pbar.style.transform = "translateX(" + (r.left - row.left) + "px) scaleX(" + r.width + ")";
+  });
+}
+new ResizeObserver(placeBar).observe(ptabs[0].parentNode);   // fonts loading or counts changing resize the tabs
 var MORE = {
   active: "https://github.com/gnanreddy13?tab=repositories&sort=updated",
   done:   "https://github.com/gnanreddy13?tab=repositories"
@@ -376,6 +389,7 @@ function showStatus(s, animate) {
   });
   pempty.hidden = n > 0;
   ptabs.forEach(function (t) { t.setAttribute("aria-pressed", String(t.dataset.s === s)); });
+  placeBar();
   pmore.href = MORE[s];
   if (!animate || reduce) return;
   // the list glides to its new height (so everything below slides instead of jumping) while the projects fade in
@@ -390,6 +404,7 @@ function showStatus(s, animate) {
 }
 ptabs.forEach(function (t) {
   t.addEventListener("click", function () {
+    pbar.classList.add("slide");                    // only clicks slide it; the first placement doesn't
     if (t.getAttribute("aria-pressed") !== "true") showStatus(t.dataset.s, true);
   });
 });
@@ -499,26 +514,45 @@ var folds;                                          // filled below; refreshFold
 function refreshFolds() { if (folds) folds.forEach(function (f) { f.render(); }); }
 
 function makeFold(label, body, name, summary, phoneOnlyLabel) {
-  var btn = document.createElement("button"), open = false;
+  var btn = document.createElement("button"), open = false, anim = null;
   btn.type = "button";
   btn.className = "fold";
   btn.setAttribute("aria-controls", body.id);
-  function render() {
-    if (!phone.matches) return;
+  // built once, so the chevron is the same element every time and its turn can animate
+  btn.innerHTML = icon("right");
+  btn.appendChild(document.createTextNode(name));
+  var sum = document.createElement("span");
+  sum.className = "fold-sum";
+  btn.appendChild(sum);
+  function renderButton() {
     btn.setAttribute("aria-expanded", String(open));
-    btn.innerHTML = icon("right");
-    btn.appendChild(document.createTextNode(name));
     var s = open ? "" : summary();
-    if (s) {
-      var sum = document.createElement("span");
-      sum.className = "fold-sum";
-      sum.textContent = " // " + s;
-      btn.appendChild(sum);
-    }
+    sum.textContent = s ? " // " + s : "";
+  }
+  function renderBody() {
     body.hidden = !open;
     label.classList.toggle("folded", !open);
   }
+  function render() {
+    if (!phone.matches) return;
+    renderButton();
+    if (!anim) renderBody();                        // mid-close, the body folds when the glide ends
+  }
+  // the body glides open or shut, matching the folded layout exactly so nothing below ticks at the end:
+  // - shut, its top margin cancels the label's gap and the button's negative (tap area) margin, as the folded label does
+  // - grow: how much the label itself grew or shrank as the summary came or went, taken out of the body's height
+  function glide(opening, grow) {
+    var h = body.getBoundingClientRect().height,
+        gap = parseFloat(getComputedStyle(label).marginBottom),
+        tap = parseFloat(getComputedStyle(btn).marginBottom),
+        top = parseFloat(getComputedStyle(body).marginTop),
+        shut = { height: Math.max(0, opening ? -grow : 0) + "px", marginTop: (tap - gap) + "px", opacity: 0, overflow: "hidden" },
+        full = { height: Math.max(0, opening ? h : h - grow) + "px", marginTop: top + "px", opacity: 1, overflow: "hidden" };
+    var a = anim = body.animate(opening ? [shut, full] : [full, shut], { duration: 300, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+    a.finished.then(function () { if (anim === a) { anim = null; renderBody(); } }, function () {});   // cancelled: the next tap handles it
+  }
   function apply() {                                // switch between phone (fold) and wider screens (plain label, always open)
+    if (anim) { anim.cancel(); anim = null; }
     if (phone.matches) {
       label.hidden = false;
       label.textContent = "";
@@ -531,7 +565,15 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
       body.hidden = false;
     }
   }
-  btn.addEventListener("click", function () { open = !open; render(); });
+  btn.addEventListener("click", function () {
+    if (anim) { anim.cancel(); anim = null; }     // tapped mid-glide: start over from the current state
+    var before = label.getBoundingClientRect().height;
+    open = !open;
+    renderButton();                                 // the summary comes or goes, which can change the label's height
+    var grow = label.getBoundingClientRect().height - before;
+    if (open || reduce) renderBody();               // opening: show it first, so its full height can be measured
+    if (!reduce) glide(open, grow);
+  });
   phone.addEventListener("change", apply);
   apply();
   return { render: render };

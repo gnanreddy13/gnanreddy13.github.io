@@ -481,7 +481,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 @media (hover: hover) { .rpt:hover { color: var(--text); } }            /* the credit stays quiet; the song title is the link that stands out */
 
 /* ---------- 3. proof: projects (tabs + list) ---------- */
-.ptabs { display: flex; gap: 1.1rem; }
+.ptabs { display: flex; gap: 1.1rem; position: relative; }
 @media (max-width: 360px) {
   .ptabs { gap: 0.8rem; }
 }
@@ -515,13 +515,18 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 .ptab span.hit  { color: var(--accent); }
 .ptab span.none { color: var(--faint); }
 .ptab[aria-pressed="true"] { color: var(--text); }
-.ptab[aria-pressed="true"]::after {
-  content: "";
+/* one underline for both tabs: app.js moves it under the selected one, and it slides across on a click */
+.pbar {
   position: absolute;
-  left: 0; right: 0; bottom: 0.2rem;
+  left: 0;
+  bottom: -0.15rem;                         /* 0.2rem above a tab's bottom edge, which hangs 0.35rem below the row (its tap area) */
+  width: 1px;                               /* stretched to the tab's width with scaleX, so the slide stays cheap */
   height: 1px;
   background: var(--accent);
+  transform-origin: left;
+  pointer-events: none;
 }
+.pbar.slide { transition: transform 0.3s var(--ease); }
 .ptab:active { color: var(--text); }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
 
