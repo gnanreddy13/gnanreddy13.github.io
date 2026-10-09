@@ -30,6 +30,8 @@
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t: 0.2s;
+  /* two families: sans is me talking; mono is names of things, data and interface */
+  --sans: "Geist", system-ui, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: dark;
 }
@@ -43,13 +45,14 @@
 /* ---------- base ---------- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 [hidden] { display: none !important; }
+button { font: inherit; }                   /* buttons don't inherit the page font by default */
 html {
   font-size: 100%;                          /* 16px: the comfortable reading size */
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
 }
 body {
-  font-family: "Geist", system-ui, sans-serif;
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   line-height: var(--lh);
   background: var(--bg);
