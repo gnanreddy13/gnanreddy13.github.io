@@ -47,6 +47,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 [hidden] { display: none !important; }
 button { font: inherit; }                   /* buttons don't inherit the page font by default */
+.sr-only {                                  /* read by screen readers, invisible on screen */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 html {
   font-size: 100%;                          /* 16px: the comfortable reading size */
   -webkit-text-size-adjust: 100%;

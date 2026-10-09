@@ -407,6 +407,20 @@ Array.prototype.forEach.call(document.querySelectorAll(".arr"), function (btn) {
   });
 });
 
+// ---------- email: a click copies the address (the mail app still opens with ⌘/ctrl-click, or if copying fails) ----------
+var mail = $("mail"), mailT = $("mail-t"), mailTimer = null;
+mail.addEventListener("click", function (e) {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !navigator.clipboard) return;
+  e.preventDefault();
+  var addr = mail.href.replace("mailto:", "");
+  navigator.clipboard.writeText(addr).then(function () {
+    mailT.textContent = "copied";
+    $("mail-live").textContent = "email address copied";
+    clearTimeout(mailTimer);
+    mailTimer = setTimeout(function () { mailT.textContent = "email"; $("mail-live").textContent = ""; }, 1600);
+  }, function () { location.href = mail.href; });
+});
+
 // ---------- mini player: press to play (never on its own); the disc spins, the ring fills, volume fades in and out ----------
 var audio = $("audio"), player = $("player"), disc = $("disc"), ring = $("ring");
 var VOL = 0.6, want = false, fadeId = 0;
