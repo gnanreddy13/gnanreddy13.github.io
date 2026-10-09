@@ -249,7 +249,7 @@ h1 {
   color: var(--muted);
 }
 
-/* ---------- skills: a sentence; the tools are tappable words, a highlighter mark sweeps in behind the selected one ---------- */
+/* ---------- skills: a sentence; the tools are tappable words, the selected one turns green (like matching hashtags) ---------- */
 .skills .label,
 .now .label { margin-bottom: calc(var(--u) * 0.8); }   /* same label → content gap as projects */
 .stack {
@@ -259,25 +259,21 @@ h1 {
   text-wrap: pretty;
 }
 .chip {
-  --mark: color-mix(in srgb, var(--accent) 32%, transparent);   /* the accent green, see-through like marker ink */
   font-family: var(--mono);
   font-size: inherit;
   line-height: inherit;
   color: var(--text);
+  background: none;
   border: 0;
-  border-radius: 0.2em;
-  padding: 0 0.15em;
-  margin: 0 -0.15em;                        /* the mark reaches a little past the word without moving the text */
-  background: linear-gradient(transparent 35%, var(--mark) 35%, var(--mark) 88%, transparent 88%) no-repeat left / 0% 100%;
   text-decoration: underline dotted var(--muted);   /* at rest: a quiet hint that it can be tapped */
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  transition: background-size 0.3s var(--ease), text-decoration-color var(--t) var(--ease);
+  transition: color var(--t) var(--ease), text-decoration-color var(--t) var(--ease);
 }
-.chip[aria-pressed="true"] { background-size: 100% 100%; text-decoration-color: transparent; }
+.chip[aria-pressed="true"] { color: var(--accent); text-decoration-color: var(--accent); }
 @media (hover: hover) {
   .chip:hover:not([aria-pressed="true"]) { text-decoration-color: var(--text); }   /* hover brightens, like every other hover */
 }
