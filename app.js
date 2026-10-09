@@ -1,4 +1,10 @@
 function $(id) { return document.getElementById(id); }
+function getJSON(url, opts) {
+  return fetch(url, opts).then(function (r) {
+    if (!r.ok) throw new Error(url + ": " + r.status);
+    return r.json();
+  });
+}
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------- clock: my time (IST) on one line, how far the visitor is from it on the next ----------
@@ -101,12 +107,14 @@ function update(which) {
   var days = shown[which];
   if (!days) return;
   var bars = $("b-" + which), sc = $("sc-" + which), n = days.length;
-  var first = bars.firstChild.firstChild;
-  var st = (first ? first.getBoundingClientRect().width : 0) + 2;
-  if (st <= 2) return;
+  var track = bars.firstChild, first = track && track.firstChild;
+  if (!first) return;
+  var gap = parseFloat(getComputedStyle(track).columnGap) || 0;   // --gap in style.css
+  var st = first.getBoundingClientRect().width + gap;
+  if (st <= gap) return;
   var off = offs[which];
   var w0 = Math.round(bars.scrollLeft / st);
-  var cols = Math.round((bars.clientWidth + 2) / st);
+  var cols = Math.round((bars.clientWidth + gap) / st);
   var lo = Math.max(0, w0 * 7 - off), hi = Math.min(n, (w0 + cols) * 7 - off);
   var total = 0;
   for (var i = lo; i < hi; i++) total += days[i].count;
@@ -254,11 +262,10 @@ function loadActivity(which, sources) {
       if (!data[which]) setStat(which, "unavailable");
       return;
     }
-    fetch(sources[i][0], { cache: "no-cache" })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    getJSON(sources[i][0], { cache: "no-cache" })
       .then(function (d) {
         var arr = sources[i][1](d);
-        if (!valid(arr)) throw 0;
+        if (!valid(arr)) throw new Error(sources[i][0] + ": invalid data");
         data[which] = arr;
         try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
         draw(which);
@@ -287,8 +294,7 @@ function renderSolved() {
     Number(lcStats.medium) + ' m<span class="w">edium</span> · ' +
     Number(lcStats.hard)   + ' h<span class="w">ard</span>';
 }
-fetch("leetcode-stats.json", { cache: "no-cache" })
-  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+getJSON("leetcode-stats.json", { cache: "no-cache" })
   .then(function (s) { lcStats = s; renderSolved(); })
   .catch(function () {});                                  // file missing: those spots stay empty
 
@@ -310,18 +316,17 @@ function renderGh() {
 }
 function saveGh() { try { localStorage.setItem("gh-facts", JSON.stringify(gh)); } catch (e) {} }
 function takeGh(s) {
-  if (!s || typeof s.repos !== "number" || !s.pushed) throw 0;
+  if (!s || typeof s.repos !== "number" || !s.pushed) throw new Error("github stats: invalid data");
   gh.repos = s.repos; gh.pushed = s.pushed; saveGh(); renderGh();
 }
 renderGh();
-fetch("github-stats.json", { cache: "no-cache" })
-  .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+getJSON("github-stats.json", { cache: "no-cache" })
   .then(takeGh)
   .catch(function () {
     // file missing: fall back to the live API
     Promise.all([
-      fetch("https://api.github.com/users/gnanreddy13").then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-      fetch("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1").then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      getJSON("https://api.github.com/users/gnanreddy13"),
+      getJSON("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1")
     ]).then(function (res) {
       takeGh({ repos: res[0].public_repos, pushed: res[1][0] && res[1][0].pushed_at });
     }).catch(function () {});
