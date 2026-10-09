@@ -19,7 +19,8 @@ function renderClock() {
   var a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
   var span = (h ? h + "h" : "") + (h && m ? " " : "") + (m ? m + "m" : "");
   var rel = diff === 0 ? "same time as me" : "you're " + span + (diff < 0 ? " behind" : " ahead");
-  $("clock").innerHTML = t + " ist · " + d + '<span class="rel">' + rel + "</span>";
+  var icon = function (id) { return '<svg class="i" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; };
+  $("clock").innerHTML = icon("clock") + t + " ist · " + icon("cal") + d + '<span class="rel">' + rel + "</span>";
 }
 renderClock();
 setInterval(renderClock, 15000);

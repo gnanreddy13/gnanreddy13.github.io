@@ -3,7 +3,6 @@
   --bg: #000000;
   --text: #f2f2f0;
   --muted: #8f8f8a;
-  --subtle: #3a3a38;
 
   /* accent: selected states, focus, hover, matches */
   --accent: #3fb950;
@@ -199,6 +198,7 @@ h1 {
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
+.clock .i { margin-right: 0.4em; color: var(--muted); }   /* clock and calendar icons before the time and date */
 .clock .rel { display: block; color: var(--muted); }   /* the time difference sits on its own line */
 
 /* ---------- 2. what: about + skills as one paragraph ---------- */
