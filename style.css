@@ -282,6 +282,12 @@ h1 {
   line-height: var(--lh-ui);
   color: var(--muted);
 }
+/* every "// …" aside is italic, like a code comment (#rd-hint and .fold-sum are written by app.js) */
+.snote,
+.setup,
+.updated,
+#rd-hint,
+.fold-sum { font-style: italic; }
 
 /* ---------- skills: a sentence; the tools are tappable words, the selected one turns green (like matching hashtags) ---------- */
 .now .label { margin-bottom: calc(var(--u) * 0.8); }   /* same label → content gap as projects */
