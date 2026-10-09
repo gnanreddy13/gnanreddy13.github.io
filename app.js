@@ -276,11 +276,11 @@ function loadActivity(which, sources) {
 
 var same = function (d) { return d; };
 loadActivity("gh", [
-  ["github.json", same],                                   // written by the nightly Action
+  ["data/github.json", same],                              // written by the nightly Action
   ["https://github-contributions-api.jogruber.de/v4/gnanreddy13?y=last",
     function (d) { return d.contributions; }]              // fallback
 ]);
-loadActivity("lc", [["leetcode.json", same]]);
+loadActivity("lc", [["data/leetcode.json", same]]);
 showDefault();
 
 // ---------- permanent facts (never touched by hover) ----------
@@ -296,7 +296,7 @@ function renderSolved() {
   refreshFolds();
 }
 renderSolved();
-getJSON("leetcode-stats.json", { cache: "no-cache" })
+getJSON("data/leetcode-stats.json", { cache: "no-cache" })
   .then(function (s) {
     if (!s || typeof s.solved !== "number") throw new Error("leetcode stats: invalid data");
     lcStats = s;
@@ -306,7 +306,7 @@ getJSON("leetcode-stats.json", { cache: "no-cache" })
   .catch(function () {});                                  // fetch failed: the cached values (if any) stay
 
 // GitHub: public repo count in the header, last push date under the graph.
-// Source order: github-stats.json (written nightly by the Action), then the live API as a fallback.
+// Source order: data/github-stats.json (written nightly by the Action), then the live API as a fallback.
 // A cached copy shows instantly, and if everything fails the last known values stay.
 var gh = {};
 try { gh = JSON.parse(localStorage.getItem("gh-facts")) || {}; } catch (e) {}
@@ -327,7 +327,7 @@ function takeGh(s) {
   gh.repos = s.repos; gh.pushed = s.pushed; saveGh(); renderGh();
 }
 renderGh();
-getJSON("github-stats.json", { cache: "no-cache" })
+getJSON("data/github-stats.json", { cache: "no-cache" })
   .then(takeGh)
   .catch(function () {
     // file missing: fall back to the live API

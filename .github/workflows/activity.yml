@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:                 # never two runs pushing at once
+  group: update-activity
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -26,6 +30,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add github.json leetcode.json leetcode-stats.json github-stats.json
-          git diff --staged --quiet || git commit -m "update activity data"
+          git add data
+          git diff --staged --quiet && exit 0
+          git commit -m "update activity data"
+          git pull --rebase    # you may have pushed while the run was fetching
           git push

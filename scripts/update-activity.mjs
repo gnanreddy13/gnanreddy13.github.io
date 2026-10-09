@@ -106,7 +106,7 @@ async function leetcodeStats() {
 }
 
 let failures = 0;
-for (const [file, fn] of [["github.json", github], ["leetcode.json", leetcode]]) {
+for (const [file, fn] of [["data/github.json", github], ["data/leetcode.json", leetcode]]) {
   try {
     const map = await fn();
     const out = dayList().map((date) => ({ date, count: map[date] || 0 }));
@@ -118,7 +118,7 @@ for (const [file, fn] of [["github.json", github], ["leetcode.json", leetcode]])
   }
 }
 
-for (const [file, fn] of [["leetcode-stats.json", leetcodeStats], ["github-stats.json", githubStats]]) {
+for (const [file, fn] of [["data/leetcode-stats.json", leetcodeStats], ["data/github-stats.json", githubStats]]) {
   try {
     writeFileSync(file, JSON.stringify(await fn()));
     console.log("wrote", file);
