@@ -15,14 +15,14 @@
   --l3: #26a641;
   --l4: #39d353;
 
-  /* type scale: the name, then three close body sizes */
+  /* type scale: three text steps, nothing in between */
   --fs-xl: clamp(1.45rem, 5.5vw, 1.7rem);   /* name */
-  --fs-md: 1.1rem;                          /* icon and arrow size only */
-  --fs-sm: 1rem;                            /* prose: tagline, intro, descriptions, project names */
-  --fs-ui: 0.95rem;                         /* single-line UI: clock, stack note, tabs, see more, labels */
-  --fs-xs: 0.9rem;                          /* tight data: graph text, panel headers, hover line, tags */
-  --lh-tight: 1.1;
-  --lh: 1.5;
+  --fs-sm: 1rem;                            /* body: every sentence, and mono words inside a sentence (project and tool names) */
+  --fs-xs: 0.875rem;                        /* small: every standalone mono element (labels, tabs, clock, dates, notes, tags, graph text, contact links) */
+  --fs-md: 1.1rem;                          /* icons and arrows only, never text */
+  --lh-tight: 1.1;                          /* the name */
+  --lh: 1.5;                                /* body */
+  --lh-ui: 1.4;                             /* small */
 
   /* spacing: one unit; two tiers (tight / large) are multiples of it */
   --u: 1rem;
@@ -173,8 +173,8 @@ main > *,
 /* ---------- section labels ---------- */
 .label {
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   letter-spacing: 0.02em;
   color: var(--muted);
   margin-bottom: var(--label-gap);
@@ -189,8 +189,8 @@ main > *,
 .label-row .label { margin-bottom: 0; }
 .more {
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
@@ -218,8 +218,8 @@ h1 {
 .clock {
   margin-top: 0.2rem;                        /* less than the tagline's 0.3rem: line-height pads this gap more, so the two look equal */
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
@@ -237,8 +237,8 @@ h1 {
 .updated {
   margin: 0.2rem 0 0;
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   color: var(--muted);
 }
 
@@ -292,8 +292,8 @@ h1 {
 .ptab {
   position: relative;
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   color: var(--muted);
   background: none;
   border: 0;
@@ -345,11 +345,11 @@ h1 {
 }
 .when {
   font-family: var(--mono);
-  font-size: var(--fs-ui);
+  font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;                      /* "· sep 2026" never splits across lines */
 }
-.pempty { font-family: var(--mono); font-size: var(--fs-sm); color: var(--muted); }
+.pempty { font-family: var(--mono); font-size: var(--fs-xs); line-height: var(--lh-ui); color: var(--muted); }
 
 /* hashtags: their own line under the sentence; no boxes, a match is just green text */
 .tags { display: block; margin-top: 0.2rem; }
@@ -357,7 +357,7 @@ h1 {
   display: inline-block;
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.4;
+  line-height: var(--lh-ui);
   color: var(--muted);
   margin-right: 0.6rem;
   transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
@@ -384,7 +384,7 @@ h1 {
   min-width: 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.4;
+  line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
   color: var(--text);
   white-space: nowrap;
@@ -410,7 +410,7 @@ h1 {
   min-width: 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.4;
+  line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
   color: var(--text);
   white-space: nowrap;
@@ -437,7 +437,7 @@ h1 {
 .sub {
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.4;
+  line-height: var(--lh-ui);
   min-height: 1.4em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -509,8 +509,8 @@ h1 {
   align-items: center;
   gap: 0.4rem;
   font-family: var(--mono);
-  font-size: var(--fs-ui);
-  line-height: 1.4;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
   white-space: nowrap;
   padding: 0.35rem 0;                        /* taller tap area */
 }
