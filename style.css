@@ -275,6 +275,7 @@ h1 {
 .lede + .lede { margin-top: calc(var(--u) * 0.5); }   /* a small gap between the intro's lines */
 /* the note sits on its own line, flush under the paragraph */
 .snote,
+.mnote,
 .setup,
 .updated {
   margin: 0.2rem 0 0;
@@ -285,6 +286,7 @@ h1 {
 }
 /* every "// …" aside is italic, like a code comment (#rd-hint and .fold-sum are written by app.js) */
 .snote,
+.mnote,
 .setup,
 .updated,
 #rd-hint,
@@ -338,7 +340,7 @@ h1 {
 .fold-sum { color: var(--faint); }
 @media (hover: hover) { .fold:hover { color: var(--text); } }
 .fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
-.fold-label:not([hidden]) + .player { margin-top: 0; }
+.fold-label:not([hidden]) + .music { margin-top: 0; }
 p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for content that isn't there */
 
 /* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
@@ -356,11 +358,13 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 }
 /* mini player: an album sleeve with the record half out (it slides out further and spins while playing),
    the track, and a play/pause button wrapped in the song's progress */
+.music { margin-top: 0.75rem; }             /* note + player, under the "now" text */
+.mnote { margin-top: 0; }
 .player {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;                       /* under its note */
 }
 .album {
   --sleeve: 3.25rem;
@@ -456,7 +460,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   color: var(--muted);
 }
 .tlic a { color: var(--muted); }
-.player + .updated { margin-top: 0.75rem; } /* same space as above the player: the stamp closes the whole section, not the track */
+.music + .updated { margin-top: 0.75rem; } /* same space as above the player: the stamp closes the whole section, not the track */
 /* the repeat switch: "on repeat" (green mark) or "play once" */
 .rpt {
   display: inline-flex;

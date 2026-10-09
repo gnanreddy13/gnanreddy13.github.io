@@ -524,7 +524,7 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
 
 folds = [
   makeFold($("now-label"), $("now-body"), "now", function () { return document.querySelector(".now").dataset.sum; }),
-  makeFold($("music-label"), player, "music", function () { return "cipher by lemmino"; }, true),
+  makeFold($("music-label"), $("music-body"), "music", function () { return "cipher by lemmino"; }, true),
   makeFold($("act-label"), $("act-body"), "past year", function () {
     var parts = [];
     if (shown.gh) {
