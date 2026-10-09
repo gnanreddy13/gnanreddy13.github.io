@@ -285,6 +285,85 @@ h1 {
   color: var(--text);
   text-wrap: pretty;
 }
+/* mini player: a vinyl disc (the play/pause button) that spins while playing, ringed by the song's progress; then the track */
+.player {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.disc-wrap {
+  flex: none;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--bg);                         /* the play/pause mark, drawn dark on the disc label */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.disc,
+.dicon { grid-area: 1 / 1; }                /* stacked: the mark sits on the label but doesn't spin with it */
+.dicon {
+  position: relative;
+  font-size: 0.7rem;
+  transition: opacity var(--t) var(--ease);
+}
+.player.playing .dicon { opacity: 0; }      /* playing: the spin and the ring say it all */
+.disc-wrap:focus-visible .dicon { opacity: 1; }
+@media (hover: hover) { .player.playing .disc-wrap:hover .dicon { opacity: 1; } }   /* hover a playing disc: the pause mark */
+.ring {                                     /* progress around the disc, starting at 12 o'clock */
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.ring circle { fill: none; stroke-width: 1.5; }
+.ring-bg { stroke: var(--l0); }
+.ring-fg {
+  stroke: var(--muted);                     /* paused: the progress stays, in grey */
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;                   /* empty until it plays */
+  transition: stroke var(--t) var(--ease);
+}
+.player.playing .ring-fg { stroke: var(--accent); }
+.disc {
+  position: relative;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background:
+    conic-gradient(transparent 0 20%, color-mix(in srgb, var(--text) 9%, transparent) 25%, transparent 30% 70%,
+                   color-mix(in srgb, var(--text) 9%, transparent) 75%, transparent 80%),   /* a sheen, so the spin is visible */
+    repeating-radial-gradient(circle, var(--l0) 0 1px, var(--bg) 1px 3px);                 /* grooves */
+  animation: spin 3.6s linear infinite paused;
+}
+.disc::after {                              /* the label with its centre hole */
+  content: "";
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bg) 0 18%, var(--muted) 20%);
+  transition: background var(--t) var(--ease);
+}
+.player.playing .disc { animation-play-state: running; }
+.player.playing .disc::after { background: radial-gradient(circle, var(--bg) 0 18%, var(--accent) 20%); }   /* green while playing */
+.tinfo { flex: 1; min-width: 0; }
+.tlabel,
+.tname,
+.tlic {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);                /* never cut off: a long title wraps onto the next line */
+  color: var(--muted);
+}
+.tlic a { color: var(--muted); }            /* the credit stays quiet; the song title is the link that stands out */
 
 /* ---------- 3. proof: projects (tabs + list) ---------- */
 .ptabs { display: flex; gap: 1.1rem; }
@@ -535,6 +614,7 @@ a:focus-visible,
   outline-offset: 3px;
   border-radius: 3px;
 }
+.disc-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }   /* same ring, round like the disc */
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }
   a:hover .i.sm { transform: translate(1px, -1px); }
@@ -543,6 +623,7 @@ a.more { text-decoration: none; }
 
 /* ---------- keyframes ---------- */
 @keyframes rise { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin { to { transform: rotate(1turn); } }
 @keyframes pop  { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
 
 /* ---------- reduced motion: everything instant ---------- */

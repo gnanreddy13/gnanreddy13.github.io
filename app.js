@@ -407,4 +407,44 @@ Array.prototype.forEach.call(document.querySelectorAll(".arr"), function (btn) {
   });
 });
 
+// ---------- mini player: press to play (never on its own); the disc spins, the ring fills, volume fades in and out ----------
+var audio = $("audio"), player = $("player"), disc = $("disc"), ring = $("ring");
+var VOL = 0.6, want = false, fadeId = 0;
+
+// ramp the volume (iOS ignores volume, so there it just plays and pauses)
+function fade(to, done) {
+  var id = ++fadeId, from = audio.volume, t0 = performance.now(), dur = reduce ? 0 : 450;
+  (function step(now) {
+    if (id !== fadeId) return;                      // a newer fade took over
+    var k = dur ? Math.min(1, (now - t0) / dur) : 1;
+    audio.volume = from + (to - from) * k;
+    if (k < 1) requestAnimationFrame(step); else if (done) done();
+  })(t0);
+}
+function setPlaying(on) {
+  player.classList.toggle("playing", on);
+  disc.setAttribute("aria-pressed", String(on));
+  disc.setAttribute("aria-label", (on ? "pause" : "play") + " cipher by lemmino");
+  $("dicon").setAttribute("href", on ? "#i-pause" : "#i-play");
+}
+function toggle() {
+  want = !want;
+  setPlaying(want);
+  if (want) {
+    if (audio.paused) audio.volume = 0;
+    audio.play().then(function () { fade(VOL); })
+      .catch(function () { want = false; setPlaying(false); });   // file missing or blocked
+  } else {
+    fade(0, function () { audio.pause(); });
+  }
+}
+// the ring: how far into the song (redrawn every frame while playing)
+function tick() {
+  if (audio.duration) ring.style.strokeDashoffset = 100 - (audio.currentTime / audio.duration) * 100;
+  if (!audio.paused) requestAnimationFrame(tick);
+}
+disc.addEventListener("click", toggle);
+audio.addEventListener("play", function () { want = true; setPlaying(true); requestAnimationFrame(tick); });
+audio.addEventListener("pause", function () { want = false; setPlaying(false); tick(); });
+
 })();
