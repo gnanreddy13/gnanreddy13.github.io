@@ -438,7 +438,7 @@ h1 {
 .ptab:active { color: var(--text); }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
 
-/* each project reads as one sentence: name, description, a quiet date at the end; hashtags on the line below */
+/* each project: name with a quiet date beside it, the description on its own line, hashtags last */
 .project,
 .project a.name,
 .project .desc {
@@ -448,12 +448,13 @@ h1 {
 .project:not([hidden]) ~ .project:not([hidden]) { margin-top: calc(var(--u) * 0.8); }
 .project a.name { font-family: var(--mono); transition: color var(--t) var(--ease), text-decoration-color var(--t) var(--ease); }
 .project .desc {
+  display: block;
   color: var(--muted);
-  margin-left: 0.5rem;
   text-wrap: pretty;
 }
 .when {
   font-family: var(--mono);
+  color: var(--muted);
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;                      /* "· sep 2026" never splits across lines */
