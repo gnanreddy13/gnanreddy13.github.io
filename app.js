@@ -1,3 +1,6 @@
+// everything is scoped to this function, so nothing leaks into the page's globals
+(function () {
+
 function $(id) { return document.getElementById(id); }
 function getJSON(url, opts) {
   return fetch(url, opts).then(function (r) {
@@ -286,17 +289,26 @@ showDefault();
 // ---------- permanent facts (never touched by hover) ----------
 // LeetCode: solved total in the header; easy · medium · hard counts under the graph
 // (narrow screens show just the first letter of each word)
+// A cached copy shows instantly, and if the fetch fails the last known values stay.
 var lcStats = null;
+try { lcStats = JSON.parse(localStorage.getItem("lc-facts")); } catch (e) {}
 function renderSolved() {
+  if (!lcStats || typeof lcStats.solved !== "number") return;
   $("solved-n").textContent = Number(lcStats.solved) + " solved";
   $("solved-d").innerHTML =
     Number(lcStats.easy)   + ' e<span class="w">asy</span> · ' +
     Number(lcStats.medium) + ' m<span class="w">edium</span> · ' +
     Number(lcStats.hard)   + ' h<span class="w">ard</span>';
 }
+renderSolved();
 getJSON("leetcode-stats.json", { cache: "no-cache" })
-  .then(function (s) { lcStats = s; renderSolved(); })
-  .catch(function () {});                                  // file missing: those spots stay empty
+  .then(function (s) {
+    if (!s || typeof s.solved !== "number") throw new Error("leetcode stats: invalid data");
+    lcStats = s;
+    try { localStorage.setItem("lc-facts", JSON.stringify(s)); } catch (e) {}
+    renderSolved();
+  })
+  .catch(function () {});                                  // fetch failed: the cached values (if any) stay
 
 // GitHub: public repo count in the header, last push date under the graph.
 // Source order: github-stats.json (written nightly by the Action), then the live API as a fallback.
@@ -438,3 +450,5 @@ window.addEventListener("load", fit);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 var fitRO = new ResizeObserver(fit);
 Array.prototype.forEach.call(mainEl.children, function (c) { fitRO.observe(c); });
+
+})();
