@@ -27,7 +27,10 @@
 
   /* spacing: one unit; two tiers (tight / large) are multiples of it */
   --u: 1rem;
-  --label-gap: 0.5rem;
+  --tap: 0.35rem;                           /* extra tap area above and below each contact link */
+  /* label → content for the contact links: the same visible gap as under every other label, minus the links' tap area
+     (+ 0.075rem because small text has less line-height padding than the body text under the other labels) */
+  --label-gap: calc(var(--u) * 0.8 + 0.075rem - var(--tap));
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t: 0.2s;
@@ -40,7 +43,7 @@
   :root { --u: 1.15rem; }
 }
 @media (pointer: coarse) {
-  :root { --label-gap: 0.35rem; }           /* touch links have taller tap areas, so the label sits closer */
+  :root { --tap: 0.5rem; }                  /* touch: taller tap areas (the label gap adjusts itself) */
 }
 
 /* ---------- base ---------- */
@@ -258,8 +261,9 @@ h1 {
 }
 
 /* ---------- skills: a sentence; the tools are tappable words, the selected one turns green (like matching hashtags) ---------- */
-.skills .label,
 .now .label { margin-bottom: calc(var(--u) * 0.8); }   /* same label → content gap as projects */
+.skills .label { margin-bottom: 0.25rem; }  /* the hint sits right under the label, like under "past year" */
+.skills .snote { margin: 0 0 0.55rem; }     /* then the sentence, about as far as the graphs sit below their hint */
 .stack {
   font-size: var(--fs-sm);
   line-height: var(--lh);
@@ -642,10 +646,9 @@ h1 {
   font-size: var(--fs-xs);
   line-height: var(--lh-ui);
   white-space: nowrap;
-  padding: 0.35rem 0;                        /* taller tap area */
+  padding: var(--tap) 0;                     /* taller tap area */
 }
 .cl .i.sm { margin-left: 0; }                /* the flex gap already spaces the arrow */
-@media (pointer: coarse) { .cl { padding: 0.5rem 0; } }
 
 /* ---------- text links: solid muted underline at rest, white on hover ---------- */
 a {
