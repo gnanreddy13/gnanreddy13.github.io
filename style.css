@@ -191,7 +191,7 @@ h1 {
   color: var(--muted);
 }
 .clock {
-  margin-top: 0.3rem;
+  margin-top: 0.2rem;                        /* less than the tagline's 0.3rem: line-height pads this gap more, so the two look equal */
   font-family: var(--mono);
   font-size: var(--fs-ui);
   line-height: 1.4;
