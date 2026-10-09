@@ -91,10 +91,10 @@ main::after { content: ""; flex: 1 1 0; min-height: 0; }
 main > * { flex: none; }
 
 /* ---------- spacing tiers ---------- */
-.intro    { margin-top: calc(var(--u) * 0.8); }   /* tight: identity block */
+.intro    { margin-top: calc(var(--u) * 0.9); }   /* tight: identity block */
 .projects,
 .activity,
-.contact  { margin-top: calc(var(--u) * 1.4); }   /* large: between groups */
+.contact  { margin-top: calc(var(--u) * 1.6); }   /* large: between groups */
 
 /* ---------- icons: always 1em so they match adjacent text ---------- */
 .i {
