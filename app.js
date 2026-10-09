@@ -444,6 +444,20 @@ function tick() {
   if (!audio.paused) requestAnimationFrame(tick);
 }
 disc.addEventListener("click", toggle);
+
+// repeat switch: loops by default; the visitor's choice is remembered on their device
+var rpt = $("rpt");
+function setLoop(on, save) {
+  audio.loop = on;
+  rpt.setAttribute("aria-pressed", String(on));
+  $("rpt-t").textContent = on ? "on repeat" : "play once";
+  if (save) try { localStorage.setItem("loop", on ? "1" : "0"); } catch (e) {}
+}
+var savedLoop = null;
+try { savedLoop = localStorage.getItem("loop"); } catch (e) {}
+setLoop(savedLoop !== "0", false);
+rpt.addEventListener("click", function () { setLoop(!audio.loop, true); });
+audio.addEventListener("ended", function () { audio.currentTime = 0; tick(); });   // played once: back to the start, ring empty
 audio.addEventListener("play", function () { want = true; setPlaying(true); requestAnimationFrame(tick); });
 audio.addEventListener("pause", function () { want = false; setPlaying(false); tick(); });
 

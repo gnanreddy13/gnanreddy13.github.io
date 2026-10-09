@@ -363,7 +363,26 @@ h1 {
   line-height: var(--lh-ui);                /* never cut off: a long title wraps onto the next line */
   color: var(--muted);
 }
-.tlic a { color: var(--muted); }            /* the credit stays quiet; the song title is the link that stands out */
+.tlic a { color: var(--muted); }
+/* the repeat switch: "on repeat" (green mark) or "play once" */
+.rpt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3rem 0;
+  margin: -0.3rem 0;                        /* taller tap area without moving the line */
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color var(--t) var(--ease);
+}
+.rpt .i { transition: color var(--t) var(--ease); }
+.rpt[aria-pressed="true"] .i { color: var(--accent); }
+@media (hover: hover) { .rpt:hover { color: var(--text); } }            /* the credit stays quiet; the song title is the link that stands out */
 
 /* ---------- 3. proof: projects (tabs + list) ---------- */
 .ptabs { display: flex; gap: 1.1rem; }
@@ -607,6 +626,7 @@ a {
 a:active { text-decoration-color: var(--accent); }
 /* one focus ring for everything you can tab to (the graph arrows use an inset version) */
 a:focus-visible,
+.rpt:focus-visible,
 .chip:focus-visible,
 .ptab:focus-visible,
 .bars:focus-visible {
