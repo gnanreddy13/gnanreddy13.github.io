@@ -31,7 +31,7 @@ var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 var hov = { gh: false, lc: false };          // mouse is over that graph
 
-// each panel header shows its permanent fact at rest, and the hovered day in its place while hovering
+// each panel header keeps its permanent fact on the left; the hovered day appears on the right while hovering
 var elGh = $("rd-gh"), elLc = $("rd-lc");
 var owner = null;
 
@@ -43,8 +43,6 @@ $("rd-hint").textContent = window.matchMedia("(hover: none)").matches
 function showRow(mode, text) {
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
-  $("gh-repos").hidden = mode === "gh";
-  $("solved-n").hidden = mode === "lc";
   if (mode === "gh") elGh.innerHTML = icon("cal") + text;   // text is built from dates and numbers only
   if (mode === "lc") elLc.innerHTML = icon("cal") + text;
 }

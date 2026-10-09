@@ -391,12 +391,13 @@ h1 {
   text-overflow: ellipsis;
 }
 .rd.hint { color: var(--muted); }
+.panel-head .rd { margin-left: auto; }     /* the hovered day sits at the right end of the header */
 .rd .i { margin-right: 0.4em; color: var(--muted); }   /* calendar icon before the hovered day, like the clock */
 
 .panels { display: grid; row-gap: var(--u); }
 .panel { min-width: 0; }
 
-/* panel header: the permanent fact (repo count / solved total) at rest, the hovered day while hovering (fixed height, so nothing shifts) */
+/* panel header: the permanent fact (repo count / solved total) always on the left, the hovered day on the right while hovering (fixed height, so nothing shifts) */
 .panel-head {
   display: flex;
   align-items: center;
