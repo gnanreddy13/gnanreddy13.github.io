@@ -345,20 +345,6 @@ getJSON("github-stats.json", { cache: "no-cache" })
     }).catch(function () {});
   });
 
-// ---------- projects: scrollable list with edge fades + arrows ----------
-var plist = $("plist"), pw = $("pw");
-function plistFade() {
-  var more = plist.scrollTop + plist.clientHeight < plist.scrollHeight - 2;
-  var back = plist.scrollTop > 2;
-  plist.classList.toggle("fade-t", back);
-  plist.classList.toggle("fade-b", more);
-  pw.dataset.t = back ? "1" : "0";
-  pw.dataset.b = more ? "1" : "0";
-}
-plist.addEventListener("scroll", plistFade, { passive: true });
-new ResizeObserver(plistFade).observe(plist);
-plistFade();
-
 // ---------- skills highlight matching project hashtags ----------
 var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
 var tags = Array.prototype.slice.call(document.querySelectorAll(".tag"));
@@ -394,8 +380,6 @@ function showStatus(s) {
   pempty.hidden = n > 0;
   ptabs.forEach(function (t) { t.setAttribute("aria-pressed", String(t.dataset.s === s)); });
   pmore.href = MORE[s];
-  plist.scrollTop = 0;
-  plistFade();
 }
 ptabs.forEach(function (t) {
   t.addEventListener("click", function () { showStatus(t.dataset.s); });
@@ -423,33 +407,12 @@ function updateCounts() {
 updateCounts();
 showStatus("active");
 
-// ---------- arrow buttons: scroll their target by about 80% of its size ----------
+// ---------- graph arrow buttons: scroll their graph by about 80% of its width ----------
 Array.prototype.forEach.call(document.querySelectorAll(".arr"), function (btn) {
   btn.addEventListener("click", function () {
-    var t = $(btn.dataset.for), dir = Number(btn.dataset.dir);
-    var horizontal = t.id !== "plist";
-    var d = dir * (horizontal ? t.clientWidth : t.clientHeight) * 0.8;
-    t.scrollBy({
-      left: horizontal ? d : 0,
-      top: horizontal ? 0 : d,
-      behavior: reduce ? "auto" : "smooth"
-    });
+    var t = $(btn.dataset.for);
+    t.scrollBy({ left: Number(btn.dataset.dir) * t.clientWidth * 0.8, behavior: reduce ? "auto" : "smooth" });
   });
 });
-
-// ---------- page scroll: on only when content overflows by more than 6px ----------
-var bodyEl = document.body, mainEl = document.querySelector("main");
-function fit() {
-  bodyEl.style.overflowY = "hidden";
-  var over = bodyEl.scrollHeight - bodyEl.clientHeight;
-  bodyEl.style.overflowY = over > 6 ? "auto" : "hidden";
-  if (over <= 6) bodyEl.scrollTop = 0;
-}
-fit();
-window.addEventListener("resize", fit);
-window.addEventListener("load", fit);
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-var fitRO = new ResizeObserver(fit);
-Array.prototype.forEach.call(mainEl.children, function (c) { fitRO.observe(c); });
 
 })();

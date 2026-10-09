@@ -27,25 +27,17 @@
   /* spacing: one unit; two tiers (tight / large) are multiples of it */
   --u: 1rem;
   --label-gap: 0.5rem;
-  --plist-h: 15rem;                         /* max height of the projects box; it shrinks to fit the screen */
-  --arr-w: 1.75rem;                         /* project arrow strip at the right edge of the list */
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --t: 0.2s;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: dark;
 }
-@media (max-height: 760px) {
-  :root { --u: 0.65rem; --label-gap: 0.35rem; }   /* compact spacing on typical phones */
-}
 @media (min-width: 800px) and (min-height: 800px) {
   :root { --u: 1.15rem; }
 }
-@media (min-height: 800px) {
-  :root { --plist-h: 20rem; }               /* taller screens have room for a bigger projects box */
-}
 @media (pointer: coarse) {
-  :root { --arr-w: 2.25rem; --label-gap: 0.35rem; }   /* touch links have taller tap areas, so the label sits closer */
+  :root { --label-gap: 0.35rem; }           /* touch links have taller tap areas, so the label sits closer */
 }
 
 /* ---------- base ---------- */
@@ -54,8 +46,6 @@
 html {
   font-size: 90%;
   -webkit-text-size-adjust: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
   background: var(--bg);
 }
 body {
@@ -64,10 +54,10 @@ body {
   line-height: var(--lh);
   background: var(--bg);
   color: var(--text);
-  position: fixed;                          /* pinned to the screen: nothing can bounce or drift */
-  inset: 0;
-  overflow-y: auto;                         /* only switched on by fit() when content truly overflows */
-  overscroll-behavior: none;
+  min-height: 100vh;
+  min-height: 100svh;                       /* at least one screen tall, so short content can be centered */
+  display: flex;
+  flex-direction: column;
   /* top and bottom are set so the visible gap above the name and below the contact links
      matches the 1.25rem sides (main's padding, the link tap area and line-height make up the rest) */
   padding: 0.75rem 1.25rem 0.3rem;
@@ -78,14 +68,14 @@ body {
 main {
   width: 100%;
   max-width: 38rem;
-  height: 100%;
+  flex: 1 0 auto;                           /* fills the screen; grows past it when content is longer (page scrolls) */
   margin: 0 auto;
   padding-block: 0.4rem;
   display: flex;
   flex-direction: column;
   animation: rise 0.5s var(--ease) both;
 }
-/* spacers center the content vertically, and collapse to nothing when space is tight */
+/* spacers center the content vertically when it is shorter than the screen, and collapse to nothing otherwise */
 main::before,
 main::after { content: ""; flex: 1 1 0; min-height: 0; }
 main > * { flex: none; }
@@ -142,9 +132,7 @@ main > * { flex: none; }
   .arr:hover { color: var(--text); }
 }
 .sc[data-l="1"] .arr.l,
-.sc[data-r="1"] .arr.r,
-.pwrap[data-t="1"] .arr.u,
-.pwrap[data-b="1"] .arr.d {
+.sc[data-r="1"] .arr.r {
   opacity: 1;
   visibility: visible;
   transition: opacity var(--t) var(--ease), color var(--t) var(--ease), visibility 0s;
@@ -245,13 +233,7 @@ h1 {
   color: var(--muted);
 }
 
-/* ---------- 3. proof: projects (tabs + scrollable list that shrinks to fit) ---------- */
-main > .projects {
-  flex: 0 1 auto;
-  min-height: 7.5rem;
-  display: flex;
-  flex-direction: column;
-}
+/* ---------- 3. proof: projects (tabs + list) ---------- */
 .ptabs { display: flex; gap: 1.1rem; }
 @media (max-width: 360px) {
   .ptabs { gap: 0.8rem; }
@@ -295,42 +277,6 @@ main > .projects {
 .ptab:active { color: var(--text); }
 .ptab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
-
-.pwrap {
-  position: relative;
-  flex: 0 1 auto;
-  min-height: 5.5rem;
-  display: flex;
-  flex-direction: column;
-}
-.plist {
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: var(--plist-h);
-  padding-right: var(--arr-w);              /* reserved strip: the arrows live here, never over the text */
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.plist::-webkit-scrollbar { display: none; }
-.plist:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
-.plist.fade-b {
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
-}
-.plist.fade-t {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem);
-  mask-image: linear-gradient(to bottom, transparent, #000 1.75rem);
-}
-.plist.fade-t.fade-b {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 1.75rem, #000 calc(100% - 1.75rem), transparent);
-}
-/* project arrows sit at the right edge: up at the top corner, down at the bottom corner */
-.pwrap .arr { right: 0; width: var(--arr-w); height: var(--arr-w); }
-.pwrap .arr.u { top: 0; }
-.pwrap .arr.d { bottom: 0; }
 
 .project,
 .project a.name,

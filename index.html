@@ -17,8 +17,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=31">
-  <script src="app.js?v=19" defer></script>
+  <link rel="stylesheet" href="style.css?v=32">
+  <script src="app.js?v=20" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels { display: none; }</style></noscript>
 </head>
@@ -33,8 +33,6 @@
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
     <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
     <symbol id="i-ext" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
-    <symbol id="i-up" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></symbol>
-    <symbol id="i-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
   </svg>
@@ -71,24 +69,20 @@
         </div>
         <a class="more" id="pmore" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13?tab=repositories&sort=updated">see more<svg class="i sm"><use href="#i-ext"/></svg></a>
       </div>
-      <div class="pwrap" id="pw">
-        <div class="plist" id="plist" role="group" tabindex="0" aria-label="projects, scrollable">
-          <p class="project" data-status="active">
-            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
-            <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="sql">#sql</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="kafka">#kafka</span><span class="tag" data-tag="docker">#docker</span></span>
-          </p>
-          <p class="project" data-status="done">
-            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
-            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
-          </p>
-          <p class="project" data-status="done">
-            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
-            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
-          </p>
-          <p class="pempty" id="pempty" hidden>nothing here yet</p>
-        </div>
-        <button class="arr u" type="button" data-for="plist" data-dir="-1" aria-label="scroll projects up" title="up"><svg class="i"><use href="#i-up"/></svg></button>
-        <button class="arr d" type="button" data-for="plist" data-dir="1" aria-label="scroll projects down" title="down"><svg class="i"><use href="#i-down"/></svg></button>
+      <div class="plist">
+        <p class="project" data-status="active">
+          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">ingests text and images, answers questions with source citations</span>
+          <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="sql">#sql</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="kafka">#kafka</span><span class="tag" data-tag="docker">#docker</span></span>
+        </p>
+        <p class="project" data-status="done">
+          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back</span>
+          <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+        </p>
+        <p class="project" data-status="done">
+          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic</span>
+          <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+        </p>
+        <p class="pempty" id="pempty" hidden>nothing here yet</p>
       </div>
     </section>
 
