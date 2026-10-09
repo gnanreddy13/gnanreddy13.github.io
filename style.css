@@ -295,9 +295,7 @@ h1 {
 
 /* ---------- folds (phones only): a label becomes a toggle; collapsed, it shows a short summary ---------- */
 .fold {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
+  display: block;                           /* the summary wraps under the label when it's long */
   padding: var(--tap) 0;
   margin: calc(var(--tap) * -1) 0;          /* taller tap area without moving the line */
   border: 0;
@@ -308,12 +306,13 @@ h1 {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.fold .i { transition: transform var(--t) var(--ease); }
+.fold .i { margin-right: 0.4em; transition: transform var(--t) var(--ease); }
 .fold[aria-expanded="true"] .i { transform: rotate(90deg); }   /* › becomes ⌄ when open */
 .fold-sum { color: var(--faint); }
 @media (hover: hover) { .fold:hover { color: var(--text); } }
 .fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
 .fold-label:not([hidden]) + .player { margin-top: 0; }
+p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for content that isn't there */
 
 /* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
 @media (max-width: 600px) {

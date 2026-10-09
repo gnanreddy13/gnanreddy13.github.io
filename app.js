@@ -478,7 +478,7 @@ audio.addEventListener("ended", function () { audio.currentTime = 0; tick(); });
 audio.addEventListener("play", function () { want = true; setPlaying(true); requestAnimationFrame(tick); });
 audio.addEventListener("pause", function () { want = false; setPlaying(false); tick(); });
 
-// ---------- folds: on phones, "past year" and the music player start collapsed behind their label ----------
+// ---------- folds: on phones, "now", the music player and "past year" start collapsed behind their label ----------
 var phone = window.matchMedia("(max-width: 600px)");
 var folds;                                          // filled below; refreshFolds() may be called before that
 function refreshFolds() { if (folds) folds.forEach(function (f) { f.render(); }); }
@@ -497,10 +497,11 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
     if (s) {
       var sum = document.createElement("span");
       sum.className = "fold-sum";
-      sum.textContent = "· " + s;
+      sum.textContent = " // " + s;
       btn.appendChild(sum);
     }
     body.hidden = !open;
+    label.classList.toggle("folded", !open);
   }
   function apply() {                                // switch between phone (fold) and wider screens (plain label, always open)
     if (phone.matches) {
@@ -511,6 +512,7 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
     } else {
       label.textContent = name;
       label.hidden = !!phoneOnlyLabel;
+      label.classList.remove("folded");
       body.hidden = false;
     }
   }
@@ -521,17 +523,18 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
 }
 
 folds = [
+  makeFold($("now-label"), $("now-body"), "now", function () { return document.querySelector(".now").dataset.sum; }),
+  makeFold($("music-label"), player, "music", function () { return "cipher by lemmino"; }, true),
   makeFold($("act-label"), $("act-body"), "past year", function () {
     var parts = [];
     if (shown.gh) {
       var t = 0;
       shown.gh.forEach(function (d) { t += d.count; });
-      parts.push(t + " " + lab("gh", t));
+      parts.push("github " + t + " " + lab("gh", t));
     }
-    if (lcStats && typeof lcStats.solved === "number") parts.push(Number(lcStats.solved) + " solved");
+    if (lcStats && typeof lcStats.solved === "number") parts.push("leetcode " + Number(lcStats.solved) + " solved");
     return parts.join(" · ");
-  }),
-  makeFold($("music-label"), player, "music", function () { return "cipher by lemmino"; }, true)
+  })
 ];
 
 })();

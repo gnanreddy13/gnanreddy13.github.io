@@ -17,8 +17,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=63">
-  <script src="app.js?v=32" defer></script>
+  <link rel="stylesheet" href="style.css?v=64">
+  <script src="app.js?v=33" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels, .player { display: none; }</style></noscript>
 </head>
@@ -70,30 +70,33 @@
       </section>
 
       <!-- what i'm up to these days: update the text and the month every few weeks (the song lives in music/) -->
-      <section class="now">
-        <p class="label">now</p>
-        <p class="now-text">building the multimodal rag system, and learning concurrency &amp; backend with go</p>
-        <p class="label fold-label" id="music-label" hidden>music</p>   <!-- phones only: folds the player -->
-        <!-- mini player: nothing plays until pressed; the file only downloads then (preload="none") -->
-        <div class="player" id="player">
-          <!-- the album: a sleeve with the record half out; it slides further out and spins while playing -->
-          <span class="album" id="album" aria-hidden="true">
-            <span class="slide"><span class="disc"></span></span>
-            <span class="sleeve"></span>
-          </span>
-          <div class="tinfo">
-            <p class="tlabel"><button class="rpt" id="rpt" type="button" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-repeat"/></svg><span id="rpt-t">on repeat</span></button></p>
-            <p class="tname"><a target="_blank" rel="noreferrer" href="https://music.youtube.com/watch?v=b0q5PR1xpA0">cipher<svg class="i sm"><use href="#i-ext"/></svg></a> · lemmino</p>
-            <p class="tlic"><a target="_blank" rel="noreferrer" href="https://creativecommons.org/licenses/by-sa/4.0/">cc by-sa 4.0</a></p>
+      <!-- data-sum: the short version shown on phones while folded; update it with the text -->
+      <section class="now" data-sum="building the rag system">
+        <p class="label" id="now-label">now</p>
+        <div class="fold-body" id="now-body">   <!-- on phones this folds away under the label -->
+          <p class="now-text">building the multimodal rag system, and learning concurrency &amp; backend with go</p>
+          <p class="label fold-label" id="music-label" hidden>music</p>   <!-- phones only: folds the player -->
+          <!-- mini player: nothing plays until pressed; the file only downloads then (preload="none") -->
+          <div class="player" id="player">
+            <!-- the album: a sleeve with the record half out; it slides further out and spins while playing -->
+            <span class="album" id="album" aria-hidden="true">
+              <span class="slide"><span class="disc"></span></span>
+              <span class="sleeve"></span>
+            </span>
+            <div class="tinfo">
+              <p class="tlabel"><button class="rpt" id="rpt" type="button" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-repeat"/></svg><span id="rpt-t">on repeat</span></button></p>
+              <p class="tname"><a target="_blank" rel="noreferrer" href="https://music.youtube.com/watch?v=b0q5PR1xpA0">cipher<svg class="i sm"><use href="#i-ext"/></svg></a> · lemmino</p>
+              <p class="tlic"><a target="_blank" rel="noreferrer" href="https://creativecommons.org/licenses/by-sa/4.0/">cc by-sa 4.0</a></p>
+            </div>
+            <!-- play/pause, wrapped in the song's progress -->
+            <button class="pbtn" id="pbtn" type="button" aria-pressed="false" aria-label="play cipher by lemmino">
+              <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="17" pathLength="100"/><circle class="ring-fg" id="ring" cx="18" cy="18" r="17" pathLength="100"/></svg>
+              <svg class="i picon" aria-hidden="true"><use id="picon" href="#i-play"/></svg>
+            </button>
+            <audio id="audio" src="music/cipher.m4a" preload="none" loop></audio>
           </div>
-          <!-- play/pause, wrapped in the song's progress -->
-          <button class="pbtn" id="pbtn" type="button" aria-pressed="false" aria-label="play cipher by lemmino">
-            <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="17" pathLength="100"/><circle class="ring-fg" id="ring" cx="18" cy="18" r="17" pathLength="100"/></svg>
-            <svg class="i picon" aria-hidden="true"><use id="picon" href="#i-play"/></svg>
-          </button>
-          <audio id="audio" src="music/cipher.m4a" preload="none" loop></audio>
+          <p class="updated">// updated oct 2026</p>
         </div>
-        <p class="updated">// updated oct 2026</p>
       </section>
 
       <!-- 5. next step -->
