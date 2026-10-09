@@ -45,7 +45,7 @@
   :root { --plist-h: 20rem; }               /* taller screens have room for a bigger projects box */
 }
 @media (pointer: coarse) {
-  :root { --arr-w: 2.25rem; }
+  :root { --arr-w: 2.25rem; --label-gap: 0.35rem; }   /* touch links have taller tap areas, so the label sits closer */
 }
 
 /* ---------- base ---------- */
