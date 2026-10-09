@@ -272,6 +272,7 @@ h1 {
   line-height: var(--lh);
   color: var(--text);
 }
+.lede + .lede { margin-top: calc(var(--u) * 0.5); }   /* a small gap between the intro's lines */
 /* the note sits on its own line, flush under the paragraph */
 .snote,
 .setup,
