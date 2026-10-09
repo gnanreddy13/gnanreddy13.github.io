@@ -109,6 +109,7 @@ main > *,
 
 /* ---------- spacing tiers ---------- */
 .intro    { margin-top: calc(var(--u) * 0.9); }   /* tight: identity block */
+.now,
 .projects,
 .activity,
 .contact  { margin-top: calc(var(--u) * 1.6); }   /* large: between groups */
@@ -252,12 +253,22 @@ h1 {
 @media (hover: hover) { .lede .chip:hover { text-decoration-color: var(--text); } }
 .lede .chip[aria-pressed="true"]:hover { text-decoration-color: var(--accent); }
 /* the note sits on its own line, flush under the paragraph */
-.snote {
+.snote,
+.updated {
   margin: 0.2rem 0 0;
   font-family: var(--mono);
   font-size: var(--fs-ui);
   line-height: 1.4;
   color: var(--muted);
+}
+
+/* ---------- now: what i'm up to these days ---------- */
+.now .label { margin-bottom: calc(var(--u) * 0.8); }   /* same label → content gap as projects */
+.now-text {
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+  color: var(--text);
+  text-wrap: pretty;
 }
 
 /* ---------- 3. proof: projects (tabs + list) ---------- */
