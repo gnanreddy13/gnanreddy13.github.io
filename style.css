@@ -89,23 +89,29 @@ main > *,
 /* the two column wrappers: invisible on phones (their sections stack in page order), a grid on wide screens */
 .col-me,
 .col-work { display: contents; }
+.split .contact { order: 1; }               /* phones: contact lives in the left wrapper but shows last */
+.split::after   { order: 2; }
 @media (min-width: 960px) {
   main.split {
+    --top: clamp(1.5rem, 8vh, 5rem);        /* distance from the top of the screen */
     max-width: none;
     flex: 0 0 auto;
-    margin-block: auto;                     /* centres the grid vertically when it is shorter than the screen */
+    padding-top: var(--top);                /* anchored to the top, not centred, so switching tabs moves nothing */
     display: grid;
     grid-template-columns: minmax(0, 24rem) minmax(0, 38rem);
-    grid-template-rows: auto 1fr;           /* extra height goes under the left column, not between its sections */
+    align-items: start;
     column-gap: clamp(3rem, 5vw, 6rem);
     justify-content: center;
   }
   main.split::before,
   main.split::after { display: none; }
-  .split .col-me   { display: block; grid-column: 1; grid-row: 1; }
-  .split .col-work { display: block; grid-column: 2; grid-row: 1 / span 2; }
-  .split .contact  { grid-column: 1; grid-row: 2; align-self: start; }
+  .split .col-me   { display: block; grid-column: 1; }
+  .split .col-work { display: block; grid-column: 2; }
   .split .col-work > :first-child { margin-top: 0; }   /* projects line up with the name */
+}
+@media (min-width: 960px) and (min-height: 720px) {
+  /* tall enough to fit it: the left column stays put while the right side scrolls */
+  .split .col-me { position: sticky; top: calc(var(--top) + 0.75rem); }   /* + body's top padding, so it doesn't jump when sticking */
 }
 @media (min-width: 960px) and (max-width: 1099px) {
   main.split { grid-template-columns: minmax(0, 20rem) minmax(0, 38rem); }   /* narrower left column, so the graphs keep their room */

@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=43">
+  <link rel="stylesheet" href="style.css?v=44">
   <script src="app.js?v=23" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels { display: none; }</style></noscript>
@@ -38,7 +38,8 @@
   </svg>
 
   <main class="split">
-    <!-- left on wide screens: who i am (contact joins it, see .split in style.css); on phones the wrappers vanish and everything stacks -->
+    <!-- left on wide screens: who i am, sticky while the right side scrolls; on phones the wrappers vanish,
+         everything stacks, and contact is moved to the very end (see .split .contact in style.css) -->
     <div class="col-me">
       <!-- 1. who -->
       <header class="head">
@@ -70,6 +71,18 @@
         <p class="label">now</p>
         <p class="now-text">building the multimodal rag system, and learning concurrency &amp; backend with go</p>
         <p class="updated">updated oct 2026</p>
+      </section>
+
+      <!-- 5. next step -->
+      <section class="contact">
+        <p class="label">find me</p>
+        <nav class="links" aria-label="contact">
+          <a class="cl" href="mailto:gnanreddy13@gmail.com" title="gnanreddy13@gmail.com"><svg class="i lc" aria-hidden="true"><use href="#i-mail"/></svg>email</a>
+          <a class="cl" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/"><svg class="i lc" aria-hidden="true"><use href="#i-linkedin"/></svg>linkedin<svg class="i sm"><use href="#i-ext"/></svg></a>
+          <a class="cl" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13"><svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>github<svg class="i sm"><use href="#i-ext"/></svg></a>
+          <a class="cl" target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/"><svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>leetcode<svg class="i sm"><use href="#i-ext"/></svg></a>
+          <a class="cl" target="_blank" rel="noreferrer" href="gnan-reddy-bobba-resume.pdf"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>resume<svg class="i sm"><use href="#i-ext"/></svg></a>
+        </nav>
       </section>
     </div>
 
@@ -145,18 +158,6 @@
         </div>
       </section>
     </div>
-
-    <!-- 5. next step -->
-    <section class="contact">
-      <p class="label">find me</p>
-      <nav class="links" aria-label="contact">
-        <a class="cl" href="mailto:gnanreddy13@gmail.com" title="gnanreddy13@gmail.com"><svg class="i lc" aria-hidden="true"><use href="#i-mail"/></svg>email</a>
-        <a class="cl" target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/gnanreddy13/"><svg class="i lc" aria-hidden="true"><use href="#i-linkedin"/></svg>linkedin<svg class="i sm"><use href="#i-ext"/></svg></a>
-        <a class="cl" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13"><svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>github<svg class="i sm"><use href="#i-ext"/></svg></a>
-        <a class="cl" target="_blank" rel="noreferrer" href="https://leetcode.com/u/gnanreddy13/"><svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>leetcode<svg class="i sm"><use href="#i-ext"/></svg></a>
-        <a class="cl" target="_blank" rel="noreferrer" href="gnan-reddy-bobba-resume.pdf"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>resume<svg class="i sm"><use href="#i-ext"/></svg></a>
-      </nav>
-    </section>
   </main>
 </body>
 </html>
