@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=38">
+  <link rel="stylesheet" href="style.css?v=39">
   <script src="app.js?v=21" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels { display: none; }</style></noscript>
@@ -47,20 +47,23 @@
         <p class="clock" id="clock"></p>
       </header>
 
-      <!-- 2. what i do + tools: one paragraph, skills are tappable and highlight matching project hashtags -->
+      <!-- 2. what i do -->
       <div class="intro">
-        <!-- data-skill words must match the data-tag values on the project hashtags below -->
-        <p class="lede">hi. i build software systems & i lift. i work with
-          <button class="chip" type="button" aria-pressed="false" data-skill="go chi">go</button>,
-          <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button>,
-          <button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button>,
-          <button class="chip" type="button" aria-pressed="false" data-skill="postgresql pgvector">postgresql</button>,
-          <button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button>,
-          <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> and
-          <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button>.
+        <p class="lede">hi. i build software systems &amp; i lift.</p>
+      </div>
+
+      <!-- the tools i use, said as a sentence: each tool is tappable and highlights the matching project hashtags -->
+      <section class="skills">
+        <p class="label">i work with</p>
+        <!-- data-skill words must match the data-tag values on the project hashtags -->
+        <p class="stack">
+          <button class="chip" type="button" aria-pressed="false" data-skill="go chi">go</button> &amp; <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button> for services,
+          <button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button> &amp; <button class="chip" type="button" aria-pressed="false" data-skill="postgresql">postgresql</button> (+ <button class="chip" type="button" aria-pressed="false" data-skill="pgvector">pgvector</button>) for data,
+          <button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button> for events, <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> for storage,
+          and <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button> to ship it all.
         </p>
         <p class="snote">tap a skill to see where it's used</p>
-      </div>
+      </section>
 
       <!-- what i'm up to these days: update the text and the month every few weeks -->
       <section class="now">
