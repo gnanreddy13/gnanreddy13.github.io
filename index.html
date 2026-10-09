@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
   <link rel="stylesheet" href="style.css?v=69">
-  <script src="app.js?v=36" defer></script>
+  <script src="app.js?v=37" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels, .mnote, .player { display: none; }</style></noscript>
 </head>
@@ -59,7 +59,7 @@
 
       <!-- the tools i use, said as a sentence: each tool is tappable and highlights the matching project hashtags -->
       <section class="skills">
-        <p class="label">i work with</p>
+        <p class="label">i work with...</p>
         <p class="snote">// tap a skill to see which projects use it</p>
         <!-- data-skill words must match the data-tag values on the project hashtags -->
         <p class="stack">
@@ -73,10 +73,10 @@
       <!-- what i'm up to these days: update the text and the month every few weeks (the song lives in music/) -->
       <!-- data-sum: the short version shown on phones while folded; update it with the text -->
       <section class="now" data-sum="building the rag system">
-        <p class="label" id="now-label">now</p>
+        <p class="label" id="now-label">now i'm...</p>
         <div class="fold-body" id="now-body">   <!-- on phones this folds away under the label -->
           <p class="now-text">building the multimodal rag system, and learning concurrency &amp; backend with go</p>
-          <p class="label fold-label" id="music-label" hidden>music</p>   <!-- phones only: folds the player -->
+          <p class="label fold-label" id="music-label" hidden>music...</p>   <!-- phones only: folds the player -->
           <div class="music" id="music-body">   <!-- the note + player: on phones this folds away under "music" -->
           <p class="mnote">// cool music which i like</p>
           <!-- mini player: nothing plays until pressed; the file only downloads then (preload="none") -->
@@ -105,7 +105,7 @@
 
       <!-- 5. next step -->
       <section class="contact">
-        <p class="label">find me</p>
+        <p class="label">find me...</p>
         <nav class="links" aria-label="contact">
           <a class="cl" id="mail" href="mailto:gnanreddy13@gmail.com" title="copy gnanreddy13@gmail.com"><svg class="i lc" aria-hidden="true"><use href="#i-mail"/></svg><span id="mail-t">email</span></a>
           <span class="sr-only" id="mail-live" aria-live="polite"></span>
@@ -153,7 +153,7 @@
            zones: hint (under the label) / panel header (permanent fact on the left, hovered day on the right while hovering)
            / total + range under each graph (year at rest, visible window while hovering or sliding) -->
       <section class="activity">
-        <p class="label" id="act-label">past year</p>
+        <p class="label" id="act-label">past year...</p>
         <noscript><p class="rd hint">turn on javascript to see the activity graphs</p></noscript>
         <!-- on phones this folds away under the label (see folds in app.js) -->
         <div class="fold-body" id="act-body">
