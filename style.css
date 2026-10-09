@@ -293,40 +293,84 @@ h1 {
   color: var(--text);
   text-wrap: pretty;
 }
-/* mini player: a vinyl disc (the play/pause button) that spins while playing, ringed by the song's progress; then the track */
+/* mini player: an album sleeve with the record half out (it slides out further and spins while playing),
+   the track, and a play/pause button wrapped in the song's progress */
 .player {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
-.disc-wrap {
+.album {
+  --sleeve: 3.25rem;
+  --disc: 2.85rem;
+  flex: none;
+  position: relative;
+  width: calc(var(--sleeve) + 1.5rem);     /* room for the record at its furthest out */
+  height: var(--sleeve);
+  cursor: pointer;
+}
+.sleeve {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--sleeve);
+  border-radius: 3px;
+  background: var(--l0) url("music/cipher.jpg") center / cover;   /* the album cover (dark grey while it loads) */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+}
+.slide {                                    /* moves the record in and out (the spin is on .disc, so the two don't fight) */
+  position: absolute;
+  top: calc((var(--sleeve) - var(--disc)) / 2);
+  left: calc(var(--sleeve) - var(--disc));
+  transform: translateX(1rem);              /* paused: about a third out */
+  transition: transform 0.5s var(--ease);
+}
+.player.playing .slide { transform: translateX(1.5rem); }   /* playing: about half out */
+.disc {
+  position: relative;
+  display: block;
+  width: var(--disc);
+  height: var(--disc);
+  border-radius: 50%;
+  background:
+    conic-gradient(transparent 0 20%, color-mix(in srgb, var(--text) 9%, transparent) 25%, transparent 30% 70%,
+                   color-mix(in srgb, var(--text) 9%, transparent) 75%, transparent 80%),   /* a sheen, so the spin is visible */
+    repeating-radial-gradient(circle, var(--l0) 0 1px, var(--bg) 1px 3px);                 /* grooves */
+  box-shadow: 0 0 0 1px var(--l0);
+  animation: spin 3.6s linear infinite paused;
+}
+.disc::after {                              /* the label with its centre hole */
+  content: "";
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bg) 0 18%, var(--muted) 20%);
+}
+.player.playing .disc { animation-play-state: running; }
+.player.playing .disc::after { background: radial-gradient(circle, var(--bg) 0 18%, var(--accent) 20%); }   /* green while playing */
+
+/* play/pause: the icon inside a ring that fills as the song plays */
+.pbtn {
   flex: none;
   position: relative;
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: none;
-  color: var(--bg);                         /* the play/pause mark, drawn dark on the disc label */
+  color: var(--muted);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  transition: color var(--t) var(--ease);
 }
-.disc,
-.dicon { grid-area: 1 / 1; }                /* stacked: the mark sits on the label but doesn't spin with it */
-.dicon {
-  position: relative;
-  font-size: 0.7rem;
-  transition: opacity var(--t) var(--ease);
-}
-.player.playing .dicon { opacity: 0; }      /* playing: the spin and the ring say it all */
-.disc-wrap:focus-visible .dicon { opacity: 1; }
-@media (hover: hover) { .player.playing .disc-wrap:hover .dicon { opacity: 1; } }   /* hover a playing disc: the pause mark */
-.ring {                                     /* progress around the disc, starting at 12 o'clock */
+.player.playing .pbtn { color: var(--text); }
+@media (hover: hover) { .pbtn:hover { color: var(--text); } }
+.picon { font-size: 0.85rem; }
+.ring {                                     /* progress, starting at 12 o'clock */
   position: absolute;
   inset: 0;
   transform: rotate(-90deg);
@@ -341,27 +385,6 @@ h1 {
   transition: stroke var(--t) var(--ease);
 }
 .player.playing .ring-fg { stroke: var(--accent); }
-.disc {
-  position: relative;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 50%;
-  background:
-    conic-gradient(transparent 0 20%, color-mix(in srgb, var(--text) 9%, transparent) 25%, transparent 30% 70%,
-                   color-mix(in srgb, var(--text) 9%, transparent) 75%, transparent 80%),   /* a sheen, so the spin is visible */
-    repeating-radial-gradient(circle, var(--l0) 0 1px, var(--bg) 1px 3px);                 /* grooves */
-  animation: spin 3.6s linear infinite paused;
-}
-.disc::after {                              /* the label with its centre hole */
-  content: "";
-  position: absolute;
-  inset: 34%;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--bg) 0 18%, var(--muted) 20%);
-  transition: background var(--t) var(--ease);
-}
-.player.playing .disc { animation-play-state: running; }
-.player.playing .disc::after { background: radial-gradient(circle, var(--bg) 0 18%, var(--accent) 20%); }   /* green while playing */
 .tinfo { flex: 1; min-width: 0; }
 .tlabel,
 .tname,
@@ -644,7 +667,7 @@ a:focus-visible,
   outline-offset: 3px;
   border-radius: 3px;
 }
-.disc-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }   /* same ring, round like the disc */
+.pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }   /* same ring, round like the button */
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }
   a:hover .i.sm { transform: translate(1px, -1px); }

@@ -421,8 +421,8 @@ mail.addEventListener("click", function (e) {
   }, function () { location.href = mail.href; });
 });
 
-// ---------- mini player: press to play (never on its own); the disc spins, the ring fills, volume fades in and out ----------
-var audio = $("audio"), player = $("player"), disc = $("disc"), ring = $("ring");
+// ---------- mini player: press to play (never on its own); the record slides out and spins, the ring fills, volume fades in and out ----------
+var audio = $("audio"), player = $("player"), pbtn = $("pbtn"), ring = $("ring");
 var VOL = 0.6, want = false, fadeId = 0;
 
 // ramp the volume (iOS ignores volume, so there it just plays and pauses)
@@ -437,9 +437,9 @@ function fade(to, done) {
 }
 function setPlaying(on) {
   player.classList.toggle("playing", on);
-  disc.setAttribute("aria-pressed", String(on));
-  disc.setAttribute("aria-label", (on ? "pause" : "play") + " cipher by lemmino");
-  $("dicon").setAttribute("href", on ? "#i-pause" : "#i-play");
+  pbtn.setAttribute("aria-pressed", String(on));
+  pbtn.setAttribute("aria-label", (on ? "pause" : "play") + " cipher by lemmino");
+  $("picon").setAttribute("href", on ? "#i-pause" : "#i-play");
 }
 function toggle() {
   want = !want;
@@ -457,7 +457,8 @@ function tick() {
   if (audio.duration) ring.style.strokeDashoffset = 100 - (audio.currentTime / audio.duration) * 100;
   if (!audio.paused) requestAnimationFrame(tick);
 }
-disc.addEventListener("click", toggle);
+pbtn.addEventListener("click", toggle);
+$("album").addEventListener("click", toggle);           // the album works too (mouse and touch; the button is the keyboard control)
 
 // repeat switch: loops by default; the visitor's choice is remembered on their device
 var rpt = $("rpt");
