@@ -3,8 +3,9 @@
   --bg: #000000;
   --text: #f2f2f0;
   --muted: #8f8f8a;
+  --faint: #555552;                         /* dimmed: tab counts, non-matching hashtags while filtering */
 
-  /* accent: selected states, focus, hover, matches */
+  /* accent: selected states, focus, matches (hover brightens to --text instead) */
   --accent: #3fb950;
   --on-accent: #000000;
 
@@ -252,7 +253,7 @@ h1 {
   text-wrap: pretty;
 }
 .chip {
-  --mark: rgba(63, 185, 80, 0.32);         /* the accent green, see-through like marker ink */
+  --mark: color-mix(in srgb, var(--accent) 32%, transparent);   /* the accent green, see-through like marker ink */
   font-family: var(--mono);
   font-size: inherit;
   line-height: inherit;
@@ -273,7 +274,7 @@ h1 {
 .chip[aria-pressed="true"] { background-size: 100% 100%; text-decoration-color: transparent; }
 .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (hover: hover) {
-  .chip:hover:not([aria-pressed="true"]) { --mark: rgba(63, 185, 80, 0.14); background-size: 100% 100%; }   /* a faint mark on hover */
+  .chip:hover:not([aria-pressed="true"]) { text-decoration-color: var(--text); }   /* hover brightens, like every other hover */
 }
 
 /* ---------- now: what i'm up to these days ---------- */
@@ -311,12 +312,11 @@ h1 {
   margin-left: 0.15rem;
   padding: 0 0.3rem;
   text-align: center;
-  opacity: 0.6;
-  transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
+  color: var(--faint);
+  transition: color var(--t) var(--ease);
 }
-/* a skill is selected: a count with matches is plain green text, one without fades (no filled badge) */
-.ptab span.hit  { opacity: 1; color: var(--accent); }
-.ptab span.none { opacity: 0.3; }
+/* a skill is selected: a count with matches turns green (no filled badge); one without stays faint */
+.ptab span.hit { color: var(--accent); }
 .ptab[aria-pressed="true"] { color: var(--text); }
 .ptab[aria-pressed="true"]::after {
   content: "";
@@ -360,13 +360,10 @@ h1 {
   line-height: var(--lh-ui);
   color: var(--muted);
   margin-right: 0.6rem;
-  transition: color var(--t) var(--ease), opacity var(--t) var(--ease);
+  transition: color var(--t) var(--ease);
 }
-.projects.filtering .tag { opacity: 0.55; }
-.projects.filtering .tag.on {
-  opacity: 1;
-  color: var(--accent);
-}
+.projects.filtering .tag { color: var(--faint); }
+.projects.filtering .tag.on { color: var(--accent); }
 /* the matching project's name turns green too, so the matching row reads at a glance */
 .projects.filtering .project:has(.tag.on) a.name { color: var(--accent); }
 

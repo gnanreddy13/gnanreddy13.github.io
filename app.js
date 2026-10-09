@@ -392,7 +392,6 @@ function updateCounts() {
     var badge = t.querySelector("span");
     badge.textContent = filtering ? hits : total;
     badge.classList.toggle("hit", filtering && hits > 0);
-    badge.classList.toggle("none", filtering && hits === 0);
     t.setAttribute("aria-label", filtering
       ? name + ", " + hits + " of " + total + " match"
       : name + ", " + total);
