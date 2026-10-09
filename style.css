@@ -68,7 +68,12 @@ body {
   inset: 0;
   overflow-y: auto;                         /* only switched on by fit() when content truly overflows */
   overscroll-behavior: none;
-  padding: 0.6rem 1.25rem;
+  /* top and bottom are set so the visible gap above the name and below the contact links
+     matches the 1.25rem sides (main's padding, the link tap area and line-height make up the rest) */
+  padding: 0.75rem 1.25rem 0.3rem;
+}
+@media (pointer: coarse) {
+  body { padding-bottom: 0.15rem; }         /* touch links have a taller tap area, so less is needed */
 }
 main {
   width: 100%;
