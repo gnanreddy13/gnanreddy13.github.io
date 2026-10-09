@@ -315,8 +315,8 @@ function renderGh() {
   if (gh.pushed) {
     var d = new Date(gh.pushed);
     if (!isNaN(d)) {
-      var o = { month: "short", day: "numeric" };
-      if (d.getFullYear() !== new Date().getFullYear()) o.year = "numeric";   // year only when not this year
+      var o = { month: "short", day: "numeric", timeZone: "UTC" };   // UTC, like the graph days, so the two always agree
+      if (d.getUTCFullYear() !== new Date().getUTCFullYear()) o.year = "numeric";   // year only when not this year
       $("gh-push").textContent = "last push " + d.toLocaleDateString("en", o).replace(",", "").toLowerCase();
     }
   }
