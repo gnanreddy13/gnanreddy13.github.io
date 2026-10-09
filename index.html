@@ -17,8 +17,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=33">
-  <script src="app.js?v=20" defer></script>
+  <link rel="stylesheet" href="style.css?v=34">
+  <script src="app.js?v=21" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels { display: none; }</style></noscript>
 </head>
@@ -87,22 +87,21 @@
       </div>
     </section>
 
-    <!-- 4. consistency
-         zones: hint / hover result (row under the label) / permanent facts (panel header, last line)
+    <!-- 4. consistency: the two graphs stacked, full width
+         zones: hint (under the label) / panel header (permanent fact at rest, hovered day while hovering)
          / total + range under each graph (year at rest, visible window while hovering or sliding) -->
     <section class="activity">
       <p class="label">past year</p>
       <noscript><p class="rd hint">turn on javascript to see the activity graphs</p></noscript>
       <div class="rd-row">
         <span class="rd hint" id="rd-hint"></span>
-        <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
-        <span class="rd r" id="rd-lc" hidden aria-live="polite"></span>
       </div>
       <div class="panels">
         <div class="panel">
           <div class="panel-head">
             <svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>
             <span class="fact" id="gh-repos"></span>
+            <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
           </div>
           <div class="sc" id="sc-gh" data-l="0" data-r="0">
             <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, arrow keys to browse days"></div>
@@ -117,6 +116,7 @@
           <div class="panel-head">
             <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
             <span class="fact" id="solved-n"></span>
+            <span class="rd" id="rd-lc" hidden aria-live="polite"></span>
           </div>
           <div class="sc" id="sc-lc" data-l="0" data-r="0">
             <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, arrow keys to browse days"></div>

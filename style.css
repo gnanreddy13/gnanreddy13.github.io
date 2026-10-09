@@ -319,10 +319,10 @@ h1 {
 /* the matching project's name turns green too, so the matching row reads at a glance */
 .projects.filtering .project:has(.tag.on) a.name { color: var(--accent); }
 
-/* ---------- 4. consistency: activity grids (scrollable; 15 weeks on phones, 25 on desktop) ---------- */
+/* ---------- 4. consistency: activity grids, stacked (full year on desktop; 26 or 39 weeks, scrollable, on narrow screens) ---------- */
 .activity > .label { margin-bottom: 0.15rem; }
 
-/* hint at rest, hover result otherwise: its own line under "past year" (fixed height, so nothing shifts) */
+/* the hint: its own line under "past year" */
 .rd-row {
   display: flex;
   align-items: center;
@@ -340,14 +340,13 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.rd.r { margin-left: auto; }                       /* pushes it to the right side */
 .rd.hint { color: var(--muted); }
 .rd .i { margin-right: 0.4em; color: var(--muted); }   /* calendar icon before the hovered day, like the clock */
 
-.panels { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
+.panels { display: grid; row-gap: var(--u); }
 .panel { min-width: 0; }
 
-/* permanent fact in the panel header: repo count / solved total */
+/* panel header: the permanent fact (repo count / solved total) at rest, the hovered day while hovering (fixed height, so nothing shifts) */
 .panel-head {
   display: flex;
   align-items: center;
@@ -398,13 +397,9 @@ h1 {
 .stat { margin-top: 0.5rem; color: var(--text); }
 .rng,
 .sub  { color: var(--muted); }
-.sub .w { display: inline; }
-@media (max-width: 600px) {
-  .sub .w { display: none; }                       /* narrow screens: 76 e · 25 m · 8 h */
-}
 
 .bars {
-  --w: 25;                                  /* weeks visible at once (keep in sync with vis() in app.js) */
+  --w: 53;                                  /* weeks visible at once: the whole year (keep in sync with vis() in app.js) */
   --gap: 2px;
   --cell: calc((100cqw - (var(--w) - 1) * var(--gap)) / var(--w));
   container-type: inline-size;
@@ -417,11 +412,15 @@ h1 {
   user-select: none;
   cursor: grab;
 }
+@media (max-width: 600px) {
+  .bars { --w: 39; }                        /* about 9 months on small tablets */
+}
 @media (max-width: 480px) {
-  .bars { --w: 15; }                        /* about 3 months on phones: bigger, tappable cells */
+  .bars { --w: 26; }                        /* about 6 months on phones: bigger, tappable cells */
 }
 .bars::-webkit-scrollbar { display: none; }
 .bars.dragging { cursor: grabbing; }
+.sc[data-l="0"][data-r="0"] .bars { cursor: default; }   /* the whole year fits: nothing to drag */
 .bars:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
 .track {

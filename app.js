@@ -25,32 +25,32 @@ function renderClock() {
 renderClock();
 setInterval(renderClock, 15000);
 
-// ---------- activity grids (past year, scrollable; 15 weeks visible on phones, 25 on desktop) ----------
+// ---------- activity grids (past year, stacked; the whole year on desktop, 26 or 39 weeks, scrollable, on narrow screens) ----------
 var LABEL = { gh: ["contribution", "contributions"], lc: ["submission", "submissions"] };
 var data = {}, shown = {}, offs = {}, drawn = {}, sig = {}, stale = {};
 var atEnd = { gh: true, lc: true };
 var hov = { gh: false, lc: false };          // mouse is over that graph
 
-// the line under "past year": a hint at rest, the hovered day otherwise
-// (GitHub day on the left, LeetCode day on the right)
-var elGh = $("rd-gh"), elLc = $("rd-lc"), elHint = $("rd-hint");
+// each panel header shows its permanent fact at rest, and the hovered day in its place while hovering
+var elGh = $("rd-gh"), elLc = $("rd-lc");
 var owner = null;
 
-// the hint matches the device: touch screens have no hover
-elHint.textContent = window.matchMedia("(hover: none)").matches
+// the hint under "past year" matches the device: touch screens have no hover
+$("rd-hint").textContent = window.matchMedia("(hover: none)").matches
   ? "tap a day, swipe to scroll back"
-  : "hover a day, drag to scroll back";
+  : "hover a day to see it";
 
 function showRow(mode, text) {
-  elHint.hidden = mode !== "rest";
   elGh.hidden = mode !== "gh";
   elLc.hidden = mode !== "lc";
+  $("gh-repos").hidden = mode === "gh";
+  $("solved-n").hidden = mode === "lc";
   if (mode === "gh") elGh.innerHTML = icon("cal") + text;   // text is built from dates and numbers only
   if (mode === "lc") elLc.innerHTML = icon("cal") + text;
 }
 function showDefault() { showRow("rest"); }
 
-function vis() { return window.innerWidth <= 480 ? 15 : 25; }   // keep in sync with --w in style.css
+function vis() { var w = window.innerWidth; return w <= 480 ? 26 : w <= 600 ? 39 : 53; }   // keep in sync with --w in style.css
 function lab(which, n) { return LABEL[which][n === 1 ? 0 : 1]; }
 function valid(a) {
   return Array.isArray(a) && a.length > 0 &&
@@ -70,19 +70,16 @@ function md(s) {
   return new Date(s + "T00:00:00Z")
     .toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" }).toLowerCase();
 }
-// phones get a short year ('25) so the line fits; wider screens get the full year
-function ys(y, full) { return (full || window.innerWidth > 600) ? String(y) : "'" + String(y).slice(2); }
-
-// single day (the hover line has room, so the full year)
+// single day
 function niceDate(s) {
   var y = yr(s);
-  return y === new Date().getFullYear() ? md(s) : md(s) + " " + ys(y, true);
+  return y === new Date().getFullYear() ? md(s) : md(s) + " " + y;
 }
 // range: year only on an end that isn't this year, written once if both ends share a past year
 function niceRange(a, b) {
   var cur = new Date().getFullYear(), ya = yr(a), yb = yr(b);
-  if (ya === yb) return md(a) + "–" + md(b) + (ya === cur ? "" : " " + ys(ya));
-  return md(a) + (ya === cur ? "" : " " + ys(ya)) + "–" + md(b) + (yb === cur ? "" : " " + ys(yb));
+  if (ya === yb) return md(a) + "–" + md(b) + (ya === cur ? "" : " " + ya);
+  return md(a) + (ya === cur ? "" : " " + ya) + "–" + md(b) + (yb === cur ? "" : " " + yb);
 }
 
 function unmark() {
@@ -289,17 +286,14 @@ showDefault();
 
 // ---------- permanent facts (never touched by hover) ----------
 // LeetCode: solved total in the header; easy · medium · hard counts under the graph
-// (narrow screens show just the first letter of each word)
 // A cached copy shows instantly, and if the fetch fails the last known values stay.
 var lcStats = null;
 try { lcStats = JSON.parse(localStorage.getItem("lc-facts")); } catch (e) {}
 function renderSolved() {
   if (!lcStats || typeof lcStats.solved !== "number") return;
   $("solved-n").textContent = Number(lcStats.solved) + " solved";
-  $("solved-d").innerHTML =
-    Number(lcStats.easy)   + ' e<span class="w">asy</span> · ' +
-    Number(lcStats.medium) + ' m<span class="w">edium</span> · ' +
-    Number(lcStats.hard)   + ' h<span class="w">ard</span>';
+  $("solved-d").textContent =
+    Number(lcStats.easy) + " easy · " + Number(lcStats.medium) + " medium · " + Number(lcStats.hard) + " hard";
 }
 renderSolved();
 getJSON("leetcode-stats.json", { cache: "no-cache" })
