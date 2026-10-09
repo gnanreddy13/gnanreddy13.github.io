@@ -222,6 +222,26 @@ main.split .setup { margin-top: calc(var(--u) * 1.6); }   /* a section's distanc
 @media (hover: hover) { .more:hover { color: var(--text); } }
 
 /* ---------- 1. who ---------- */
+/* photo on the left with the name and tagline beside it; the clock runs full width underneath
+   (404 has no photo, so it stays a plain stack) */
+.head:has(.me) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.9rem;
+}
+.head:has(.me) > :not(.me) { grid-column: 2; }
+.head:has(.me) > .clock { grid-column: 1 / -1; }
+.me {
+  grid-row: 1 / span 2;
+  align-self: center;                       /* centred on the name + tagline */
+  width: 3.25rem;                           /* the album sleeve's size and corners, so the two images match */
+  height: 3.25rem;
+  border-radius: 3px;
+  object-fit: cover;
+  background: var(--l0);                    /* dark grey while it loads */
+  outline: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  outline-offset: -1px;
+}
 h1 {
   font-size: var(--fs-xl);
   font-weight: 600;
