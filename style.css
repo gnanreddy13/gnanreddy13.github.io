@@ -278,6 +278,7 @@ h1 {
 .ptab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
 
+/* each project reads as one sentence: name, description, a quiet date at the end; hashtags on the line below */
 .project,
 .project a.name,
 .project .desc {
@@ -289,13 +290,18 @@ h1 {
 .project .desc {
   color: var(--muted);
   margin-left: 0.5rem;
-  margin-right: 0.6rem;
   text-wrap: pretty;
+}
+.when {
+  font-family: var(--mono);
+  font-size: var(--fs-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;                      /* "· sep 2026" never splits across lines */
 }
 .pempty { font-family: var(--mono); font-size: var(--fs-sm); color: var(--muted); }
 
-/* hashtags: inline after the description; no boxes, a match is just green text */
-.tags { display: inline; }
+/* hashtags: their own line under the sentence; no boxes, a match is just green text */
+.tags { display: block; margin-top: 0.2rem; }
 .tag {
   display: inline-block;
   font-family: var(--mono);
