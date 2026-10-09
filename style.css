@@ -44,7 +44,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 [hidden] { display: none !important; }
 html {
-  font-size: 90%;
+  font-size: 100%;                          /* 16px: the comfortable reading size */
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
 }
@@ -85,7 +85,7 @@ main > *,
 /* the two column wrappers: invisible on phones (their sections stack in page order), a grid on wide screens */
 .col-me,
 .col-work { display: contents; }
-@media (min-width: 860px) {
+@media (min-width: 960px) {
   main.split {
     max-width: none;
     flex: 0 0 auto;
@@ -103,7 +103,7 @@ main > *,
   .split .contact  { grid-column: 1; grid-row: 2; align-self: start; }
   .split .col-work > :first-child { margin-top: 0; }   /* projects line up with the name */
 }
-@media (min-width: 860px) and (max-width: 999px) {
+@media (min-width: 960px) and (max-width: 1099px) {
   main.split { grid-template-columns: minmax(0, 20rem) minmax(0, 38rem); }   /* narrower left column, so the graphs keep their room */
 }
 
