@@ -37,8 +37,8 @@ var owner = null;
 
 // the hint under "past year" matches the device: touch screens have no hover
 $("rd-hint").textContent = window.matchMedia("(hover: none)").matches
-  ? "tap a day, swipe to scroll back"
-  : "hover a day to see it";
+  ? "// tap a day, swipe to scroll back"
+  : "// hover a day to see it";
 
 function showRow(mode, text) {
   elGh.hidden = mode !== "gh";
