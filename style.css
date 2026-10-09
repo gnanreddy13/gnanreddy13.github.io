@@ -316,6 +316,7 @@ h1 {
   color: var(--muted);
   transition: color var(--t) var(--ease);
 }
+.ptab[aria-pressed="true"] span { color: var(--text); }   /* the current tab's count is white, like its name */
 /* a skill is selected: a count with matches turns green (no filled badge); one without dims */
 .ptab span.hit  { color: var(--accent); }
 .ptab span.none { color: var(--faint); }
