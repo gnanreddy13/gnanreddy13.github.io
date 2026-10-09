@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="style.css?v=34">
+  <link rel="stylesheet" href="style.css?v=36">
   <script src="app.js?v=21" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels { display: none; }</style></noscript>
@@ -37,98 +37,104 @@
     <symbol id="i-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
   </svg>
 
-  <main>
-    <!-- 1. who -->
-    <header class="head">
-      <h1>gnan reddy bobba</h1>
-      <p class="tagline">cs student · open to work</p>
-      <p class="clock" id="clock"></p>
-    </header>
+  <main class="split">
+    <!-- left on wide screens: who i am (contact joins it, see .split in style.css); on phones the wrappers vanish and everything stacks -->
+    <div class="col-me">
+      <!-- 1. who -->
+      <header class="head">
+        <h1>gnan reddy bobba</h1>
+        <p class="tagline">cs student · open to work</p>
+        <p class="clock" id="clock"></p>
+      </header>
 
-    <!-- 2. what i do + tools: one paragraph, skills are tappable and highlight matching project hashtags -->
-    <div class="intro">
-      <!-- data-skill words must match the data-tag values on the project hashtags below -->
-      <p class="lede">hi. i build software systems & i lift. i work with
-        <button class="chip" type="button" aria-pressed="false" data-skill="go chi">go</button>,
-        <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button>,
-        <button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button>,
-        <button class="chip" type="button" aria-pressed="false" data-skill="postgresql pgvector">postgresql</button>,
-        <button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button>,
-        <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> and
-        <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button>.
-      </p>
-      <p class="snote">tap a skill to see where it's used</p>
+      <!-- 2. what i do + tools: one paragraph, skills are tappable and highlight matching project hashtags -->
+      <div class="intro">
+        <!-- data-skill words must match the data-tag values on the project hashtags below -->
+        <p class="lede">hi. i build software systems & i lift. i work with
+          <button class="chip" type="button" aria-pressed="false" data-skill="go chi">go</button>,
+          <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button>,
+          <button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button>,
+          <button class="chip" type="button" aria-pressed="false" data-skill="postgresql pgvector">postgresql</button>,
+          <button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button>,
+          <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> and
+          <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button>.
+        </p>
+        <p class="snote">tap a skill to see where it's used</p>
+      </div>
     </div>
 
-    <!-- 3. proof: active / completed (set data-status to "active" or "done") -->
-    <section class="projects">
-      <div class="label-row">
-        <div class="ptabs" role="group" aria-label="project status">
-          <button class="ptab" type="button" aria-pressed="true" data-s="active">active <span></span></button>
-          <button class="ptab" type="button" aria-pressed="false" data-s="done">completed <span></span></button>
+    <!-- right on wide screens: what i do -->
+    <div class="col-work">
+      <!-- 3. proof: active / completed (set data-status to "active" or "done") -->
+      <section class="projects">
+        <div class="label-row">
+          <div class="ptabs" role="group" aria-label="project status">
+            <button class="ptab" type="button" aria-pressed="true" data-s="active">active <span></span></button>
+            <button class="ptab" type="button" aria-pressed="false" data-s="done">completed <span></span></button>
+          </div>
+          <a class="more" id="pmore" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13?tab=repositories&sort=updated">see more<svg class="i sm"><use href="#i-ext"/></svg></a>
         </div>
-        <a class="more" id="pmore" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13?tab=repositories&sort=updated">see more<svg class="i sm"><use href="#i-ext"/></svg></a>
-      </div>
-      <!-- each project reads as one sentence: name, what it is, a quiet date at the end; hashtags below -->
-      <div class="plist">
-        <p class="project" data-status="active">
-          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">llm-based, event-driven rag system that ingests text and images and answers questions with source citations, supervised by dr. t. v. gopal <span class="when">· in progress</span></span>
-          <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="sql">#sql</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="kafka">#kafka</span><span class="tag" data-tag="docker">#docker</span></span>
-        </p>
-        <p class="project" data-status="done">
-          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back <span class="when">· sep 2026</span></span>
-          <span class="tags"><span class="tag" data-tag="go">#go</span></span>
-        </p>
-        <p class="project" data-status="done">
-          <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic <span class="when">· apr 2026</span></span>
-          <span class="tags"><span class="tag" data-tag="go">#go</span></span>
-        </p>
-        <p class="pempty" id="pempty" hidden>nothing here yet</p>
-      </div>
-    </section>
+        <!-- each project reads as one sentence: name, what it is, a quiet date at the end; hashtags below -->
+        <div class="plist">
+          <p class="project" data-status="active">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/multimodal-rag-system">multimodal-rag-system<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">llm-based, event-driven rag system that ingests text and images and answers questions with source citations, supervised by dr. t. v. gopal <span class="when">· in progress</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span><span class="tag" data-tag="python">#python</span><span class="tag" data-tag="sql">#sql</span><span class="tag" data-tag="postgresql">#postgresql</span><span class="tag" data-tag="pgvector">#pgvector</span><span class="tag" data-tag="minio">#minio</span><span class="tag" data-tag="kafka">#kafka</span><span class="tag" data-tag="docker">#docker</span></span>
+          </p>
+          <p class="project" data-status="done">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/matscan">matscan<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">reads a matrix from standard input and prints it back <span class="when">· sep 2026</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+          </p>
+          <p class="project" data-status="done">
+            <a class="name" target="_blank" rel="noreferrer" href="https://github.com/gnanreddy13/calculator-cli">calculator-cli<svg class="i sm"><use href="#i-ext"/></svg></a><span class="desc">interactive terminal calculator for basic arithmetic <span class="when">· apr 2026</span></span>
+            <span class="tags"><span class="tag" data-tag="go">#go</span></span>
+          </p>
+          <p class="pempty" id="pempty" hidden>nothing here yet</p>
+        </div>
+      </section>
 
-    <!-- 4. consistency: the two graphs stacked, full width
-         zones: hint (under the label) / panel header (permanent fact at rest, hovered day while hovering)
-         / total + range under each graph (year at rest, visible window while hovering or sliding) -->
-    <section class="activity">
-      <p class="label">past year</p>
-      <noscript><p class="rd hint">turn on javascript to see the activity graphs</p></noscript>
-      <div class="rd-row">
-        <span class="rd hint" id="rd-hint"></span>
-      </div>
-      <div class="panels">
-        <div class="panel">
-          <div class="panel-head">
-            <svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>
-            <span class="fact" id="gh-repos"></span>
-            <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
-          </div>
-          <div class="sc" id="sc-gh" data-l="0" data-r="0">
-            <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, arrow keys to browse days"></div>
-            <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
-            <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
-          </div>
-          <p class="stat" id="s-gh"></p>
-          <p class="rng" id="r-gh"></p>
-          <p class="sub" id="gh-push"></p>
+      <!-- 4. consistency: the two graphs stacked, full width
+           zones: hint (under the label) / panel header (permanent fact at rest, hovered day while hovering)
+           / total + range under each graph (year at rest, visible window while hovering or sliding) -->
+      <section class="activity">
+        <p class="label">past year</p>
+        <noscript><p class="rd hint">turn on javascript to see the activity graphs</p></noscript>
+        <div class="rd-row">
+          <span class="rd hint" id="rd-hint"></span>
         </div>
-        <div class="panel">
-          <div class="panel-head">
-            <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
-            <span class="fact" id="solved-n"></span>
-            <span class="rd" id="rd-lc" hidden aria-live="polite"></span>
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-head">
+              <svg class="i lc" aria-hidden="true"><use href="#i-github"/></svg>
+              <span class="fact" id="gh-repos"></span>
+              <span class="rd" id="rd-gh" hidden aria-live="polite"></span>
+            </div>
+            <div class="sc" id="sc-gh" data-l="0" data-r="0">
+              <div class="bars" id="b-gh" role="group" tabindex="0" aria-label="github activity, past year, arrow keys to browse days"></div>
+              <button class="arr l" type="button" data-for="b-gh" data-dir="-1" aria-label="scroll github graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+              <button class="arr r" type="button" data-for="b-gh" data-dir="1" aria-label="scroll github graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+            </div>
+            <p class="stat" id="s-gh"></p>
+            <p class="rng" id="r-gh"></p>
+            <p class="sub" id="gh-push"></p>
           </div>
-          <div class="sc" id="sc-lc" data-l="0" data-r="0">
-            <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, arrow keys to browse days"></div>
-            <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
-            <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+          <div class="panel">
+            <div class="panel-head">
+              <svg class="i lc" aria-hidden="true"><use href="#i-code"/></svg>
+              <span class="fact" id="solved-n"></span>
+              <span class="rd" id="rd-lc" hidden aria-live="polite"></span>
+            </div>
+            <div class="sc" id="sc-lc" data-l="0" data-r="0">
+              <div class="bars" id="b-lc" role="group" tabindex="0" aria-label="leetcode activity, past year, arrow keys to browse days"></div>
+              <button class="arr l" type="button" data-for="b-lc" data-dir="-1" aria-label="scroll leetcode graph back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+              <button class="arr r" type="button" data-for="b-lc" data-dir="1" aria-label="scroll leetcode graph forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+            </div>
+            <p class="stat" id="s-lc"></p>
+            <p class="rng" id="r-lc"></p>
+            <p class="sub" id="solved-d"></p>
           </div>
-          <p class="stat" id="s-lc"></p>
-          <p class="rng" id="r-lc"></p>
-          <p class="sub" id="solved-d"></p>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- 5. next step -->
     <section class="contact">

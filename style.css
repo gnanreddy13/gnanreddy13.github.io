@@ -78,7 +78,34 @@ main {
 /* spacers center the content vertically when it is shorter than the screen, and collapse to nothing otherwise */
 main::before,
 main::after { content: ""; flex: 1 1 0; min-height: 0; }
-main > * { flex: none; }
+main > *,
+.col-me > *,
+.col-work > * { flex: none; }
+
+/* the two column wrappers: invisible on phones (their sections stack in page order), a grid on wide screens */
+.col-me,
+.col-work { display: contents; }
+@media (min-width: 860px) {
+  main.split {
+    max-width: none;
+    flex: 0 0 auto;
+    margin-block: auto;                     /* centres the grid vertically when it is shorter than the screen */
+    display: grid;
+    grid-template-columns: minmax(0, 24rem) minmax(0, 38rem);
+    grid-template-rows: auto 1fr;           /* extra height goes under the left column, not between its sections */
+    column-gap: clamp(3rem, 5vw, 6rem);
+    justify-content: center;
+  }
+  main.split::before,
+  main.split::after { display: none; }
+  .split .col-me   { display: block; grid-column: 1; grid-row: 1; }
+  .split .col-work { display: block; grid-column: 2; grid-row: 1 / span 2; }
+  .split .contact  { grid-column: 1; grid-row: 2; align-self: start; }
+  .split .col-work > :first-child { margin-top: 0; }   /* projects line up with the name */
+}
+@media (min-width: 860px) and (max-width: 999px) {
+  main.split { grid-template-columns: minmax(0, 20rem) minmax(0, 38rem); }   /* narrower left column, so the graphs keep their room */
+}
 
 /* ---------- spacing tiers ---------- */
 .intro    { margin-top: calc(var(--u) * 0.9); }   /* tight: identity block */
