@@ -415,7 +415,7 @@ main > .projects {
   text-overflow: ellipsis;
 }
 
-.sc { position: relative; margin-top: 0.6rem; }
+.sc { position: relative; margin-top: 0.35rem; }   /* header → graph matches graph → total, so each panel reads as one unit */
 .sc .arr { top: 0; bottom: 0; width: 1.6rem; }
 .sc .arr.l {
   left: 0;
