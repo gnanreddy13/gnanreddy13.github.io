@@ -364,6 +364,7 @@ h1 {
   color: var(--muted);
 }
 .tlic a { color: var(--muted); }
+.player + .updated { margin-top: 0.75rem; } /* same space as above the player: the stamp closes the whole section, not the track */
 /* the repeat switch: "on repeat" (green mark) or "play once" */
 .rpt {
   display: inline-flex;
