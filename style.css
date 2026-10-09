@@ -3,7 +3,7 @@
   --bg: #000000;
   --text: #f2f2f0;
   --muted: #8f8f8a;
-  --faint: #555552;                         /* dimmed: tab counts, non-matching hashtags while filtering */
+  --faint: #555552;                         /* dimmed states only (low contrast on purpose): non-matching counts and hashtags while filtering */
 
   /* accent: selected states, focus, matches (hover brightens to --text instead) */
   --accent: #3fb950;
@@ -160,7 +160,7 @@ main > *,
 .arr svg { transition: transform var(--t) var(--ease); }
 .arr:active { color: var(--accent); }
 .arr:active svg { transform: scale(0.85); }
-.arr:focus-visible { color: var(--text); outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
+.arr:focus-visible { color: var(--text); outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 3px; }   /* inset: the arrows sit at the graph edge */
 @media (hover: hover) {
   .arr:hover { color: var(--text); }
 }
@@ -272,7 +272,6 @@ h1 {
   transition: background-size 0.3s var(--ease), text-decoration-color var(--t) var(--ease);
 }
 .chip[aria-pressed="true"] { background-size: 100% 100%; text-decoration-color: transparent; }
-.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (hover: hover) {
   .chip:hover:not([aria-pressed="true"]) { text-decoration-color: var(--text); }   /* hover brightens, like every other hover */
 }
@@ -312,11 +311,12 @@ h1 {
   margin-left: 0.15rem;
   padding: 0 0.3rem;
   text-align: center;
-  color: var(--faint);
+  color: var(--muted);
   transition: color var(--t) var(--ease);
 }
-/* a skill is selected: a count with matches turns green (no filled badge); one without stays faint */
-.ptab span.hit { color: var(--accent); }
+/* a skill is selected: a count with matches turns green (no filled badge); one without dims */
+.ptab span.hit  { color: var(--accent); }
+.ptab span.none { color: var(--faint); }
 .ptab[aria-pressed="true"] { color: var(--text); }
 .ptab[aria-pressed="true"]::after {
   content: "";
@@ -326,7 +326,6 @@ h1 {
   background: var(--accent);
 }
 .ptab:active { color: var(--text); }
-.ptab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
 
 /* each project reads as one sentence: name, description, a quiet date at the end; hashtags on the line below */
@@ -398,7 +397,7 @@ h1 {
 .panel-head {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4em;                               /* icon → text, same as the clock and readouts */
   min-height: 1.4em;
   color: var(--muted);
   font-size: var(--fs-md);
@@ -469,7 +468,6 @@ h1 {
 .bars::-webkit-scrollbar { display: none; }
 .bars.dragging { cursor: grabbing; }
 .sc[data-l="0"][data-r="0"] .bars { cursor: default; }   /* the whole year fits: nothing to drag */
-.bars:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
 .track {
   display: grid;
@@ -504,7 +502,7 @@ h1 {
 .cl {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.4em;                               /* icon → text, same as the clock and readouts */
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: var(--lh-ui);
@@ -524,7 +522,11 @@ a {
   transition: text-decoration-color var(--t) var(--ease);
 }
 a:active { text-decoration-color: var(--accent); }
-a:focus-visible {
+/* one focus ring for everything you can tab to (the graph arrows use an inset version) */
+a:focus-visible,
+.chip:focus-visible,
+.ptab:focus-visible,
+.bars:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 3px;
