@@ -364,19 +364,34 @@ var MORE = {
   active: "https://github.com/gnanreddy13?tab=repositories&sort=updated",
   done:   "https://github.com/gnanreddy13?tab=repositories"
 };
-function showStatus(s) {
-  var n = 0;
+var plist = document.querySelector(".plist"), pgrow = null;
+function showStatus(s, animate) {
+  var from = plist.getBoundingClientRect().height;   // mid-glide too, so a quick second click carries on from there
+  if (pgrow) pgrow.cancel();
+  var n = 0, shown = [];
   Array.prototype.forEach.call(document.querySelectorAll(".project"), function (p) {
     var on = p.dataset.status === s;
     p.hidden = !on;
-    if (on) n++;
+    if (on) { n++; shown.push(p); }
   });
   pempty.hidden = n > 0;
   ptabs.forEach(function (t) { t.setAttribute("aria-pressed", String(t.dataset.s === s)); });
   pmore.href = MORE[s];
+  if (!animate || reduce) return;
+  // the list glides to its new height (so everything below slides instead of jumping) while the projects fade in
+  var to = plist.getBoundingClientRect().height, ease = "cubic-bezier(0.2, 0.7, 0.2, 1)";   // same curve as --ease
+  if (from !== to) {   // overflow is part of the animation, so it clips only while gliding and needs no cleanup
+    pgrow = plist.animate([{ height: from + "px", overflow: "hidden" }, { height: to + "px", overflow: "hidden" }],
+      { duration: 320, easing: ease });
+  }
+  shown.concat(pempty.hidden ? [] : [pempty]).forEach(function (p) {
+    p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: ease });
+  });
 }
 ptabs.forEach(function (t) {
-  t.addEventListener("click", function () { showStatus(t.dataset.s); });
+  t.addEventListener("click", function () {
+    if (t.getAttribute("aria-pressed") !== "true") showStatus(t.dataset.s, true);
+  });
 });
 
 // tab badges: totals normally, matches while a skill is selected
