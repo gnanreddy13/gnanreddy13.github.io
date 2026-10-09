@@ -101,7 +101,9 @@ main > *,
 .col-me,
 .col-work { display: contents; }
 .split .contact { order: 1; }               /* phones: contact lives in the left wrapper but shows last */
-.split::after   { order: 2; }
+.split .setup   { order: 2; }               /* … and the setup sign-off after it */
+.split::after   { order: 3; }
+main.split .setup { margin-top: calc(var(--u) * 1.6); }   /* a section's distance from what's above (more specific than the shared note style) */
 @media (min-width: 960px) {
   main.split {
     --top: clamp(1.5rem, 8vh, 5rem);        /* distance from the top of the screen */
@@ -252,6 +254,7 @@ h1 {
 }
 /* the note sits on its own line, flush under the paragraph */
 .snote,
+.setup,
 .updated {
   margin: 0.2rem 0 0;
   font-family: var(--mono);
