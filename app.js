@@ -11,18 +11,17 @@ function getJSON(url, opts) {
 }
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// ---------- clock: my time (IST) on one line, how far the visitor is from it on the next ----------
+// ---------- clock: my time (IST), my date, and how far the visitor is from it, one line each ----------
 function renderClock() {
   var now = new Date();
   var t = now.toLocaleTimeString("en", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit" }).toLowerCase();
-  var wd = now.toLocaleDateString("en", { timeZone: "Asia/Kolkata", weekday: "short" }).toLowerCase();
-  var d = '<span class="wd">' + wd + ", </span>" +   // the weekday drops on phones, so the line fits beside the photo
-    now.toLocaleDateString("en", { timeZone: "Asia/Kolkata", month: "short", day: "numeric" }).toLowerCase();
+  var d = now.toLocaleDateString("en", { timeZone: "Asia/Kolkata", weekday: "short", month: "short", day: "numeric" }).toLowerCase();
   var diff = -now.getTimezoneOffset() - 330;           // visitor minus IST, in minutes
   var a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
   var span = (h ? h + "h" : "") + (h && m ? " " : "") + (m ? m + "m" : "");
   var rel = diff === 0 ? "same time as me" : "you're " + span + (diff < 0 ? " behind" : " ahead");
-  $("clock").innerHTML = icon("clock") + t + " ist · " + icon("cal") + d;
+  $("clock").innerHTML = icon("clock") + t + " ist";
+  $("date").innerHTML = icon("cal") + d;
   $("clock-rel").textContent = rel;
 }
 renderClock();

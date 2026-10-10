@@ -31,7 +31,7 @@
   --l4: #39d353;
 
   /* type scale: three text steps, nothing in between */
-  --fs-xl: clamp(1.45rem, 5.5vw, 1.7rem);   /* name */
+  --fs-xl: clamp(1.35rem, 5.5vw, 1.7rem);   /* name (small enough on narrow phones to stay one line beside the photo) */
   --fs-sm: 1rem;                            /* body: every sentence, and mono words inside a sentence (project and tool names) */
   --fs-xs: 0.875rem;                        /* small: every standalone mono element (labels, tabs, clock, dates, notes, tags, graph text, contact links) */
   --fs-md: 1.1rem;                          /* icons and arrows only, never text */
@@ -234,7 +234,7 @@ main > *,
 @media (hover: hover) { .more:hover { color: var(--text); } }
 
 /* ---------- who ---------- */
-/* photo on the left with the name, tagline and clock beside it; the time difference runs full width underneath
+/* photo on the left with five lines beside it: name, tagline, time, date, time difference
    (404 has no photo, so it stays a plain stack) */
 .head:has(.me) {
   display: grid;
@@ -242,11 +242,10 @@ main > *,
   column-gap: 0.9rem;
 }
 .head:has(.me) > :not(.me) { grid-column: 2; }
-.head:has(.me) > .rel { grid-column: 1 / -1; }   /* the time difference runs full width under the photo */
 .me {
-  grid-row: 1 / span 3;                     /* beside the name, tagline and clock */
-  /* exactly as tall as those three lines (their sizes, line heights and gaps), so the block is one clean square-edged unit */
-  --h: calc(var(--fs-xl) * var(--lh-tight) + 0.3rem + var(--fs-sm) * var(--lh) + 0.2rem + var(--fs-xs) * var(--lh-ui));
+  grid-row: 1 / span 5;                     /* beside the name, tagline, time, date and time difference */
+  /* exactly as tall as those five lines (their sizes, line heights and gaps), so the block is one clean square-edged unit */
+  --h: calc(var(--fs-xl) * var(--lh-tight) + 0.3rem + var(--fs-sm) * var(--lh) + 0.2rem + var(--fs-xs) * var(--lh-ui) * 3);
   width: var(--h);
   height: var(--h);                         /* same corners and edge as the album sleeve */
   border-radius: 3px;
@@ -269,16 +268,16 @@ h1 {
   color: var(--muted);
 }
 .clock {
-  margin-top: 0.2rem;                        /* less than the tagline's 0.3rem: line-height pads this gap more, so the two look equal */
+  margin-top: 0.2rem;                       /* less than the tagline's 0.3rem: line-height pads this gap more, so the two look equal */
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
+.clock + .clock { margin-top: 0; }          /* the date, straight under the time */
 .clock .i { margin-right: 0.4em; color: var(--muted); }   /* clock and calendar icons before the time and date */
-.rel {                                      /* "you're 9h 30m behind": its own line under the photo */
-  margin-top: 0.35rem;
+.rel {                                      /* "you're 9h 30m behind", under the date */
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: var(--lh-ui);
@@ -355,12 +354,6 @@ h1 {
 .fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
 .fold-label:not([hidden]) + .music { margin-top: 0; }
 p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for content that isn't there */
-
-/* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
-@media (max-width: 600px) {
-  .rel,                                     /* "you're 9h 30m behind": the time itself is enough */
-  .clock .wd { display: none; }             /* "sun, ": so the clock fits on one line beside the photo */
-}
 
 /* ---------- now: what i'm up to these days ---------- */
 .now-text {
