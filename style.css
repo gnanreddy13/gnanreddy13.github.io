@@ -242,12 +242,15 @@ main > *,
   column-gap: 0.9rem;
 }
 .head:has(.me) > :not(.me) { grid-column: 2; }
+/* the photo is taller than the two lines beside it: they meet in the middle, so the pair sits centred on it */
+.head:has(.me) > h1 { align-self: end; }
+.head:has(.me) > .tagline { align-self: start; }
 .head:has(.me) > .clock { grid-column: 1 / -1; }
 .me {
   grid-row: 1 / span 2;
   align-self: center;                       /* centred on the name + tagline */
-  width: 3.25rem;                           /* square corners like the album sleeve */
-  height: 3.25rem;
+  width: 4rem;                              /* the album sleeve's size and corners, so the two images match */
+  height: 4rem;
   border-radius: 3px;
   object-fit: cover;
   background: var(--l0);                    /* dark grey while it loads */
