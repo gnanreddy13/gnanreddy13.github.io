@@ -336,7 +336,7 @@ h1 {
 }
 .fold .i { margin-right: 0.4em; transition: transform var(--t) var(--ease); }
 .fold[aria-expanded="true"] .i { transform: rotate(90deg); }   /* › becomes ⌄ when open */
-.fold-sum { color: var(--faint); }
+.fold-sum { color: var(--muted); }         /* the same grey as every other "// …" note */
 @media (hover: hover) { .fold:hover { color: var(--text); } }
 .fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
 .fold-label:not([hidden]) + .music { margin-top: 0; }
