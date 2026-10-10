@@ -234,7 +234,7 @@ main > *,
 @media (hover: hover) { .more:hover { color: var(--text); } }
 
 /* ---------- who ---------- */
-/* photo on the left with the name and tagline beside it; the clock runs full width underneath
+/* photo on the left with the name, tagline and clock beside it; the time difference runs full width underneath
    (404 has no photo, so it stays a plain stack) */
 .head:has(.me) {
   display: grid;
@@ -242,15 +242,13 @@ main > *,
   column-gap: 0.9rem;
 }
 .head:has(.me) > :not(.me) { grid-column: 2; }
-/* the photo is taller than the two lines beside it: they meet in the middle, so the pair sits centred on it */
-.head:has(.me) > h1 { align-self: end; }
-.head:has(.me) > .tagline { align-self: start; }
-.head:has(.me) > .clock { grid-column: 1 / -1; }
+.head:has(.me) > .rel { grid-column: 1 / -1; }   /* the time difference runs full width under the photo */
 .me {
-  grid-row: 1 / span 2;
-  align-self: center;                       /* centred on the name + tagline */
-  width: 4rem;                              /* the album sleeve's size and corners, so the two images match */
-  height: 4rem;
+  grid-row: 1 / span 3;                     /* beside the name, tagline and clock */
+  /* exactly as tall as those three lines (their sizes, line heights and gaps), so the block is one clean square-edged unit */
+  --h: calc(var(--fs-xl) * var(--lh-tight) + 0.3rem + var(--fs-sm) * var(--lh) + 0.2rem + var(--fs-xs) * var(--lh-ui));
+  width: var(--h);
+  height: var(--h);                         /* same corners and edge as the album sleeve */
   border-radius: 3px;
   object-fit: cover;
   background: var(--l0);                    /* dark grey while it loads */
@@ -279,7 +277,13 @@ h1 {
   color: var(--text);
 }
 .clock .i { margin-right: 0.4em; color: var(--muted); }   /* clock and calendar icons before the time and date */
-.clock .rel { display: block; color: var(--muted); }   /* the time difference sits on its own line */
+.rel {                                      /* "you're 9h 30m behind": its own line under the photo */
+  margin-top: 0.35rem;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--muted);
+}
 
 /* ---------- what: about + skills as one paragraph ---------- */
 .lede {
@@ -354,7 +358,8 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 
 /* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
 @media (max-width: 600px) {
-  .clock .rel { display: none; }            /* "you're 9h 30m behind": the time itself is enough */
+  .rel,                                     /* "you're 9h 30m behind": the time itself is enough */
+  .clock .wd { display: none; }             /* "sun, ": so the clock fits on one line beside the photo */
 }
 
 /* ---------- now: what i'm up to these days ---------- */
