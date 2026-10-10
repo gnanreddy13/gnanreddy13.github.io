@@ -286,8 +286,7 @@ h1 {
 }
 /* the note sits on its own line, flush under the paragraph */
 .snote,
-.mnote,
-.updated {
+.mnote {
   margin: 0.2rem 0 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
@@ -297,7 +296,6 @@ h1 {
 /* every "// …" aside is italic, like a code comment (#rd-hint is written by app.js) */
 .snote,
 .mnote,
-.updated,
 #rd-hint { font-style: italic; }
 
 /* ---------- skills: a sentence; the tools are tappable words, the selected one turns green (like matching hashtags) ---------- */
@@ -467,7 +465,6 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   color: var(--muted);
 }
 .tlic a { color: var(--muted); }
-.music + .updated { margin-top: 0.75rem; } /* same space as above the player: the stamp closes the whole section, not the track */
 /* the repeat switch: "on repeat" (green mark) or "play once" */
 .rpt {
   display: inline-flex;
