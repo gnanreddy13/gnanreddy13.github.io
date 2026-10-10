@@ -236,6 +236,11 @@ main > *,
 /* ---------- who ---------- */
 /* photo on the left with five lines beside it: name, tagline, time, date, time difference
    (404 has no photo, so it stays a plain stack) */
+.head {
+  /* two groups: who (name, tagline) and when (time, date, difference); tight inside a group, more space between them */
+  --gap-who: 0.2rem;
+  --gap-when: 0.45rem;
+}
 .head:has(.me) {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -245,7 +250,7 @@ main > *,
 .me {
   grid-row: 1 / span 5;                     /* beside the name, tagline, time, date and time difference */
   /* exactly as tall as those five lines (their sizes, line heights and gaps), so the block is one clean square-edged unit */
-  --h: calc(var(--fs-xl) * var(--lh-tight) + 0.3rem + var(--fs-sm) * var(--lh) + 0.2rem + var(--fs-xs) * var(--lh-ui) * 3);
+  --h: calc(var(--fs-xl) * var(--lh-tight) + var(--gap-who) + var(--fs-sm) * var(--lh) + var(--gap-when) + var(--fs-xs) * var(--lh-ui) * 3);
   width: var(--h);
   height: var(--h);                         /* same corners and edge as the album sleeve */
   border-radius: 3px;
@@ -262,13 +267,13 @@ h1 {
   text-wrap: balance;
 }
 .tagline {
-  margin-top: 0.3rem;
+  margin-top: var(--gap-who);               /* its line height adds a little above it, so this stays small */
   font-size: var(--fs-sm);
   line-height: var(--lh);
   color: var(--muted);
 }
 .clock {
-  margin-top: 0.2rem;                       /* less than the tagline's 0.3rem: line-height pads this gap more, so the two look equal */
+  margin-top: var(--gap-when);              /* the break between the two groups */
   font-family: var(--mono);
   font-size: var(--fs-xs);
   line-height: var(--lh-ui);
