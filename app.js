@@ -345,6 +345,13 @@ chips.forEach(function (c) {
     }
   });
 });
+// a tap anywhere else (or esc) clears it; the building / built tabs keep it, so both can be checked
+document.addEventListener("click", function (e) {
+  if (activeChip && !e.target.closest(".chip, .ptab")) highlight(null);
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && activeChip) highlight(null);
+});
 
 // ---------- projects: building / built tabs ----------
 var ptabs = Array.prototype.slice.call(document.querySelectorAll(".ptab"));
