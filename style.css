@@ -1,3 +1,17 @@
+/* ---------- fonts: served from fonts/ (latin only), so no trip to google before the text shows ---------- */
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/geist.woff2") format("woff2");
+  font-weight: 400 600;                     /* one variable file covers both weights */
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("fonts/geist-mono.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 /* ---------- tokens (dark only) ---------- */
 :root {
   --bg: #000000;

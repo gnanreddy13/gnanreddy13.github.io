@@ -13,9 +13,9 @@
   <meta property="og:title" content="gnan reddy bobba">
   <meta property="og:description" content="cs student building software systems">
   <meta name="twitter:card" content="summary">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <!-- fetched straight away instead of after style.css (fonts need crossorigin even from the same site) -->
+  <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= is replaced with the commit at every deploy, so visitors never get a stale copy -->
   <link rel="stylesheet" href="style.css?v=70">
   <script src="app.js?v=42" defer></script>
