@@ -501,14 +501,16 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
   btn.setAttribute("aria-controls", body.id);
   // built once, so the chevron is the same element every time and its turn can animate
   btn.innerHTML = icon("right");
-  btn.appendChild(document.createTextNode(name));
+  var title = btn.appendChild(document.createTextNode(name));
   var sum = document.createElement("span");
   sum.className = "fold-sum";
   btn.appendChild(sum);
+  // folded, the label runs straight into its summary ("now i'm building …"); open, it's the usual "now i'm..."
   function renderButton() {
     btn.setAttribute("aria-expanded", String(open));
     var s = open ? "" : summary();
-    sum.textContent = s ? " // " + s : "";
+    title.nodeValue = s ? name.replace(/\.\.\.$/, "") : name;
+    sum.textContent = s ? " " + s : "";
   }
   function renderBody() {
     body.hidden = !open;

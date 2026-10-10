@@ -283,13 +283,12 @@ h1 {
   line-height: var(--lh-ui);
   color: var(--muted);
 }
-/* every "// …" aside is italic, like a code comment (#rd-hint and .fold-sum are written by app.js) */
+/* every "// …" aside is italic, like a code comment (#rd-hint is written by app.js) */
 .snote,
 .mnote,
 .setup,
 .updated,
-#rd-hint,
-.fold-sum { font-style: italic; }
+#rd-hint { font-style: italic; }
 
 /* ---------- skills: a sentence; the tools are tappable words, the selected one turns green (like matching hashtags) ---------- */
 .now .label { margin-bottom: calc(var(--u) * 0.8); }   /* same label → content gap as projects */
@@ -336,7 +335,6 @@ h1 {
 }
 .fold .i { margin-right: 0.4em; transition: transform var(--t) var(--ease); }
 .fold[aria-expanded="true"] .i { transform: rotate(90deg); }   /* › becomes ⌄ when open */
-.fold-sum { color: var(--muted); }         /* the same grey as every other "// …" note */
 @media (hover: hover) { .fold:hover { color: var(--text); } }
 .fold-label { margin: 0.75rem 0 0.5rem; }  /* "music": the player's distance from the text above */
 .fold-label:not([hidden]) + .music { margin-top: 0; }
