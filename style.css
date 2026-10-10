@@ -653,6 +653,9 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   --w: 53;                                  /* weeks visible at once: the whole year (keep in sync with vis() in app.js) */
   --gap: 2px;
   --cell: calc((100cqw - (var(--w) - 1) * var(--gap)) / var(--w));
+  --ring: 2px;                              /* room for the selected day's outline, so edge days aren't clipped */
+  padding: var(--ring);
+  margin: calc(var(--ring) * -1);           /* … taken back out, so the graph stays exactly where it was */
   container-type: inline-size;
   overflow-x: auto;
   overflow-y: hidden;
@@ -737,6 +740,7 @@ a:focus-visible,
   border-radius: 3px;
 }
 .pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }   /* same ring, round like the button */
+.bars:focus-visible { outline-offset: 1px; } /* its padding already adds 2px */
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }
   a:hover .i.sm { transform: translate(1px, -1px); }
