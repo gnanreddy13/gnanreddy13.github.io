@@ -481,11 +481,58 @@ function toggle() {
   }
 }
 // the progress line: how far into the song (redrawn every frame while playing)
+var seek = $("seek"), hov = $("prog-hov");
+function mmss(s) { s = Math.floor(s || 0); return Math.floor(s / 60) + ":" + ("0" + s % 60).slice(-2); }
 function tick() {
-  if (audio.duration) prog.style.transform = "scaleX(" + audio.currentTime / audio.duration + ")";
+  if (audio.duration) {
+    var k = audio.currentTime / audio.duration;
+    prog.style.transform = "scaleX(" + k + ")";
+    seek.setAttribute("aria-valuenow", String(Math.round(k * 100)));
+    seek.setAttribute("aria-valuetext", mmss(audio.currentTime) + " of " + mmss(audio.duration));
+  }
   if (!audio.paused) requestAnimationFrame(tick);
 }
 pbtn.addEventListener("click", toggle);
+
+// seeking: click or drag the line to jump (playing or paused); before the file has loaded,
+// only its length is fetched, and the jump happens once that arrives
+var pending = null;
+function seekTo(k) {
+  k = Math.max(0, Math.min(1, k));
+  prog.style.transform = "scaleX(" + k + ")";       // show it straight away
+  if (audio.duration) { audio.currentTime = k * audio.duration; tick(); return; }
+  pending = k;
+  if (audio.readyState === 0) { audio.preload = "metadata"; audio.load(); }
+}
+audio.addEventListener("loadedmetadata", function () {
+  if (pending !== null) { audio.currentTime = pending * audio.duration; pending = null; }
+  tick();
+});
+function at(e) { var r = seek.getBoundingClientRect(); return (e.clientX - r.left) / r.width; }
+var dragging = false;
+seek.addEventListener("pointerdown", function (e) {
+  if (e.button) return;
+  dragging = true;
+  seek.setPointerCapture(e.pointerId);
+  seek.classList.add("dragging");
+  seekTo(at(e));
+});
+seek.addEventListener("pointermove", function (e) {
+  hov.style.transform = "scaleX(" + Math.max(0, Math.min(1, at(e))) + ")";   // where a click would land
+  if (dragging) seekTo(at(e));
+});
+function endDrag() { dragging = false; seek.classList.remove("dragging"); }
+seek.addEventListener("pointerup", endDrag);
+seek.addEventListener("pointercancel", endDrag);
+// keyboard: left/right = 5 seconds, home/end = the ends
+seek.addEventListener("keydown", function (e) {
+  var d = audio.duration, t = audio.currentTime;
+  var step = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5 }[e.key];
+  if (step === undefined && e.key !== "Home" && e.key !== "End") return;
+  e.preventDefault();
+  if (!d) { seekTo(e.key === "End" ? 1 : 0); return; }   // not loaded yet: this fetches the length, so the next press steps
+  seekTo(e.key === "Home" ? 0 : e.key === "End" ? 1 : (t + step) / d);
+});
 $("album").addEventListener("click", toggle);           // the album works too (mouse and touch; the button is the keyboard control)
 
 // repeat switch: loops by default; the visitor's choice is remembered on their device

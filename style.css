@@ -453,21 +453,43 @@ a.tlic { color: var(--muted); white-space: nowrap; }   /* stays quiet (the title
 }
 .player.playing .pbtn { color: var(--text); }
 @media (hover: hover) { .pbtn:hover { color: var(--text); } }
-.prog {
+.prog {                                     /* the tap area: much taller than the line it holds */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 1.1rem;
+  cursor: pointer;
+  touch-action: none;                       /* dragging along it seeks instead of scrolling the page */
+  -webkit-tap-highlight-color: transparent;
+}
+.prog-line {
+  position: relative;
   flex: 1;
   height: 1px;
+  border-radius: 2px;
   background: color-mix(in srgb, var(--muted) 30%, transparent);   /* the empty line: faint, but there */
   overflow: hidden;
+  transition: height var(--t) var(--ease);
 }
-.prog-fg {
-  display: block;
-  height: 100%;
-  background: var(--muted);                 /* paused: the progress stays, in grey */
-  transform: scaleX(0);                     /* empty until it plays; app.js stretches it */
+.prog-fg,
+.prog-hov {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);                     /* app.js stretches them */
   transform-origin: left;
-  transition: background-color var(--t) var(--ease);
 }
-.player.playing .prog-fg { background: var(--accent); }
+.prog-fg { background: var(--accent); }    /* how far into the song, green whether playing or paused */
+.prog-hov {                                 /* where a click would jump to */
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  opacity: 0;
+  transition: opacity var(--t) var(--ease);
+}
+@media (hover: hover) {
+  .prog:hover .prog-line { height: 3px; }   /* the line thickens under the pointer */
+  .prog:hover .prog-hov { opacity: 1; }
+}
+.prog.dragging .prog-line,
+.prog:focus-visible .prog-line { height: 3px; }
 /* the repeat switch: "on repeat" (green mark) or "play once" */
 .rpt {
   display: inline-flex;
@@ -750,6 +772,7 @@ a:focus-visible,
   border-radius: 3px;
 }
 .pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 3px; }   /* inside its tap area, which overlaps the line beside it */
+.prog:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 .bars:focus-visible { outline-offset: 1px; } /* its padding already adds 2px */
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }

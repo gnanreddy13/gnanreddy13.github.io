@@ -89,12 +89,14 @@
             <div class="tinfo">
               <p class="tlabel"><button class="rpt" id="rpt" type="button" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-repeat"/></svg><span id="rpt-t">on repeat</span></button></p>
               <p class="tname"><a target="_blank" rel="noreferrer" href="https://music.youtube.com/watch?v=b0q5PR1xpA0">cipher<svg class="i sm"><use href="#i-ext"/></svg></a> · lemmino · <a class="tlic" target="_blank" rel="noreferrer" href="https://creativecommons.org/licenses/by-sa/4.0/">cc by-sa 4.0</a></p>
-              <!-- play/pause (line icons), then a thin line that fills as the song plays -->
+              <!-- play/pause (line icons), then a thin line that fills as the song plays: click or drag it to jump -->
               <div class="tctl">
                 <button class="pbtn" id="pbtn" type="button" aria-pressed="false" aria-label="play cipher by lemmino">
                   <svg class="i" aria-hidden="true"><use id="picon" href="#i-play"/></svg>
                 </button>
-                <span class="prog" aria-hidden="true"><span class="prog-fg" id="prog"></span></span>
+                <span class="prog" id="seek" role="slider" tabindex="0" aria-label="position in cipher" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00">
+                  <span class="prog-line"><span class="prog-hov" id="prog-hov"></span><span class="prog-fg" id="prog"></span></span>
+                </span>
               </div>
             </div>
             <audio id="audio" src="music/cipher.m4a" preload="none" loop></audio>
