@@ -502,15 +502,10 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
   // built once, so the chevron is the same element every time and its turn can animate
   btn.innerHTML = icon("right");
   var title = btn.appendChild(document.createTextNode(name));
-  var sum = document.createElement("span");
-  sum.className = "fold-sum";
-  btn.appendChild(sum);
-  // folded, the label runs straight into its summary ("now i'm building …"); open, it's the usual "now i'm..."
+  // folded, the label becomes its summary as one line ("now i'm building …"); open, it's the usual "now i'm..."
   function renderButton() {
     btn.setAttribute("aria-expanded", String(open));
-    var s = open ? "" : summary();
-    title.nodeValue = s ? name.replace(/\.\.\.$/, "") : name;
-    sum.textContent = s ? " " + s : "";
+    title.nodeValue = (!open && summary()) || name;
   }
   function renderBody() {
     body.hidden = !open;
@@ -563,8 +558,8 @@ function makeFold(label, body, name, summary, phoneOnlyLabel) {
 }
 
 folds = [
-  makeFold($("now-label"), $("now-body"), "now i'm...", function () { return document.querySelector(".now").dataset.sum; }),
-  makeFold($("music-label"), $("music-body"), "music...", function () { return "cipher by lemmino"; }, true),
+  makeFold($("now-label"), $("now-body"), "now i'm...", function () { return "now i'm " + document.querySelector(".now").dataset.sum; }),
+  makeFold($("music-label"), $("music-body"), "music...", function () { return "cipher music by lemmino"; }, true),
   makeFold($("act-label"), $("act-body"), "past year...", function () {
     var parts = [];
     if (shown.gh) {
@@ -573,7 +568,7 @@ folds = [
       parts.push("github " + t + " " + lab("gh", t));
     }
     if (lcStats && typeof lcStats.solved === "number") parts.push("leetcode " + Number(lcStats.solved) + " solved");
-    return parts.join(" · ");
+    return parts.length ? parts.join(" · ") + " in past year" : "";   // nothing loaded yet: just "past year..."
   })
 ];
 
