@@ -335,7 +335,15 @@ function highlight(chip) {
   updateCounts();
 }
 chips.forEach(function (c) {
-  c.addEventListener("click", function () { highlight(activeChip === c ? null : c); });
+  c.addEventListener("click", function () {
+    var on = activeChip !== c;
+    highlight(on ? c : null);
+    // stacked layout (phones): the projects are further down, so bring them into view to show the match
+    var r = projectsEl.getBoundingClientRect();
+    if (on && (r.top < 0 || r.bottom > window.innerHeight)) {
+      projectsEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+  });
 });
 
 // ---------- projects: building / built tabs ----------

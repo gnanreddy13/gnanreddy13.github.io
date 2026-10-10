@@ -115,9 +115,7 @@ main > *,
 .col-me,
 .col-work { display: contents; }
 .split .contact { order: 1; }               /* phones: contact lives in the left wrapper but shows last */
-.split .setup   { order: 2; }               /* … and the setup sign-off after it */
-.split::after   { order: 3; }
-main.split .setup { margin-top: calc(var(--u) * 1.6); }   /* a section's distance from what's above (more specific than the shared note style) */
+.split::after   { order: 2; }
 @media (min-width: 960px) {
   main.split {
     --top: clamp(1.5rem, 8vh, 5rem);        /* distance from the top of the screen */
@@ -289,7 +287,6 @@ h1 {
 /* the note sits on its own line, flush under the paragraph */
 .snote,
 .mnote,
-.setup,
 .updated {
   margin: 0.2rem 0 0;
   font-family: var(--mono);
@@ -300,7 +297,6 @@ h1 {
 /* every "// …" aside is italic, like a code comment (#rd-hint is written by app.js) */
 .snote,
 .mnote,
-.setup,
 .updated,
 #rd-hint { font-style: italic; }
 
@@ -357,8 +353,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 
 /* phones: drop the nice-to-haves (same 600px as the folds in app.js) */
 @media (max-width: 600px) {
-  .clock .rel,                              /* "you're 9h 30m behind": the time itself is enough */
-  .setup { display: none; }                 /* the setup sign-off */
+  .clock .rel { display: none; }            /* "you're 9h 30m behind": the time itself is enough */
 }
 
 /* ---------- now: what i'm up to these days ---------- */
@@ -542,6 +537,8 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 .pbar.slide { transition: transform 0.3s var(--ease); }
 .ptab:active { color: var(--text); }
 @media (hover: hover) { .ptab:hover { color: var(--text); } }
+
+.projects { scroll-margin-top: 1.25rem; }  /* a skill tap scrolls here (phones): stop with the page's side margin above the tabs */
 
 /* each project: name with a quiet date beside it, the description on its own line, hashtags last */
 .project,
