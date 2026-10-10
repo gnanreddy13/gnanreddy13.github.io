@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- bump ?v= whenever you change style.css or app.js, so visitors never get a stale copy -->
   <link rel="stylesheet" href="style.css?v=70">
-  <script src="app.js?v=41" defer></script>
+  <script src="app.js?v=42" defer></script>
   <!-- without javascript: hide the parts that only work with it -->
   <noscript><style>.clock, .snote, .ptabs, .arr, .rd-row, .panels, .mnote, .player { display: none; }</style></noscript>
 </head>
@@ -44,7 +44,7 @@
     <!-- left on wide screens: who i am, sticky while the right side scrolls; on phones the wrappers vanish,
          everything stacks, and contact is moved to the very end (see .split .contact in style.css) -->
     <div class="col-me">
-      <!-- 1. who -->
+      <!-- who -->
       <header class="head">
         <img class="me" src="me.jpg" alt="" width="52" height="52">   <!-- beside the name, not above it -->
         <h1>gnan reddy bobba</h1>
@@ -52,7 +52,7 @@
         <p class="clock" id="clock"></p>
       </header>
 
-      <!-- 2. what i do -->
+      <!-- what i do -->
       <div class="intro">
         <p class="lede">hi. i build software systems and enjoy my slice of life.</p>
       </div>
@@ -63,7 +63,7 @@
         <p class="snote">// tap a skill to see which projects use it</p>
         <!-- data-skill words must match the data-tag values on the project hashtags -->
         <p class="stack">
-          <button class="chip" type="button" aria-pressed="false" data-skill="go chi">go</button> &amp; <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button> for services,
+          <button class="chip" type="button" aria-pressed="false" data-skill="go">go</button> &amp; <button class="chip" type="button" aria-pressed="false" data-skill="python">python</button> for services,
           <button class="chip" type="button" aria-pressed="false" data-skill="sql">sql</button> &amp; <button class="chip" type="button" aria-pressed="false" data-skill="postgresql">postgresql</button> (+ <button class="chip" type="button" aria-pressed="false" data-skill="pgvector">pgvector</button>) for data,
           <button class="chip" type="button" aria-pressed="false" data-skill="kafka">kafka</button> for events, <button class="chip" type="button" aria-pressed="false" data-skill="minio">minio</button> for storage,
           and <button class="chip" type="button" aria-pressed="false" data-skill="docker">docker</button> to ship it all.
@@ -103,7 +103,7 @@
         </div>
       </section>
 
-      <!-- 5. next step -->
+      <!-- next step -->
       <section class="contact">
         <p class="label">find me...</p>
         <nav class="links" aria-label="contact">
@@ -119,7 +119,7 @@
 
     <!-- right on wide screens: what i do -->
     <div class="col-work">
-      <!-- 3. proof: building / built tabs (set data-status to "active" or "done") -->
+      <!-- proof: building / built tabs (set data-status to "active" or "done") -->
       <section class="projects">
         <div class="label-row">
           <div class="ptabs" role="group" aria-label="project status">
@@ -149,7 +149,7 @@
         </div>
       </section>
 
-      <!-- 4. consistency: the two graphs stacked, full width
+      <!-- consistency: the two graphs stacked, full width
            zones: hint (under the label) / panel header (permanent fact on the left, hovered day on the right while hovering)
            / total + range under each graph (year at rest, visible window while hovering or sliding) -->
       <section class="activity">

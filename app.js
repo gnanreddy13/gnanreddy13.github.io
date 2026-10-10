@@ -50,9 +50,11 @@ function showDefault() { showRow("rest"); }
 
 function vis() { var w = window.innerWidth; return w <= 480 ? 26 : w <= 600 ? 39 : 53; }   // keep in sync with --w in style.css
 function lab(which, n) { return LABEL[which][n === 1 ? 0 : 1]; }
+// every day is checked, since dates and counts go into the graph's markup
 function valid(a) {
-  return Array.isArray(a) && a.length > 0 &&
-         typeof a[0].date === "string" && typeof a[0].count === "number";
+  return Array.isArray(a) && a.length > 0 && a.every(function (d) {
+    return d && /^\d{4}-\d{2}-\d{2}$/.test(d.date) && typeof d.count === "number" && isFinite(d.count);
+  });
 }
 function dow(s) { return new Date(s + "T00:00:00Z").getUTCDay(); }   // 0 = Sunday
 function setStat(which, text) { $("s-" + which).textContent = text; }
@@ -250,37 +252,25 @@ document.addEventListener("pointerdown", function (e) {
   if (owner !== null && !e.target.closest(".bars")) clearAll();
 });
 
-// cached copy shows instantly; each source is tried in order; failure is stated, never faked
-function loadActivity(which, sources) {
+// cached copy shows instantly; failure is stated, never faked
+function loadActivity(which, url) {
   var key = "activity-" + which, cached = null;
   skeleton(which);
   setStat(which, "loading…");
   try { cached = JSON.parse(localStorage.getItem(key)); } catch (e) {}
   if (valid(cached)) { data[which] = cached; draw(which); }
-  (function next(i) {
-    if (i >= sources.length) {
-      if (!data[which]) setStat(which, "unavailable");
-      return;
-    }
-    getJSON(sources[i][0], { cache: "no-cache" })
-      .then(function (d) {
-        var arr = sources[i][1](d);
-        if (!valid(arr)) throw new Error(sources[i][0] + ": invalid data");
-        data[which] = arr;
-        try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
-        draw(which);
-      })
-      .catch(function () { next(i + 1); });
-  })(0);
+  getJSON(url, { cache: "no-cache" })
+    .then(function (arr) {
+      if (!valid(arr)) throw new Error(url + ": invalid data");
+      data[which] = arr;
+      try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
+      draw(which);
+    })
+    .catch(function () { if (!data[which]) setStat(which, "unavailable"); });
 }
 
-var same = function (d) { return d; };
-loadActivity("gh", [
-  ["data/github.json", same],                              // written by the nightly Action
-  ["https://github-contributions-api.jogruber.de/v4/gnanreddy13?y=last",
-    function (d) { return d.contributions; }]              // fallback
-]);
-loadActivity("lc", [["data/leetcode.json", same]]);
+loadActivity("gh", "data/github.json");                    // both written at every deploy (see .github/workflows)
+loadActivity("lc", "data/leetcode.json");
 showDefault();
 
 // ---------- permanent facts (never touched by hover) ----------
@@ -306,8 +296,7 @@ getJSON("data/leetcode-stats.json", { cache: "no-cache" })
   .catch(function () {});                                  // fetch failed: the cached values (if any) stay
 
 // GitHub: public repo count in the header, last push date under the graph.
-// Source order: data/github-stats.json (written nightly by the Action), then the live API as a fallback.
-// A cached copy shows instantly, and if everything fails the last known values stay.
+// A cached copy shows instantly, and if the fetch fails the last known values stay.
 var gh = {};
 try { gh = JSON.parse(localStorage.getItem("gh-facts")) || {}; } catch (e) {}
 function renderGh() {
@@ -329,15 +318,7 @@ function takeGh(s) {
 renderGh();
 getJSON("data/github-stats.json", { cache: "no-cache" })
   .then(takeGh)
-  .catch(function () {
-    // file missing: fall back to the live API
-    Promise.all([
-      getJSON("https://api.github.com/users/gnanreddy13"),
-      getJSON("https://api.github.com/users/gnanreddy13/repos?sort=pushed&per_page=1")
-    ]).then(function (res) {
-      takeGh({ repos: res[0].public_repos, pushed: res[1][0] && res[1][0].pushed_at });
-    }).catch(function () {});
-  });
+  .catch(function () {});                                  // fetch failed: the cached values (if any) stay
 
 // ---------- skills highlight matching project hashtags ----------
 var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));

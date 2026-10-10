@@ -1,0 +1,44 @@
+name: deploy
+
+# fetches fresh activity data, then publishes the site. nothing is committed back:
+# the files in data/ are only a starting point, overwritten in the build
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "30 20 * * *"   # 02:00 IST every night, so the graphs stay current
+  workflow_dispatch:         # lets you run it manually from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:                 # never two deploys at once
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: fetch activity data
+        continue-on-error: true   # a failed fetch keeps the files from the repo, and the site still deploys
+        run: node scripts/update-activity.mjs
+        env:
+          GH_USER: gnanreddy13
+          LC_USER: gnanreddy13
+          GH_TOKEN: ${{ secrets.GH_STATS_TOKEN || secrets.GITHUB_TOKEN }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

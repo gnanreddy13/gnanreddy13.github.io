@@ -221,7 +221,7 @@ main.split .setup { margin-top: calc(var(--u) * 1.6); }   /* a section's distanc
 .more:active { color: var(--text); }
 @media (hover: hover) { .more:hover { color: var(--text); } }
 
-/* ---------- 1. who ---------- */
+/* ---------- who ---------- */
 /* photo on the left with the name and tagline beside it; the clock runs full width underneath
    (404 has no photo, so it stays a plain stack) */
 .head:has(.me) {
@@ -266,7 +266,7 @@ h1 {
 .clock .i { margin-right: 0.4em; color: var(--muted); }   /* clock and calendar icons before the time and date */
 .clock .rel { display: block; color: var(--muted); }   /* the time difference sits on its own line */
 
-/* ---------- 2. what: about + skills as one paragraph ---------- */
+/* ---------- what: about + skills as one paragraph ---------- */
 .lede {
   font-size: var(--fs-sm);
   line-height: var(--lh);
@@ -480,7 +480,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 .rpt[aria-pressed="true"] .i { color: var(--accent); }
 @media (hover: hover) { .rpt:hover { color: var(--text); } }            /* the credit stays quiet; the song title is the link that stands out */
 
-/* ---------- 3. proof: projects (tabs + list) ---------- */
+/* ---------- proof: projects (tabs + list) ---------- */
 .ptabs { display: flex; gap: 1.1rem; position: relative; }
 @media (max-width: 360px) {
   .ptabs { gap: 0.8rem; }
@@ -569,7 +569,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 /* the matching project's name turns green too, so the matching row reads at a glance */
 .projects.filtering .project:has(.tag.on) a.name { color: var(--accent); }
 
-/* ---------- 4. consistency: activity grids, stacked (full year on desktop; 26 or 39 weeks, scrollable, on narrow screens) ---------- */
+/* ---------- consistency: activity grids, stacked (full year on desktop; 26 or 39 weeks, scrollable, on narrow screens) ---------- */
 .activity > .label { margin-bottom: 0.15rem; }
 
 /* the hint: its own line under "past year" */
@@ -696,7 +696,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 .bars i.on { outline: 1.5px solid var(--text); outline-offset: 0; position: relative; z-index: 1; }
 .bars.anim i { animation: pop 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 14ms); }
 
-/* ---------- 5. next step: contact (logo, name, arrow if it leaves the site) ---------- */
+/* ---------- next step: contact (logo, name, arrow if it leaves the site) ---------- */
 .links {
   display: flex;
   flex-wrap: wrap;
