@@ -323,6 +323,7 @@ h1 {
 /* ---------- folds (phones only): a label becomes a toggle; collapsed, it shows a short summary ---------- */
 .fold {
   display: block;                           /* the summary wraps under the label when it's long */
+  width: 100%;                              /* the whole row is tappable, not just the words (buttons shrink to fit otherwise) */
   padding: var(--tap) 0;
   margin: calc(var(--tap) * -1) 0;          /* taller tap area without moving the line */
   border: 0;
