@@ -14,4 +14,4 @@ my corner of the internet. plain html, css and js, no build step. a github actio
 ## notes
 
 - the action uses the `GH_STATS_TOKEN` secret if it's set, otherwise the default `GITHUB_TOKEN`
-- bump the `?v=` on `style.css` / `app.js` in `index.html` (and `404.html` for the css) after editing them
+- no need to bump the `?v=` on `style.css` / `app.js`: the deploy sets it to the commit

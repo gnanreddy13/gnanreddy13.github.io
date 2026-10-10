@@ -36,6 +36,8 @@ jobs:
           GH_USER: gnanreddy13
           LC_USER: gnanreddy13
           GH_TOKEN: ${{ secrets.GH_STATS_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: stamp asset versions   # ?v= becomes the commit, so visitors never get a stale style.css or app.js
+        run: sed -i -E "s/(style\.css|app\.js)\?v=[0-9a-z]+/\1?v=${GITHUB_SHA::7}/g" index.html 404.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
