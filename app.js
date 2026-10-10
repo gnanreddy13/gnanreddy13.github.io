@@ -449,8 +449,8 @@ mail.addEventListener("click", function (e) {
   }, function () { location.href = mail.href; });
 });
 
-// ---------- mini player: press to play (never on its own); the record slides out and spins, the ring fills, volume fades in and out ----------
-var audio = $("audio"), player = $("player"), pbtn = $("pbtn"), ring = $("ring");
+// ---------- mini player: press to play (never on its own); the record slides out and spins, the line fills, volume fades in and out ----------
+var audio = $("audio"), player = $("player"), pbtn = $("pbtn"), prog = $("prog");
 var VOL = 0.6, want = false, fadeId = 0;
 
 // ramp the volume (iOS ignores volume, so there it just plays and pauses)
@@ -480,9 +480,9 @@ function toggle() {
     fade(0, function () { audio.pause(); });
   }
 }
-// the ring: how far into the song (redrawn every frame while playing)
+// the progress line: how far into the song (redrawn every frame while playing)
 function tick() {
-  if (audio.duration) ring.style.strokeDashoffset = 100 - (audio.currentTime / audio.duration) * 100;
+  if (audio.duration) prog.style.transform = "scaleX(" + audio.currentTime / audio.duration + ")";
   if (!audio.paused) requestAnimationFrame(tick);
 }
 pbtn.addEventListener("click", toggle);
@@ -500,7 +500,7 @@ var savedLoop = null;
 try { savedLoop = localStorage.getItem("loop"); } catch (e) {}
 setLoop(savedLoop !== "0", false);
 rpt.addEventListener("click", function () { setLoop(!audio.loop, true); });
-audio.addEventListener("ended", function () { audio.currentTime = 0; tick(); });   // played once: back to the start, ring empty
+audio.addEventListener("ended", function () { audio.currentTime = 0; tick(); });   // played once: back to the start, line empty
 audio.addEventListener("play", function () { want = true; setPlaying(true); requestAnimationFrame(tick); });
 audio.addEventListener("pause", function () { want = false; setPlaying(false); tick(); });
 

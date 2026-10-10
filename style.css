@@ -246,7 +246,7 @@ main > *,
 .me {
   grid-row: 1 / span 2;
   align-self: center;                       /* centred on the name + tagline */
-  width: 3.25rem;                           /* the album sleeve's size and corners, so the two images match */
+  width: 3.25rem;                           /* square corners like the album sleeve */
   height: 3.25rem;
   border-radius: 3px;
   object-fit: cover;
@@ -362,7 +362,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   text-wrap: pretty;
 }
 /* mini player: an album sleeve with the record half out (it slides out further and spins while playing),
-   the track, and a play/pause button wrapped in the song's progress */
+   then the track: repeat switch, title · artist · licence, and a line-icon play/pause beside a thin progress line */
 .music { margin-top: 0.75rem; }             /* note + player, under the "now" text */
 .mnote { margin-top: 0; }
 .player {
@@ -372,11 +372,11 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   margin-top: 0.5rem;                       /* under its note */
 }
 .album {
-  --sleeve: 3.25rem;
-  --disc: 2.85rem;
+  --sleeve: 4rem;
+  --disc: 3.5rem;
   flex: none;
   position: relative;
-  width: calc(var(--sleeve) + 1.5rem);     /* room for the record at its furthest out */
+  width: calc(var(--sleeve) + 1.85rem);    /* room for the record at its furthest out */
   height: var(--sleeve);
   cursor: pointer;
 }
@@ -392,10 +392,10 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
   position: absolute;
   top: calc((var(--sleeve) - var(--disc)) / 2);
   left: calc(var(--sleeve) - var(--disc));
-  transform: translateX(1rem);              /* paused: about a third out */
+  transform: translateX(1.25rem);           /* paused: about a third out */
   transition: transform 0.5s var(--ease);
 }
-.player.playing .slide { transform: translateX(1.5rem); }   /* playing: about half out */
+.player.playing .slide { transform: translateX(1.85rem); }  /* playing: about half out */
 .disc {
   position: relative;
   display: block;
@@ -419,19 +419,33 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 .player.playing .disc { animation-play-state: running; }
 .player.playing .disc::after { background: radial-gradient(circle, var(--bg) 0 18%, var(--accent) 20%); }   /* green while playing */
 
-/* play/pause: the icon inside a ring that fills as the song plays */
+.tinfo { flex: 1; min-width: 0; }
+.tlabel,
+.tname {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);                /* never cut off: a long line wraps */
+  color: var(--muted);
+}
+a.tlic { color: var(--muted); white-space: nowrap; }   /* stays quiet (the title is the link that stands out), and wraps as one piece */
+
+/* play/pause: a line icon, then the song's progress as a thin line */
+.tctl {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
 .pbtn {
   flex: none;
-  position: relative;
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
+  padding: 0.4rem;
+  margin: -0.4rem;                          /* taller and wider tap area without moving anything */
   border: 0;
-  border-radius: 50%;
   background: none;
   color: var(--muted);
+  font-size: var(--fs-sm);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -439,32 +453,21 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 }
 .player.playing .pbtn { color: var(--text); }
 @media (hover: hover) { .pbtn:hover { color: var(--text); } }
-.picon { font-size: 0.85rem; }
-.ring {                                     /* progress, starting at 12 o'clock */
-  position: absolute;
-  inset: 0;
-  transform: rotate(-90deg);
+.prog {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--muted) 30%, transparent);   /* the empty line: faint, but there */
+  overflow: hidden;
 }
-.ring circle { fill: none; stroke-width: 1.5; }
-.ring-bg { stroke: var(--l0); }
-.ring-fg {
-  stroke: var(--muted);                     /* paused: the progress stays, in grey */
-  stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;                   /* empty until it plays */
-  transition: stroke var(--t) var(--ease);
+.prog-fg {
+  display: block;
+  height: 100%;
+  background: var(--muted);                 /* paused: the progress stays, in grey */
+  transform: scaleX(0);                     /* empty until it plays; app.js stretches it */
+  transform-origin: left;
+  transition: background-color var(--t) var(--ease);
 }
-.player.playing .ring-fg { stroke: var(--accent); }
-.tinfo { flex: 1; min-width: 0; }
-.tlabel,
-.tname,
-.tlic {
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-ui);                /* never cut off: a long title wraps onto the next line */
-  color: var(--muted);
-}
-.tlic a { color: var(--muted); }
+.player.playing .prog-fg { background: var(--accent); }
 /* the repeat switch: "on repeat" (green mark) or "play once" */
 .rpt {
   display: inline-flex;
@@ -483,7 +486,7 @@ p.label.folded { margin-bottom: 0; }        /* collapsed: no gap waiting for con
 }
 .rpt .i { transition: color var(--t) var(--ease); }
 .rpt[aria-pressed="true"] .i { color: var(--accent); }
-@media (hover: hover) { .rpt:hover { color: var(--text); } }            /* the credit stays quiet; the song title is the link that stands out */
+@media (hover: hover) { .rpt:hover { color: var(--text); } }
 
 /* ---------- proof: projects (tabs + list) ---------- */
 .ptabs { display: flex; gap: 1.1rem; position: relative; }
@@ -746,7 +749,7 @@ a:focus-visible,
   outline-offset: 3px;
   border-radius: 3px;
 }
-.pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }   /* same ring, round like the button */
+.pbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 3px; }   /* inside its tap area, which overlaps the line beside it */
 .bars:focus-visible { outline-offset: 1px; } /* its padding already adds 2px */
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }
