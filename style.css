@@ -657,14 +657,18 @@ a.tlic { color: var(--muted); white-space: nowrap; }   /* stays quiet (the title
 }
 
 .sc { position: relative; margin-top: 0.35rem; }   /* header → graph matches graph → total, so each panel reads as one unit */
-.sc .arr { top: 0; bottom: 0; width: 1.6rem; }
+/* the faded edges reach 2px past the graph's edge, over the room .bars keeps for the selected day's outline,
+   so no strip of squares shows sliding past them (the padding keeps the arrow itself where it was) */
+.sc .arr { top: 0; bottom: 0; width: calc(1.6rem + 2px); }
 .sc .arr.l {
-  left: 0;
+  left: -2px;
+  padding-left: 2px;
   place-items: center start;
   background: linear-gradient(to right, var(--bg) 35%, transparent);
 }
 .sc .arr.r {
-  right: 0;
+  right: -2px;
+  padding-right: 2px;
   place-items: center end;
   background: linear-gradient(to left, var(--bg) 35%, transparent);
 }
