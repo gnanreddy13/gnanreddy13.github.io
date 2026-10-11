@@ -1,0 +1,173 @@
+/* slice of life: only this page's own pieces; tokens, fonts and everything shared come from ../style.css */
+
+/* ---------- spacing tiers (same as the home page's groups) ---------- */
+.lately,
+.places,
+.photos,
+.lift,
+.past,
+.favs { margin-top: calc(var(--u) * 1.6); }
+
+/* both columns scroll together here: the home page's sticky left side only works when it's the taller one,
+   and on this page either side can be (a shorter left would stay put, then get pushed up at the end) */
+.split .col-me { position: static; }
+
+/* the way back home, under the intro */
+.back { margin-top: 0.35rem; }
+.back .i { margin-right: 0.4em; }
+
+/* label → content gaps, as on the home page: a hint sits right under its label, then the content */
+.lately .label,
+.photos .label { margin-bottom: calc(var(--u) * 0.8); }
+.places .label,
+.lift .label,
+.favs .label { margin-bottom: 0.25rem; }
+.places .snote,
+.lift .snote { margin: 0 0 0.55rem; }
+.favs .label-row { margin-top: 0.55rem; }
+
+/* ---------- lately: what i'm up to, then what i'm watching and reading, each with a thin progress line ---------- */
+.onnow { margin-top: 0.75rem; }
+.nowlist { list-style: none; margin-top: 0.5rem; }
+.nowlist li + li { margin-top: 0.6rem; }
+.nl {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.nl b { font-weight: 400; color: var(--text); }
+/* a static version of the player's line: faint track, green for how far along */
+.line {
+  position: relative;
+  display: block;
+  height: 1px;
+  margin-top: 0.4rem;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
+  overflow: hidden;
+}
+.line > span {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+
+/* ---------- places: a sentence ---------- */
+.places .stack { text-wrap: pretty; }
+
+/* ---------- places: album links in a sentence (mono like the home page's names) ---------- */
+.places .place { font-family: var(--mono); white-space: nowrap; }   /* the name and its arrow never split */
+a.place .i.sm { margin-left: 0.15em; }
+.places a.place { padding: var(--tap) 0; }  /* a taller tap area (padding on a word in a sentence doesn't move the lines) */
+
+/* ---------- photos: one cover, whole and framed like the profile photo ---------- */
+.cover-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  background: var(--l0);                    /* dark grey while it loads */
+  outline: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  outline-offset: -1px;
+}
+/* under it: place and month */
+.cap {
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--text);
+}
+.cap .when { color: var(--muted); }
+
+/* ---------- lift: the week as seven tappable days (today in white, the picked one with the green underline), then its plan ---------- */
+.week {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: 0.25rem;                      /* five-letter words never touch on phones */
+}
+.day {
+  padding: var(--tap) 0;
+  margin: calc(var(--tap) * -1) 0;          /* taller tap area without moving the row */
+  border: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color var(--t) var(--ease);
+}
+.day .dn { display: block; color: var(--faint); transition: color var(--t) var(--ease); }   /* the day: quieter than the word under it */
+.day.today .dn { color: var(--text); }
+.day[aria-pressed="true"] { color: var(--text); }
+.day:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+@media (hover: hover) { .day:hover { color: var(--text); } }
+.week .pbar { bottom: -0.2rem; }
+/* the workout under it: exercise in white, sets × reps in grey, one per line */
+.plan { margin-top: 0.75rem; }             /* content → its "// note", as the song note sits under "now i'm..." */
+.plist-plan { list-style: none; margin-top: 0.5rem; }   /* note → what it introduces, as the note → player */
+.plist-plan li {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--text);
+}
+.plist-plan li + li { margin-top: 0.2rem; }
+.plist-plan .sets { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }   /* wraps as one piece */
+
+/* ---------- past year: the gym graph, in the home page's activity graph styles; only its spacing is set here ---------- */
+.past .label { margin-bottom: calc(var(--u) * 0.8); }   /* label → content, like "now i'm..." */
+.gym .rng { margin-top: 0.5rem; }
+.gym .rng.hint { font-style: italic; }       /* the "// ..." aside while nothing is logged */
+
+/* ---------- favourites: rows like the projects (name and year, why, hashtags), with a small cover on the left ---------- */
+.fav {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  column-gap: 0.75rem;                      /* the same gap as between the album and the track */
+  align-items: start;
+}
+.cover {                                    /* a poster: same corners and edge as the album sleeve */
+  display: block;
+  aspect-ratio: 2 / 3;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--l0);                    /* dark grey while it loads (or until there is one) */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+}
+.cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.project span.name { font-family: var(--mono); }
+.nw { white-space: nowrap; }
+.credit { margin-top: calc(var(--u) * 0.8); }   /* under the list, the same distance as between rows */
+.credit a { color: var(--muted); }
+
+/* wider screens: the rows sit side by side (two columns on tablets, three when the page has its two columns),
+   so a long tab grows in rows of three instead of one long column */
+@media (min-width: 601px) {
+  .favs .plist {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    row-gap: calc(var(--u) * 0.8);
+  }
+  .favs .plist > .project:not([hidden]) { margin-top: 0; }   /* the grid's row gap spaces them now (beats style.css's stacked-project gap) */
+}
+/* the smallest phones (320px): four tabs with their counts only just fit, so the gaps and count padding tighten */
+@media (max-width: 380px) {
+  .favs .ptabs { gap: 0.6rem; }
+  .favs .ptab span { min-width: 0; margin-left: 0; padding: 0 0 0 0.1rem; }
+}
+@media (min-width: 960px) {
+  .split > .favs { grid-column: 1 / -1; }      /* the whole bottom row, under both columns */
+  .favs .plist { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

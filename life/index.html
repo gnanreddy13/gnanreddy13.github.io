@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>slice of life · gnan reddy bobba</title>
+  <meta name="description" content="the other half: places, photos, lifting and the stuff i watch">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ctext x='16' y='20' font-family='system-ui,sans-serif' font-size='22' font-weight='600' text-anchor='middle' fill='%23f2f2f0'%3Eg%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gnanreddy13.github.io/life/">
+  <meta property="og:title" content="slice of life · gnan reddy bobba">
+  <meta property="og:description" content="the other half: places, photos, lifting and the stuff i watch">
+  <meta name="twitter:card" content="summary">
+  <link rel="preload" href="../fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- the home page's style.css gives the look (tokens, fonts, base); life.css only adds this page's own pieces -->
+  <link rel="stylesheet" href="../style.css?v=70">
+  <link rel="stylesheet" href="life.css?v=1">
+  <script src="life.js?v=1" defer></script>
+  <!-- everything below the intro is drawn from data.json by life.js -->
+  <noscript><style>.clock, .rel, .needs-js { display: none; }</style></noscript>
+</head>
+<body>
+  <!-- icon sprite: stroke icons, same as the home page (plus a dumbbell) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-lift" viewBox="0 0 24 24"><line x1="6.5" y1="6.5" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="17.5" y2="17.5"/><line x1="3.5" y1="9" x2="3.5" y2="15"/><line x1="20.5" y1="9" x2="20.5" y2="15"/><line x1="6.5" y1="12" x2="17.5" y2="12"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  </svg>
+
+  <main class="split">
+    <!-- left on wide screens: who + now: the intro, places (each opens its photo album), lately, and my lifting week -->
+    <div class="col-me">
+      <header class="head">
+        <img class="me" src="../me.jpg" alt="" width="120" height="120">
+        <h1>gnan reddy bobba</h1>
+        <p class="tagline">slice of life</p>
+        <p class="clock" id="clock"></p>
+        <p class="clock" id="date"></p>
+        <p class="rel" id="clock-rel"></p>
+      </header>
+
+      <div class="intro">
+        <p class="lede">la pasión. this is my slice of life: places, photos, lifting and the stuff i watch.</p>
+        <p class="back"><a class="more" href="../"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg>the coding side</a></p>
+      </div>
+
+      <!-- places as a sentence: each opens its google photos album -->
+      <section class="places needs-js">
+        <p class="label">i've been to...</p>
+        <p class="snote">// tap a place to see its album</p>
+        <p class="stack" id="places"></p>
+      </section>
+
+      <!-- on phones this folds away under the label, like "now i'm..." on the home page -->
+      <section class="lately needs-js">
+        <p class="label" id="lately-label">lately i'm...</p>
+        <div class="fold-body" id="lately-body">
+          <p class="now-text" id="lately-text"></p>
+          <div class="onnow">
+            <p class="mnote">// watching and reading</p>
+            <ul class="nowlist" id="nowlist"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- the week: my routine, so it sits with "now"; tap a day (or a gym day in the graph) to see its plan below: the workout, or what i do on a rest day -->
+      <section class="lift needs-js">
+        <p class="label">i lift...</p>
+        <p class="snote">// tap a day to see its plan</p>
+        <div class="week" id="week" role="group" aria-label="training split, monday to sunday"></div>
+        <div class="plan" id="plan-body">
+          <p class="mnote" id="plan-note" aria-live="polite"></p>
+          <ul class="plist-plan" id="plan"></ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- right on wide screens: what's been: a cover photo, then the past year of gym days -->
+    <div class="col-work">
+      <!-- one cover photo, whole (uncropped), with its place and month -->
+      <section class="photos needs-js">
+        <p class="label">i clicked...</p>
+        <div class="cover-photo" id="cover"></div>
+        <p class="cap"><span id="cap"></span></p>
+      </section>
+
+      <!-- the past year of gym days: history, so it sits on the right like "past year..." on the home page;
+           on phones it folds away under the label, as there -->
+      <section class="past needs-js">
+        <p class="label" id="past-label">past year...</p>
+        <div class="fold-body" id="past-body">
+          <div class="panel gym">
+            <div class="panel-head">
+              <svg class="i" aria-hidden="true"><use href="#i-lift"/></svg>
+              <span class="fact" id="gym-n"></span>
+              <span class="rd" id="rd-gym" hidden aria-live="polite"></span>
+            </div>
+            <div class="sc" id="sc-gym" data-l="0" data-r="0">
+              <div class="bars" id="b-gym" tabindex="0" aria-label="gym days, past year"></div>
+              <button class="arr l" type="button" data-dir="-1" aria-label="scroll back" title="earlier"><svg class="i"><use href="#i-left"/></svg></button>
+              <button class="arr r" type="button" data-dir="1" aria-label="scroll forward" title="later"><svg class="i"><use href="#i-right"/></svg></button>
+            </div>
+            <p class="rng" id="gym-rng"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- the whole bottom row on wide screens (three columns of rows), last on phones;
+       tabs with the same sliding underline as building / built -->
+    <section class="favs needs-js">
+      <p class="label">my fav media...</p>
+      <div class="label-row">
+        <div class="ptabs" id="ftabs" role="group" aria-label="favourites"></div>
+      </div>
+      <div class="plist" id="favlist"></div>
+      <p class="mnote credit">// posters from <a target="_blank" rel="noreferrer" href="https://www.themoviedb.org/">tmdb</a> &amp; <a target="_blank" rel="noreferrer" href="https://anilist.co/">anilist</a></p>
+    </section>
+  </main>
+
+</body>
+</html>
