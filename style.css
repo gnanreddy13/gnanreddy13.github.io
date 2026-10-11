@@ -64,6 +64,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 [hidden] { display: none !important; }
 button { font: inherit; }                   /* buttons don't inherit the page font by default */
+.nowrap { white-space: nowrap; }            /* keeps a link, its arrow and the full stop on one line */
 .sr-only {                                  /* read by screen readers, invisible on screen */
   position: absolute;
   width: 1px;
