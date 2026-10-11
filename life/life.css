@@ -26,7 +26,8 @@
 
 /* the way back home, under the intro */
 .back { margin-top: 0.35rem; }
-.back .i { margin-right: 0.4em; }
+.back .i { margin-right: 0.4em; transition: transform var(--t) var(--ease); }
+@media (hover: hover) { .back a:hover .i { transform: translateX(-2px); } }   /* the arrow leans the way it goes, like ↗ on the home page's links */
 
 /* label → content gaps, as on the home page: a hint sits right under its label, then the content */
 .lately .label,
