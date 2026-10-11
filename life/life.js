@@ -59,12 +59,15 @@ function underline(row, buttons, isOn) {
   return { place: place, slide: function () { bar.classList.add("slide"); place(); } };
 }
 
-fetch("data.json", { cache: "no-cache" })
+// data.json was already requested by the preload in the page's head, so this picks up that download instead of starting another
+function reveal() { document.documentElement.classList.remove("loading"); }   // the page fades in, drawn
+fetch("data.json")
   .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(draw)
   .catch(function () {
     $("lately-text").textContent = "couldn't load this part, try a refresh";
-  });
+  })
+  .then(reveal);
 
 function draw(D) {
   drawPlaces(D);

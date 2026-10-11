@@ -19,7 +19,12 @@
   <link rel="stylesheet" href="../style.css?v=70">
   <link rel="stylesheet" href="life.css?v=1">
   <script src="life.js?v=1" defer></script>
-  <!-- everything below the intro is drawn from data.json by life.js -->
+  <!-- everything below the intro is drawn from data.json by life.js; both it and the cover start downloading now,
+       alongside the styles, instead of after life.js has run (keep the cover's path in sync with "cover" in data.json) -->
+  <link rel="preload" href="data.json" as="fetch" crossorigin>
+  <link rel="preload" href="photos/hyderabad-cover.jpg" as="image">
+  <!-- with javascript: the page stays hidden until life.js has drawn it, then fades in once, whole (or after 2.5s, whichever comes first) -->
+  <script>document.documentElement.classList.add("loading"); setTimeout(function () { document.documentElement.classList.remove("loading"); }, 2500);</script>
   <noscript><style>.clock, .rel, .needs-js { display: none; }</style></noscript>
 </head>
 <body>

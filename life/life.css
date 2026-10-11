@@ -12,6 +12,18 @@
    and on this page either side can be (a shorter left would stay put, then get pushed up at the end) */
 .split .col-me { position: static; }
 
+/* loading (set in the page's head): hidden until life.js has drawn everything, then the usual fade-in (rise in style.css) plays once */
+.loading main { visibility: hidden; animation: none; }
+
+/* one column (phones, tablets): the columns stack, so topics regroup into a story: lately, then the gym (week + past year),
+   then places with their photo, then media last (like "find me..." on the home page); the two-column layout is untouched */
+@media (max-width: 959px) {
+  .split .places,
+  .split .photos { order: 1; }
+  .split .favs   { order: 2; }
+  .split::after  { order: 3; }
+}
+
 /* the way back home, under the intro */
 .back { margin-top: 0.35rem; }
 .back .i { margin-right: 0.4em; }
