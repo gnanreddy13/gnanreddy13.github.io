@@ -787,6 +787,7 @@ a:focus-visible,
 @media (hover: hover) {
   a:hover { text-decoration-color: var(--text); }
   a:hover .i.sm { transform: translate(1px, -1px); }
+  a:hover .i.sm.fwd { transform: translateX(2px); }   /* › to another page here: nudges forward, not up and out like ↗ */
 }
 a.more { text-decoration: none; }
 
