@@ -75,6 +75,10 @@ a.place .i.sm { margin-left: 0.15em; }
   outline: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   outline-offset: -1px;
 }
+/* two columns: a bit smaller than the column, so it doesn't outweigh everything beside it (phones keep the full width) */
+@media (min-width: 960px) {
+  .cover-photo { max-width: 30rem; }
+}
 /* under it: place and month */
 .cap {
   margin-top: 0.5rem;
