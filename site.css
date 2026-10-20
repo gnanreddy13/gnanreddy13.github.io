@@ -1,0 +1,234 @@
+/* site.css: the home page and the 404 page.
+   one column on phones, two side by side on wide screens; the writing does the work, the activity graph is the one featured element.
+   life/ still uses style.css until it moves over. */
+@font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+
+:root {
+  --bg: #000; --text: #f2f2f0; --muted: #8f8f8a; --soft: #a6a6a1; --faint: #5c5c58; --line: #1c1c1a;
+  --l0: #17191c; --l1: #0e4429; --l2: #006d32; --l3: #26a641; --l4: #39d353;
+  /* --muted is for labels and small text; --soft is a touch lighter, for sentences people actually read */
+  --track-sm: 0.01em;        /* small text gets a little letter spacing so it stays crisp on black */
+  --sans: "Geist", system-ui, sans-serif;
+  --u: 1rem;                 /* one spacing unit: every gap is 0.5, 1, 2, 3 or 5 of it */
+  --i-gap: 0.4rem;           /* between an icon and its text, everywhere */
+  --line-h: 1.6rem;          /* one body line: labels use it too, so they sit on the first line of their content */
+  --gutter: 7rem;            /* the label column */
+  --col: 36rem;
+  /* objects (tiles, button): one surface, one border, one corner, one height */
+  --obj-bg: #0e0e0d; --obj-line: #262624; --obj-hover: #181816; --obj-r: 10px; --obj-h: 2.25rem;
+  color-scheme: dark;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); color: var(--text); font-size: 1rem; line-height: var(--line-h); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: underline; text-decoration-color: #444441; text-underline-offset: 0.2em; text-decoration-thickness: 1px; transition: text-decoration-color 0.15s, color 0.15s; }
+a:hover { text-decoration-color: var(--text); }
+:focus-visible { outline: 1px solid var(--text); outline-offset: 3px; border-radius: 2px; }
+.sm { font-size: 0.8125rem; letter-spacing: var(--track-sm); font-variant-numeric: tabular-nums; }   /* small text: labels, dates, captions */
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+main { width: min(var(--col), 100% - 2 * var(--u)); margin: 0 auto; padding: calc(var(--u) * 5) 0 calc(var(--u) * 3); }
+
+/* who: photo, name, role. nothing else */
+.head { display: flex; align-items: center; gap: var(--u); }
+.head img { width: 2.75rem; height: 2.75rem; border-radius: 50%; object-fit: cover; }
+.head h1 { font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.head p { line-height: 1.3; }
+
+/* intro: real sentences, and the only place the type gets bigger */
+.intro { margin-top: calc(var(--u) * 2); }
+.intro p { font-size: 1.1875rem; line-height: 1.55; letter-spacing: -0.01em; text-wrap: balance; }   /* even lines, no stubs */
+.intro .muted { color: var(--soft); }
+.intro p + p { margin-top: var(--u); }
+
+/* every block below: a hairline, the label in the left column, the content on the right */
+.blocks { margin-top: calc(var(--u) * 3); }
+.col-b > .blocks { margin-top: 0; }   /* one column: projects follow the stack directly; two columns: they start at the top */
+.blk { display: grid; grid-template-columns: var(--gutter) 1fr; gap: 0 var(--u); padding: var(--u) 0; border-top: 1px solid var(--line); }
+.blk > .k { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 0.5); color: var(--muted); }
+.blk > .k > * { line-height: var(--line-h); }
+.blk > div > p { text-wrap: pretty; }
+.k a { text-decoration: none; }
+.k a:hover { color: var(--text); }
+
+/* each tool's official logo (simple-icons) and brand colour, used by the stack and the project icons */
+[data-t="go"] { --icon: url(icons/go.svg); --brand: #00ADD8; }
+[data-t="python"] { --icon: url(icons/python.svg); --brand: #3776AB; }
+[data-t="postgresql"] { --icon: url(icons/postgresql.svg); --brand: #4169E1; }
+[data-t="apachekafka"] { --icon: url(icons/apachekafka.svg); --brand: #F2F2F0; }
+[data-t="minio"] { --icon: url(icons/minio.svg); --brand: #C72E49; }
+[data-t="docker"] { --icon: url(icons/docker.svg); --brand: #2496ED; }
+[data-t="git"] { --icon: url(icons/git.svg); --brand: #F05032; }
+[data-t="github"] { --icon: url(icons/github.svg); --brand: #F2F2F0; }   /* github's official near-black, shown white on the dark page */
+
+/* stack: each tool's official logo in full colour, its name under it.
+   single-colour logos are drawn from simple-icons in their brand colour; python and postgresql use their multi-colour originals (devicon) */
+.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--u) calc(var(--u) * 0.5); }
+.tool { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 0.5); }
+.tool .logo {
+  width: 1.5rem; height: 1.5rem; background: var(--brand);
+  -webkit-mask: var(--icon) left center / contain no-repeat; mask: var(--icon) left center / contain no-repeat;
+}
+.tool img { width: 1.5rem; height: 1.5rem; object-fit: contain; object-position: left center; }
+.tool .nm { font-size: 0.8125rem; letter-spacing: var(--track-sm); color: var(--muted); line-height: 1.3; transition: color 0.15s; }
+.tool.pick:hover .nm { color: var(--text); }   /* only the tools you can pick respond to hover */
+
+/* picking a tool: the build tools are buttons. no box: the picked tool stays bright and every other tool dims,
+   the same way the projects that don't use it dim */
+.tool.pick { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.tool.pick:focus-visible { outline-offset: 4px; }
+.tool { transition: opacity 0.2s; }
+.tools.picking .tool:not([aria-pressed="true"]) { opacity: 0.3; }
+.tool.pick[aria-pressed="true"] .nm { color: var(--text); }
+.proj { transition: opacity 0.2s; }
+.proj.dim { opacity: 0.3; }
+.proj .uses .u.on i { background: var(--brand); }
+.proj .uses .u.on.full i { opacity: 0; }
+.proj .uses .u.on img { opacity: 1; }
+/* the line under the stack: a hint until a tool is picked, then where that tool is used */
+.used { grid-column: -2 / -1; color: var(--muted); margin-top: var(--u); }   /* under the logos, not in the label gutter */
+
+/* projects: name, a dotted lead to the date, what it is underneath */
+.proj { display: block; text-decoration: none; }
+.proj + .proj { margin-top: var(--u); padding-top: var(--u); border-top: 1px solid var(--line); }
+.proj .top { display: flex; align-items: baseline; gap: calc(var(--u) * 0.5); }
+.proj .name { font-weight: 500; }
+.proj .lead { flex: 1; min-width: var(--u); border-bottom: 1px dotted #2e2e2b; transform: translateY(-0.3em); }
+.proj .when { white-space: nowrap; color: var(--muted); }
+.proj .when.live { color: var(--l4); }
+.proj .desc { color: var(--soft); text-wrap: pretty; }
+/* the tools a project uses: small logos only, the name on hover */
+.proj .uses { display: flex; gap: calc(var(--u) * 0.5); margin-top: calc(var(--u) * 0.5); }
+/* grey at rest; hovering the project shows each tool's full official logo, like the stack */
+.proj .uses .u { position: relative; width: 0.875rem; height: 0.875rem; }
+.proj .uses i {
+  display: block; width: 100%; height: 100%; background: var(--muted);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+  transition: background 0.2s, opacity 0.2s;
+}
+.proj .uses img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.2s; }
+.proj:hover .uses i { background: var(--brand); }
+.proj:hover .uses .full i { opacity: 0; }
+.proj:hover .uses img { opacity: 1; }
+.proj .arr { color: var(--faint); transition: color 0.15s, transform 0.15s; }
+a.proj:hover .name { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 0.2em; }
+a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
+
+/* the one signature thing: a year of work */
+/* the graph is the one block that spans the full width: label and switch on a row above it */
+.blk.fig { grid-template-columns: 1fr; }
+.blk.fig > .k { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: calc(var(--u) * 0.5); }
+.tabs { display: flex; gap: var(--u); }
+.tab { display: inline-flex; align-items: center; gap: var(--i-gap); background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; transition: color 0.15s; }
+.tab svg { width: 0.875rem; height: 0.875rem; fill: currentColor; }
+.tab[aria-pressed="true"], .tab:hover { color: var(--text); }
+.tab[data-g="lc"][aria-pressed="true"] svg { color: #FFA116; }   /* selected: each service in its official colour (github's is white on dark) */
+/* leetcode's official difficulty colours, shown while you're on the graph block (muted at rest) */
+.cap .easy, .cap .med, .cap .hard { transition: color 0.2s; }
+.fig:hover .cap .easy, .fig:focus-within .cap .easy { color: #1CBABA; }
+.fig:hover .cap .med, .fig:focus-within .cap .med { color: #FFB700; }
+.fig:hover .cap .hard, .fig:focus-within .cap .hard { color: #F63737; }
+.graph { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 2px; }
+.graph:focus-visible { outline-offset: 4px; }
+.graph i { display: block; aspect-ratio: 1; border-radius: 1.5px; background: var(--l0); }
+.graph i[data-l="1"] { background: var(--l1); } .graph i[data-l="2"] { background: var(--l2); }
+.graph i[data-l="3"] { background: var(--l3); } .graph i[data-l="4"] { background: var(--l4); }
+.graph i:hover, .graph i.on { outline: 1px solid var(--text); outline-offset: -1px; }
+.graph i.out { visibility: hidden; }
+.cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--u); margin-top: calc(var(--u) * 0.5); color: var(--muted); }
+.cap span { white-space: nowrap; }
+.cap b { font-weight: 400; color: var(--text); }
+
+/* the time where i am: two lines on the right, mirroring the name and role on the left */
+.here { margin-left: auto; text-align: right; white-space: nowrap; }
+.head h1 { white-space: nowrap; }
+.here p { line-height: 1.3; }
+.here .now { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* reach me: four app-icon tiles, overlapped and tilted like a loose hand of cards; they fan out on hover */
+.reach { margin-top: calc(var(--u) * 2); }
+.hand { display: flex; width: max-content; }
+.hand a {
+  position: relative; display: grid; place-items: center; width: var(--obj-h); height: var(--obj-h); border-radius: var(--obj-r);
+  background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
+  transform: rotate(var(--r)); transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.15s;
+}
+.hand a + a { margin-left: -0.5rem; }
+.hand a:nth-child(1) { --r: -3deg; } .hand a:nth-child(2) { --r: 2deg; }
+.hand a:nth-child(3) { --r: -1.5deg; } .hand a:nth-child(4) { --r: 3deg; }
+.hand:hover a, .hand:focus-within a { --r: 0deg; }
+.hand:hover a + a, .hand:focus-within a + a { margin-left: calc(var(--u) * 0.5); }
+/* the lifted tile turns white, like the resume button; github's mark goes to its official near-black on the light tile */
+.hand a:hover, .hand a:focus-visible { transform: translateY(-3px); z-index: 1; background: var(--text); border-color: var(--text); color: #181717; }
+/* the lifted tile shows its brand colour (github's official mark is white on dark, the resume has no brand) */
+.hand a { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.15s, border-color 0.15s, color 0.15s; }
+/* email and linkedin swap to their full official marks: gmail's four-colour M, linkedin's blue square with a white "in" */
+.hand svg { transition: opacity 0.15s; }
+.hand svg.full { position: absolute; opacity: 0; }
+.hand a:hover svg.full, .hand a:focus-visible svg.full { opacity: 1; }
+.hand a:hover svg:has(+ svg.full), .hand a:focus-visible svg:has(+ svg.full) { opacity: 0; }
+.hand a[data-n="LeetCode"]:hover, .hand a[data-n="LeetCode"]:focus-visible { color: #FFA116; }
+.hand svg { width: 1rem; height: 1rem; fill: currentColor; }
+.hand svg.line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* the tile's name, above it while you're on it */
+.hand a::after {
+  content: attr(data-n); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translate(-50%, 3px);
+  font-size: 0.8125rem; letter-spacing: var(--track-sm); color: var(--muted); white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.hand a:hover::after, .hand a:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+/* touch screens can't hover: the tiles sit fanned out, straight, with their names always showing underneath */
+@media (hover: none) {
+  .hand { padding-bottom: calc(var(--u) * 1.5); }
+  .hand a { --r: 0deg; }
+  .hand a + a { margin-left: calc(var(--u) * 2); }   /* room for each name under its tile */
+  .hand a::after { bottom: auto; top: calc(100% + 6px); opacity: 1; transform: translate(-50%, 0); }
+  /* a tap leaves the browser thinking the finger still hovers, so hover looks are undone here
+     and tiles and the button respond while pressed instead */
+  .hand:hover a + a, .hand:focus-within a + a { margin-left: calc(var(--u) * 2); }
+  .hand a[data-n]:hover { transform: none; background: var(--obj-bg); border-color: var(--obj-line); color: var(--text); }
+  .hand a:hover svg.full { opacity: 0; }
+  .hand a:hover svg:has(+ svg.full) { opacity: 1; }
+  .hand a[data-n]:active { background: var(--text); border-color: var(--text); color: #181717; }
+  .btn:hover { background: var(--obj-bg); border-color: var(--obj-line); color: var(--text); }
+  .btn:active { background: var(--text); border-color: var(--text); color: #000; }
+  .proj:hover .uses i { background: var(--muted); }
+  .proj:hover .uses .full i { opacity: 1; }
+  .proj:hover .uses img { opacity: 0; }
+}
+
+/* the next step: one button, and where i stand */
+.act { display: flex; align-items: center; gap: var(--u); margin-top: var(--u); }
+.btn {
+  display: inline-flex; align-items: center; gap: var(--i-gap); height: var(--obj-h); padding: 0 var(--u); border-radius: var(--obj-r);
+  background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
+  font-size: 0.8125rem; letter-spacing: var(--track-sm); text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+.btn svg { width: 0.875rem; height: 0.875rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* the resume button fills white on hover: calm at rest, a clear main action when you reach for it */
+.btn:hover, .btn:focus-visible { background: var(--text); border-color: var(--text); color: #000; }
+.btn:active { transform: scale(0.97); }
+.status { display: inline-flex; align-items: center; gap: var(--i-gap); color: var(--muted); }
+.status i { width: 6px; height: 6px; border-radius: 50%; background: var(--l4); }
+
+
+/* reduced motion: every hover change happens instantly */
+@media (prefers-reduced-motion: reduce) { *, *::after { transition: none !important; } }
+
+/* wide screens: two columns side by side, the whole page on one screen */
+@media (min-width: 1100px) {
+  main { width: min(70rem, 100% - 4 * var(--u)); min-height: 100vh; display: grid; grid-template-columns: 25rem 1fr; align-content: center; gap: calc(var(--u) * 5); padding: calc(var(--u) * 2) 0; }   /* centred on the screen, top to bottom */
+  .col-a > .blocks { margin-top: calc(var(--u) * 2); }
+}
+
+@media (max-width: 560px) {
+  main { padding-top: calc(var(--u) * 3); }
+  .intro p { font-size: 1.125rem; }
+  .head { gap: calc(var(--u) * 0.75); }   /* the narrowest phones: name and time still fit on one line each */
+  .blk { grid-template-columns: 1fr; }
+  .blk > .k { flex-direction: row; justify-content: space-between; gap: var(--u); margin-bottom: calc(var(--u) * 0.5); }
+  .graph { gap: 1.5px; }
+  .graph i:nth-child(-n+91) { display: none; }   /* phones: the last 40 weeks, so the cells stay readable */
+}
