@@ -135,6 +135,18 @@ a.script::before {
 }
 @keyframes pen { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
+/* "coding side" on the slice of life page, the mirror of "Slice of Life" here: the same pen drawing in on hover, but a
+   straight line, in ordinary type. with a mouse there's no underline at rest: hovering draws it in, left to right, and
+   moving away it fades. phones can't hover, so there the grey underline simply stays */
+a.line { position: relative; text-decoration: none; white-space: nowrap; }
+a.line::after, a.line::before { content: ""; position: absolute; left: 0; right: 0; bottom: -0.08em; height: 1px; pointer-events: none; }
+a.line::after { background: #444441; }
+a.line::before { z-index: 1; background: var(--text); opacity: 0; transition: opacity var(--t); }
+@media (hover: hover) {
+  a.line::after { display: none; }
+  a.line:hover::before, a.line:focus-visible::before { opacity: 1; transition: none; animation: pen 0.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+}
+
 /* picking a tool: the chip turns white like a lifted contact tile, its name goes black;
    the projects that don't use it dim. kafka's mark goes to its official near-black on the white chip */
 .tool.pick { font: inherit; color: inherit; cursor: pointer; }

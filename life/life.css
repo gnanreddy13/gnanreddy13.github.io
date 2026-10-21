@@ -27,9 +27,9 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
 @media (max-width: 560px) { main.life { padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); } }   /* phones: the side gap alone is tight under the notch */
 
 /* loading (set in the page's head): all but the header hidden until life.js has drawn everything, then one fade-in */
-.loading .intro, .loading .needs-js, .loading .foot { visibility: hidden; }   /* the header shows at once: it carries over from the home page */
-.life .intro, .life .needs-js, .life .foot { animation: in 0.4s ease both; }
-.loading .intro, .loading .needs-js, .loading .foot { animation: none; }
+.loading .intro, .loading .needs-js { visibility: hidden; }   /* the header shows at once: it carries over from the home page */
+.life .intro, .life .needs-js { animation: in 0.4s ease both; }
+.loading .intro, .loading .needs-js { animation: none; }
 @keyframes in { from { opacity: 0; } to { opacity: 1; } }
 
 .fanrow .fan > * { width: 4rem; aspect-ratio: 3 / 4; }   /* bigger than the posters; 3:4 like the photos, so nothing is cropped */
@@ -200,8 +200,6 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
 @media (max-width: 560px) { .pc { --cw: 4.25rem; } .desk { gap: calc(var(--u) * 1.5) var(--u); } }
 @media (max-width: 560px) { .fanrow .fan > * { width: 5.5rem; } }   /* phones: the place photos (laid out straight here) a good deal bigger */   /* phones: smaller posters; small piles share a line */
 
-/* the footer: the link home, last thing on the page (phones and tablets only: there the page is long) */
-.foot { margin-top: calc(var(--u) * 2); }
 
 /* the poster viewer (touch screens): a tap on a pile opens its posters one at a time, big, with the name and status under
    each; swipe sideways for the others (each snaps into place), tap anywhere to close */
@@ -237,7 +235,6 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
 @media (min-width: 1100px) {
   main.life { grid-template-columns: 29rem 1fr; align-content: center; padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); }   /* the left a little wider than home's, so the piles on the right sit closer together */
   main.life > .col-a, main.life > .col-b { display: flex; flex-direction: column; }
-  main.life > .col-a > .foot { display: none; }
   main.life > .col-a > .blocks { margin-top: var(--u); }
   .routine .pinned { width: 19.5rem; }   /* a touch wider than its column, into the gap, so no line of the plan wraps */
   main.life > .col-b > .media { margin-top: 0; }
@@ -281,5 +278,4 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
   .life .routine { order: 2; }
   .life .places { order: 4; }
   .life .favs { order: 5; }
-  .life .foot { order: 6; }
 }
