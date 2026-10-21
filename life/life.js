@@ -154,6 +154,16 @@ function wireFans(root, show) {
   });
 }
 
+// links within the page (the intro's, the top button) scroll there without leaving a step in the history, so the phone's
+// back button leaves the page rather than retracing the scrolling
+document.addEventListener("click", function (e) {
+  var a = e.target.closest('a[href^="#"]');
+  if (!a || e.defaultPrevented) return;
+  var id = a.getAttribute("href").slice(1), to = id && id !== "top" ? $(id) : null;
+  e.preventDefault();
+  if (to) to.scrollIntoView({ block: "start" }); else scrollTo({ top: 0 });   // smooth unless the reader asked for less motion (css)
+});
+
 // ---------- the top button (phones and tablets): it shows once you're a screen down the page ----------
 (function () {
   var b = $("totop"), queued = false;
@@ -342,31 +352,53 @@ function drawFavs(D) {
 
   // the viewer (touch screens): one poster at a time, big, with its name, status and page; swipe for the rest of its pile
   // (top of the pile first), tap anywhere to close
-  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0;
+  // it loops: the pile is laid out three times over, you start in the middle copy, and whenever a swipe comes to rest in
+  // the first or last copy the track jumps (invisibly) to the same poster in the middle one, so there's always more either way
+  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0, n = 0, rest = 0;
   function view(card) {
     var cards = Array.prototype.slice.call(card.parentNode.children).reverse(), at = cards.indexOf(card);
-    track.innerHTML = cards.map(function (c) {
+    var slides = cards.map(function (c) {
       var img = c.querySelector("img"), href = c.getAttribute("href"), site = href && /anilist/.test(href) ? "AniList" : "TMDB";
-      // the big copy (covers/large/, fetched only here), over the small one already on the page until it arrives
+      // the big copy (covers/large/, fetched only when it comes into view), over the small one already on the page until it arrives
       var small = img ? img.getAttribute("src") : "", big = small.replace(/^covers\//, "covers/large/");
-      return '<figure class="v-slide"><img src="' + esc(big) + '" alt="" decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
+      return '<img src="' + esc(big) + '" alt="" loading="lazy" decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
         " onerror=\"this.onerror=null; this.src='" + esc(small) + "'\"><figcaption><b>" + esc(c.dataset.n) + "</b> · " +
         '<span class="' + (c.dataset.live ? "live" : "muted") + '">' + esc(c.dataset.w) + "</span>" +
-        (href ? '<br><a href="' + esc(href) + '" target="_blank" rel="noreferrer">' + site + " ↗</a>" : "") + "</figcaption></figure>";
+        (href ? '<br><a href="' + esc(href) + '" target="_blank" rel="noreferrer">' + site + " ↗</a>" : "") + "</figcaption>";
+    });
+    n = slides.length;
+    var copies = n > 1 ? [true, false, true] : [false];   // the outer copies are only there to loop into: hidden from screen readers
+    track.innerHTML = copies.map(function (spare) {
+      return slides.map(function (sl) { return '<figure class="v-slide"' + (spare ? ' aria-hidden="true"' : "") + ">" + sl + "</figure>"; }).join("");
     }).join("");
     clearTimeout(shut); from = card;
     viewer.hidden = false; document.documentElement.classList.add("viewing");
-    track.scrollLeft = at * track.clientWidth;
+    history.pushState({ viewer: true }, "");   // its own step in the history, so the phone's back closes it
+    track.scrollLeft = ((n > 1 ? n : 0) + at) * track.clientWidth;
     count(); viewer.focus();
     requestAnimationFrame(function () { viewer.classList.add("open"); });
   }
-  function count() { counter.textContent = Math.round(track.scrollLeft / track.clientWidth) + 1 + " / " + track.children.length; }
-  function close() {
+  function slot() { return Math.round(track.scrollLeft / track.clientWidth); }
+  function count() { counter.textContent = (slot() % n) + 1 + " / " + n; }
+  function wrap() {   // once a swipe has come to rest, step back into the middle copy
+    if (n < 2) return;
+    var i = slot();
+    if (i < n) track.scrollLeft = (i + n) * track.clientWidth;
+    else if (i >= 2 * n) track.scrollLeft = (i - n) * track.clientWidth;
+  }
+  // closing by a tap (or esc) takes that step back off the history; the phone's back button lands in popstate, below
+  function close() { if (history.state && history.state.viewer) history.back(); else hide(); }
+  addEventListener("popstate", function () { if (!viewer.hidden) hide(); });
+  if (history.state && history.state.viewer) history.replaceState(null, "");   // reloaded with the viewer's step still current
+  function hide() {
     viewer.classList.remove("open"); document.documentElement.classList.remove("viewing");
     shut = setTimeout(function () { viewer.hidden = true; track.innerHTML = ""; }, 200);
     if (from) from.focus({ preventScroll: true });
   }
-  track.addEventListener("scroll", count, { passive: true });
+  track.addEventListener("scroll", function () {
+    count();
+    clearTimeout(rest); rest = setTimeout(wrap, 140);   // "at rest" = no scrolling for a moment (works where scrollend doesn't)
+  }, { passive: true });
   viewer.addEventListener("click", function (e) { if (!e.target.closest("a")) close(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !viewer.hidden) close(); });
 
