@@ -84,9 +84,9 @@
         </div>
       </section>
     </div>
-    <!-- the footer, on phones and tablets (on wide screens it's all on one screen): back to the top, or back home -->
+    <!-- the footer, on phones and tablets (on wide screens it's all on one screen): back home -->
     <footer class="foot">
-      <p class="back"><a href="#top">↑ Top</a><span class="muted"> · </span><a href="../">← Coding side</a></p>
+      <p class="back"><a href="../">← Coding side</a></p>
     </footer>
     </div>
 
@@ -115,5 +115,12 @@
     </div>
     </div>
   </main>
+  <!-- phones and tablets: back to the top, from the bottom right corner once you've scrolled down -->
+  <a href="#top" class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a>
+  <!-- phones and tablets: a tap on a pile opens its posters here, one at a time (life.js) -->
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Posters: swipe for more, tap to close" tabindex="-1" hidden>
+    <div class="v-track" id="v-track"></div>
+    <p class="v-count sm" id="v-count"></p>
+  </div>
 </body>
 </html>

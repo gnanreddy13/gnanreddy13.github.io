@@ -9,10 +9,14 @@
 /* the backdrop: a wide photo behind the top of the page, dimmed, fading into black behind the header and intro.
    the page itself sits exactly where it would without it. --banner is how far down it reaches */
 :root { --banner: clamp(16rem, 48vh, 28rem); }
-@media (max-width: 560px) { :root { --banner: clamp(13rem, 38vh, 18rem); } }
+@media (max-width: 560px) { :root { --banner: clamp(18rem, 52vh, 26rem); } }
 .banner { position: absolute; top: 0; left: 0; right: 0; height: var(--banner); overflow: hidden; pointer-events: none; }
 .banner img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.42; }   /* dim enough for the text on top to stay easy to read */
 .banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55) 55%, var(--bg)); }
+@media (max-width: 560px) {   /* phones: a narrow slice of a wide photo, so it's shown taller and less dimmed, or it reads as murk */
+  .banner img { opacity: 0.6; object-position: center 60%; }
+  .banner::after { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.4) 55%, var(--bg)); }
+}
 main.life { position: relative; }
 /* the intro's links glide down to their sections, which stop a little short of the top edge */
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
@@ -197,12 +201,43 @@ main.life { animation: in 0.4s ease both; }
 /* the footer: the link home, last thing on the page (phones and tablets only: there the page is long) */
 .foot { margin-top: calc(var(--u) * 2); }
 
+/* the poster viewer (touch screens): a tap on a pile opens its posters one at a time, big, with the name and status under
+   each; swipe sideways for the others (each snaps into place), tap anywhere to close */
+.viewer { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; justify-content: center; background: rgba(0, 0, 0, 0.88); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.2s; }
+.viewer.open { opacity: 1; }
+.viewer:focus { outline: none; }
+.viewing, .viewing body { overflow: hidden; }   /* the page stays put underneath */
+.v-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.v-track::-webkit-scrollbar { display: none; }
+.v-slide { flex: 0 0 100%; margin: 0; padding: 0 var(--u); scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--u); }
+.v-slide img {
+  width: min(62vw, 15rem); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--obj-line);
+  background: var(--l0) center / cover no-repeat;   /* the small poster shows through until the big one has loaded */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); transform: scale(0.94); transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.viewer.open .v-slide img { transform: none; }   /* it pops up as the viewer opens */
+.v-slide figcaption { text-align: center; line-height: 1.6; color: var(--muted); }
+.v-slide figcaption b { font-weight: 500; color: var(--text); }
+.v-slide figcaption .live { color: var(--l4); }
+.v-count { margin: calc(var(--u) * 1.5) 0 0; text-align: center; color: var(--faint); }
+
+/* the top button (phones and tablets): a small tile in the bottom right corner, there once you're a screen down */
+.totop {
+  position: fixed; right: calc(var(--u) + env(safe-area-inset-right)); bottom: calc(var(--u) + env(safe-area-inset-bottom)); z-index: 150;
+  display: grid; place-items: center; width: var(--obj-h); height: var(--obj-h); border-radius: var(--obj-r);
+  background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
+  opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+}
+.totop.show { opacity: 1; transform: none; pointer-events: auto; }
+.totop svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 /* wide screens: the whole page on one screen, like the home page, centred top to bottom. left: who, the routine and the
    way home; right: places, then favourites. (a screen too short for it all just scrolls) */
 @media (min-width: 1100px) {
   main.life { grid-template-columns: 29rem 1fr; align-content: center; padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); }   /* the left a little wider than home's, so the piles on the right sit closer together */
   main.life > .col-a, main.life > .col-b { display: flex; flex-direction: column; }
-  main.life > .col-a > .foot { display: none; }   /* all on one screen, the intro's "coding side" is always in view */
+  main.life > .col-a > .foot { display: none; }
+  .totop { display: none; }   /* all on one screen, the intro's "coding side" is always in view */
   main.life > .col-a > .blocks { margin-top: var(--u); }
   .routine .pinned { width: 19.5rem; }   /* a touch wider than its column, into the gap, so no line of the plan wraps */
   main.life > .col-b > .media { margin-top: 0; }

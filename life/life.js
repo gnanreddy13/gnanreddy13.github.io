@@ -10,6 +10,20 @@ function esc(s) {
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
+// touch screens have no hover. there a tap switches a thing's hover look on, a second tap on it (or a tap anywhere else)
+// switches it back off; one thing at a time. each thing is { el, on, off }
+var TOUCH = matchMedia("(hover: none)"), tapped = null;
+function tapOn(t) { if (tapped === t) return; if (tapped) tapped.off(); tapped = t; t.on(); }
+function tapOff() { if (tapped) { tapped.off(); tapped = null; } }
+function tapToggle(t) { if (tapped === t) tapOff(); else tapOn(t); }
+document.addEventListener("click", function (e) {
+  if (TOUCH.matches && tapped && !tapped.el.contains(e.target) && !e.target.closest(".mention")) tapOff();
+});
+// the sticky note is one of those things: a tap picks it up (straightens it), a second puts it back
+var pinned = document.querySelector(".pinned");
+var NOTE = { el: pinned, on: function () { pinned.classList.add("lift"); }, off: function () { pinned.classList.remove("lift"); } };
+pinned.addEventListener("click", function () { if (TOUCH.matches) tapToggle(NOTE); });
+
 // the time in india, kept current (as on the home page)
 function tick() {
   $("now").textContent = new Date().toLocaleTimeString("en", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" });
@@ -94,20 +108,18 @@ function drawLately(D, favs, place) {
       m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") lift(true); });
       m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") lift(false); });
       m.addEventListener("click", function () {
-        if (!matchMedia("(hover: none)").matches) return;
-        $("routine").scrollIntoView({ behavior: "smooth", block: "center" }); lift(true);
-        setTimeout(function () { lift(false); }, 1800);
+        if (!TOUCH.matches) return;
+        $("routine").scrollIntoView({ behavior: "smooth", block: "center" }); tapOn(NOTE);
       });
       return;
     }
     if (hits[i].pick.k === "place") {   // a place: hovering opens the fan on its photo; a tap scrolls there and does the same
       var name = hits[i].pick.f.name;
-      m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") place(name); });
-      m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") place(null); });
+      m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") place.point(name); });
+      m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") place.point(null); });
       m.addEventListener("click", function () {
-        if (!matchMedia("(hover: none)").matches) return;
-        $("places").scrollIntoView({ behavior: "smooth", block: "center" }); place(name);
-        setTimeout(function () { place(null); }, 1800);
+        if (!TOUCH.matches) return;
+        $("places").scrollIntoView({ behavior: "smooth", block: "center" }); place.tap(name);
       });
       return;
     }
@@ -116,10 +128,7 @@ function drawLately(D, favs, place) {
     if (!card) return;
     m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") favs.pull(card); });
     m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") favs.putBack(card.parentNode); });
-    m.addEventListener("click", function () {
-      if (!matchMedia("(hover: none)").matches) return;
-      card.scrollIntoView({ behavior: "smooth", block: "center" }); favs.pull(card);
-    });
+    m.addEventListener("click", function () { if (TOUCH.matches) favs.view(card); });   // a tap opens the poster big
   });
 }
 
@@ -144,6 +153,15 @@ function wireFans(root, show) {
     fanEl.addEventListener("focusout", function (e) { if (!fanEl.contains(e.relatedTarget)) show(null); });
   });
 }
+
+// ---------- the top button (phones and tablets): it shows once you're a screen down the page ----------
+(function () {
+  var b = $("totop"), queued = false;
+  if (!b) return;
+  function check() { queued = false; b.classList.toggle("show", scrollY > innerHeight * 0.8); }
+  addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(check); } }, { passive: true });
+  check();
+})();
 
 // ---------- routine: the workout, then the rest-day routine, on the sticky note ----------
 function drawRoutine(D) {
@@ -186,12 +204,9 @@ function drawWeek(D) {
   for (var i = 0; i < 7; i++) if (went[addDays(mon, i)]) done++;
   $("wk-tally").textContent = !done ? "No sessions yet this week" : done < planned ? done + " of " + planned + " sessions done"
     : done === planned ? "All " + planned + " done this week" : done + " sessions this week, " + (done - planned) + " extra";
-  // touch screens have no hover: a tap on the strip shows the tally, a tap anywhere else hides it
-  var wk = $("wk");
-  document.addEventListener("click", function (e) {
-    if (!matchMedia("(hover: none)").matches) return;
-    wk.classList.toggle("on", wk.contains(e.target) && !wk.classList.contains("on"));
-  });
+  // on a touch screen a tap picks the strip up and shows the tally; a second tap puts it back
+  var wk = $("wk"), WK = { el: wk, on: function () { wk.classList.add("on"); }, off: function () { wk.classList.remove("on"); } };
+  wk.addEventListener("click", function () { if (TOUCH.matches) tapToggle(WK); });
 }
 
 // ---------- places: a fan of photos, one per place, each opening its google photos album; then where the backdrop photo was taken ----------
@@ -209,13 +224,24 @@ function drawPlaces(D) {
   function say(name) { $("cover-cap").innerHTML = name ? "<b>" + esc(name) + "</b>" : rest; }
   wireFans($("fan"), say);
   // point at one place from elsewhere (the "lately" line): the fan opens as if hovered, that photo lifts, its name shows
-  return function (name) {
+  function point(name) {
     var f = $("fan").querySelector(".fan");
     if (!f) return;
     f.classList.toggle("on", !!name);
     Array.prototype.forEach.call(f.children, function (p) { p.classList.toggle("up", p.dataset.n === name); });
     say(name);
-  };
+  }
+  // touch: a tap on a photo lifts it and names it, with a link to its album; a second tap puts it back
+  var TAPS = {};
+  Array.prototype.forEach.call($("fan").querySelectorAll(".fan > *"), function (p) {
+    var name = p.dataset.n, url = p.getAttribute("href");
+    TAPS[name] = { el: p, off: function () { point(null); }, on: function () {
+      point(name);
+      if (url) $("cover-cap").innerHTML += ' · <a href="' + esc(url) + '" target="_blank" rel="noreferrer">Open album ↗</a>';
+    } };
+    p.addEventListener("click", function (e) { if (TOUCH.matches) { e.preventDefault(); tapToggle(TAPS[name]); } });
+  });
+  return { point: point, tap: function (name) { if (TAPS[name]) tapOn(TAPS[name]); } };
 }
 
 // ---------- favourites: one messy pile of posters per kind, all on the "desk" at once. the poster you're on (or tabbed to, or tapped)
@@ -303,10 +329,8 @@ function drawFavs(D) {
     Array.prototype.forEach.call(pile.children, function (card) {
       card.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") pull(card); });
       card.addEventListener("focus", function () { pull(card); });
-      // touch: the first tap pulls a poster out (and shows what it is); a second tap on it opens its page
-      card.addEventListener("click", function (e) {
-        if (touch.matches && !card.classList.contains("out")) { e.preventDefault(); pull(card); }
-      });
+      // touch: a tap opens the poster big, in the viewer
+      card.addEventListener("click", function (e) { if (touch.matches) { e.preventDefault(); view(card); } });
     });
     pile.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") putBack(pile); });
     pile.addEventListener("focusout", function (e) { if (!pile.contains(e.relatedTarget)) putBack(pile); });
@@ -315,7 +339,38 @@ function drawFavs(D) {
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".pile, .mention")) Array.prototype.forEach.call(desk.querySelectorAll(".pile"), putBack);
   });
-  return { pull: pull, putBack: putBack };
+
+  // the viewer (touch screens): one poster at a time, big, with its name, status and page; swipe for the rest of its pile
+  // (top of the pile first), tap anywhere to close
+  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0;
+  function view(card) {
+    var cards = Array.prototype.slice.call(card.parentNode.children).reverse(), at = cards.indexOf(card);
+    track.innerHTML = cards.map(function (c) {
+      var img = c.querySelector("img"), href = c.getAttribute("href"), site = href && /anilist/.test(href) ? "AniList" : "TMDB";
+      // the big copy (covers/large/, fetched only here), over the small one already on the page until it arrives
+      var small = img ? img.getAttribute("src") : "", big = small.replace(/^covers\//, "covers/large/");
+      return '<figure class="v-slide"><img src="' + esc(big) + '" alt="" decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
+        " onerror=\"this.onerror=null; this.src='" + esc(small) + "'\"><figcaption><b>" + esc(c.dataset.n) + "</b> · " +
+        '<span class="' + (c.dataset.live ? "live" : "muted") + '">' + esc(c.dataset.w) + "</span>" +
+        (href ? '<br><a href="' + esc(href) + '" target="_blank" rel="noreferrer">' + site + " ↗</a>" : "") + "</figcaption></figure>";
+    }).join("");
+    clearTimeout(shut); from = card;
+    viewer.hidden = false; document.documentElement.classList.add("viewing");
+    track.scrollLeft = at * track.clientWidth;
+    count(); viewer.focus();
+    requestAnimationFrame(function () { viewer.classList.add("open"); });
+  }
+  function count() { counter.textContent = Math.round(track.scrollLeft / track.clientWidth) + 1 + " / " + track.children.length; }
+  function close() {
+    viewer.classList.remove("open"); document.documentElement.classList.remove("viewing");
+    shut = setTimeout(function () { viewer.hidden = true; track.innerHTML = ""; }, 200);
+    if (from) from.focus({ preventScroll: true });
+  }
+  track.addEventListener("scroll", count, { passive: true });
+  viewer.addEventListener("click", function (e) { if (!e.target.closest("a")) close(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !viewer.hidden) close(); });
+
+  return { pull: pull, putBack: putBack, view: view };
 }
 
 })();

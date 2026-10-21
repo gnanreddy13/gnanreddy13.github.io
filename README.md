@@ -9,7 +9,7 @@ my corner of the internet. plain html, css and js, no build step. a github actio
 - `icons/`: official logos for the stack and projects (simple-icons, and devicon's multi-colour originals)
 - `life/`: the slice of life page (`/life/`): `site.css` for the look, plus its own `life.css` and `life.js`
 - `life/data.json`: everything on that page: lately, places (with their google photos albums), the backdrop photo's place and month, the lifting week and plan, gym days, and the media lists
-- `life/photos/`, `life/covers/`: the backdrop, one photo per place, and the media posters (resized, metadata stripped)
+- `life/photos/`, `life/covers/`: the backdrop, one photo per place, and the media posters (resized, metadata stripped); `life/covers/large/` holds bigger copies of the posters, loaded only in the phone poster viewer
 - `fonts/`: Geist for the type, Caveat for the handwriting on the life page (both self-hosted, OFL)
 - `data/`: github + leetcode activity. the deploy fetches fresh copies; the ones in the repo are only a fallback
 - `scripts/update-activity.mjs`: fetches that data
