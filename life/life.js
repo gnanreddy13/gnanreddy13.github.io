@@ -374,17 +374,22 @@ function drawFavs(D) {
     clearTimeout(shut); from = card;
     viewer.hidden = false; document.documentElement.classList.add("viewing");
     history.pushState({ viewer: true }, "");   // its own step in the history, so the phone's back closes it
-    track.scrollLeft = ((n > 1 ? n : 0) + at) * track.clientWidth;
+    track.scrollLeft = ((n > 1 ? n : 0) + at) * step();
     count(); viewer.focus();
     requestAnimationFrame(function () { viewer.classList.add("open"); });
   }
-  function slot() { return Math.round(track.scrollLeft / track.clientWidth); }
-  function count() { counter.textContent = (slot() % n) + 1 + " / " + n; }
+  function step() { return track.firstElementChild ? track.firstElementChild.offsetWidth : track.clientWidth; }   // one poster's width
+  function slot() { return Math.round(track.scrollLeft / step()); }
+  function count() {
+    var i = slot();
+    counter.textContent = (i % n) + 1 + " / " + n;
+    Array.prototype.forEach.call(track.children, function (f, k) { f.classList.toggle("cur", k === i); });
+  }
   function wrap() {   // once a swipe has come to rest, step back into the middle copy
     if (n < 2) return;
     var i = slot();
-    if (i < n) track.scrollLeft = (i + n) * track.clientWidth;
-    else if (i >= 2 * n) track.scrollLeft = (i - n) * track.clientWidth;
+    if (i < n) track.scrollLeft = (i + n) * step();
+    else if (i >= 2 * n) track.scrollLeft = (i - n) * step();
   }
   // closing by a tap (or esc) takes that step back off the history; the phone's back button lands in popstate, below
   function close() { if (history.state && history.state.viewer) history.back(); else hide(); }
@@ -399,7 +404,12 @@ function drawFavs(D) {
     count();
     clearTimeout(rest); rest = setTimeout(wrap, 140);   // "at rest" = no scrolling for a moment (works where scrollend doesn't)
   }, { passive: true });
-  viewer.addEventListener("click", function (e) { if (!e.target.closest("a")) close(); });
+  viewer.addEventListener("click", function (e) {
+    if (e.target.closest("a")) return;
+    var f = e.target.closest(".v-slide");
+    if (f && !f.classList.contains("cur")) track.scrollTo({ left: Array.prototype.indexOf.call(track.children, f) * step(), behavior: "smooth" });   // a peeking poster: bring it in
+    else close();
+  });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !viewer.hidden) close(); });
 
   return { pull: pull, putBack: putBack, view: view };

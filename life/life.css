@@ -11,6 +11,7 @@
 :root { --banner: clamp(16rem, 48vh, 28rem); }
 @media (max-width: 560px) { :root { --banner: clamp(18rem, 52vh, 26rem); } }
 .banner { position: absolute; top: 0; left: 0; right: 0; height: var(--banner); overflow: hidden; pointer-events: none; }
+.banner picture { display: contents; }
 .banner img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.42; }   /* dim enough for the text on top to stay easy to read */
 .banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55) 55%, var(--bg)); }
 @media (max-width: 560px) {   /* phones: a narrow slice of a wide photo, so it's shown taller and less dimmed, or it reads as murk */
@@ -196,7 +197,8 @@ main.life { animation: in 0.4s ease both; }
 .favs .cap:last-child { margin-top: var(--u); }
 /* each pile's handwritten name: the same as the section labels below (favourites has no label of its own) */
 .pile-k { margin: 0 0 calc(var(--u) * 0.25); }
-@media (max-width: 560px) { .pc { --cw: 4.25rem; } .desk { gap: calc(var(--u) * 1.5) var(--u); } }   /* phones: smaller posters; small piles share a line */
+@media (max-width: 560px) { .pc { --cw: 4.25rem; } .desk { gap: calc(var(--u) * 1.5) var(--u); } }
+@media (max-width: 560px) { .fanrow .fan > * { width: 5.5rem; } }   /* phones: the place photos (laid out straight here) a good deal bigger */   /* phones: smaller posters; small piles share a line */
 
 /* the footer: the link home, last thing on the page (phones and tablets only: there the page is long) */
 .foot { margin-top: calc(var(--u) * 2); }
@@ -207,9 +209,16 @@ main.life { animation: in 0.4s ease both; }
 .viewer.open { opacity: 1; }
 .viewer:focus { outline: none; }
 .viewing, .viewing body { overflow: hidden; }   /* the page stays put underneath */
-.v-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.v-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 0 14%; }   /* the padding lets the first and last centre */
 .v-track::-webkit-scrollbar { display: none; }
-.v-slide { flex: 0 0 100%; margin: 0; padding: 0 var(--u); scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--u); }
+/* each poster takes a little under three quarters of the width, so the ones either side peek in at the edges, dimmed and
+   smaller: there's more to swipe to. a tap on one of those brings it to the middle */
+.v-slide {
+  flex: 0 0 72%; margin: 0; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--u);
+  opacity: 0.35; transform: scale(0.9); transition: opacity 0.25s, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.v-slide.cur { opacity: 1; transform: none; }
+.v-slide:not(.cur) figcaption { visibility: hidden; }
 .v-slide img {
   width: min(62vw, 15rem); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--obj-line);
   background: var(--l0) center / cover no-repeat;   /* the small poster shows through until the big one has loaded */

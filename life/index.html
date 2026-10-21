@@ -28,7 +28,8 @@
   <!-- everything after the first paragraph is drawn from data.json by life.js; it and the backdrop photo start downloading now,
        alongside the styles -->
   <link rel="preload" href="data.json" as="fetch" crossorigin>
-  <link rel="preload" href="photos/hyderabad-banner.jpg" as="image">
+  <link rel="preload" href="photos/hyderabad-banner-1000.jpg" as="image" media="(max-width: 560px)">
+  <link rel="preload" href="photos/hyderabad-banner.jpg" as="image" media="(min-width: 561px)">
   <!-- with javascript: the page stays hidden until life.js has drawn it, then fades in once, whole (or after 2.5s, whichever comes first) -->
   <script>document.documentElement.classList.add("loading"); setTimeout(function () { document.documentElement.classList.remove("loading"); }, 2500);</script>
   <noscript><style>.needs-js { display: none; }</style></noscript>
@@ -36,7 +37,11 @@
 <body>
   <!-- the backdrop: one wide photo behind the top of the page, dimmed and fading into black; the page sits where it would without it.
        its place and month are credited under Places ("cover" in data.json: keep the two in sync) -->
-  <div class="banner" aria-hidden="true"><img src="photos/hyderabad-banner.jpg" alt="" width="2000" height="1125" fetchpriority="high"></div>
+  <div class="banner" aria-hidden="true"><picture>
+    <!-- phones show a narrow, dimmed slice of it: a 1000px copy is plenty there, and a third of the download -->
+    <source media="(max-width: 560px)" srcset="photos/hyderabad-banner-1000.jpg">
+    <img src="photos/hyderabad-banner.jpg" alt="" width="2000" height="1125" fetchpriority="high">
+  </picture></div>
   <main class="life">
     <!-- wide screens: everything on one screen, no scrolling. left: who, the routine; right: places, favourites.
          phones: one column, regrouped by topic (see life.css) -->
