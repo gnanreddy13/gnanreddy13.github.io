@@ -367,14 +367,14 @@ function drawFavs(D) {
   // it loops: the pile is laid out several times over (enough for at least ~30 posters either side, so even a hard fling
   // glides on as far as it was thrown and settles where it lands), you start in the middle copy, and once a swipe has come
   // to rest the track jumps (invisibly) to the same poster in the middle copy, so there's always more either way
-  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0, n = 0, rest = 0, mid = 0, list = [];
+  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0, n = 0, rest = 0, mid = 0, list = [], shown = -1;
   function view(card) {
     var cards = Array.prototype.slice.call(card.parentNode.children).reverse(), at = cards.indexOf(card);
     var slides = cards.map(function (c) {
       var img = c.querySelector("img"), href = c.getAttribute("href"), site = href && /anilist/.test(href) ? "AniList" : "TMDB";
       // the big copy (covers/large/, fetched only when it comes into view), over the small one already on the page until it arrives
       var small = img ? img.getAttribute("src").replace(/^covers\/large\//, "covers/") : "", big = small.replace(/^covers\//, "covers/large/");
-      return '<img src="' + esc(big) + '" alt="" loading="lazy" decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
+      return '<img src="' + esc(big) + '" alt=""%LAZY% decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
         " onerror=\"this.onerror=null; this.src='" + esc(small) + "'\"><figcaption><b>" + esc(c.dataset.n) + "</b> · " +
         '<span class="' + (c.dataset.live ? "live" : "muted") + '">' + esc(c.dataset.w) + "</span>" +
         (href ? '<br><a href="' + esc(href) + '" target="_blank" rel="noreferrer">' + site + " ↗</a>" : "") + "</figcaption>";
@@ -383,9 +383,14 @@ function drawFavs(D) {
     var each = n > 1 ? Math.ceil(30 / n) : 0, copies = [];
     for (var k = -each; k <= each; k++) copies.push(k !== 0);   // the outer copies are only there to loop into: hidden from screen readers
     mid = each;
+    // the middle copy (where every swipe ends up) loads its big posters straight away, so they're ready whenever you land;
+    // the spare copies load theirs only as they come into view
     track.innerHTML = copies.map(function (spare) {
-      return slides.map(function (sl) { return '<figure class="v-slide"' + (spare ? ' aria-hidden="true"' : "") + ">" + sl + "</figure>"; }).join("");
+      return slides.map(function (sl) {
+        return '<figure class="v-slide"' + (spare ? ' aria-hidden="true"' : "") + ">" + sl.replace("%LAZY%", spare ? ' loading="lazy"' : "") + "</figure>";
+      }).join("");
     }).join("");
+    shown = -1;
     clearTimeout(shut); from = card;
     viewer.hidden = false; document.documentElement.classList.add("viewing");
     history.pushState({ viewer: true }, "");   // its own step in the history, so the phone's back closes it
@@ -395,15 +400,26 @@ function drawFavs(D) {
   }
   function step() { return track.firstElementChild ? track.firstElementChild.offsetWidth : track.clientWidth; }   // one poster's width
   function slot() { return Math.round(track.scrollLeft / step()); }
+  // which poster is in the middle: only touched when that changes, not on every frame of a swipe
   function count() {
     var i = slot();
+    if (i === shown) return;
+    if (track.children[shown]) track.children[shown].classList.remove("cur");
+    if (track.children[i]) track.children[i].classList.add("cur");
+    shown = i;
     counter.textContent = (i % n) + 1 + " / " + n;
-    Array.prototype.forEach.call(track.children, function (f, k) { f.classList.toggle("cur", k === i); });
   }
-  function wrap() {   // once a swipe has come to rest, step back into the middle copy
+  // once a swipe has come to rest, step back into the middle copy: the same poster, already loaded, swapped in with its
+  // transitions switched off for that instant, so nothing on screen moves or reloads
+  function wrap() {
     if (n < 2) return;
     var i = slot(), j = mid * n + (i % n);
-    if (i !== j) track.scrollLeft = j * step();
+    if (i === j) return;
+    track.classList.add("jump");
+    track.scrollLeft = j * step();
+    count();
+    void track.offsetWidth;   // let the swap land before the transitions come back
+    requestAnimationFrame(function () { track.classList.remove("jump"); });
   }
   // closing by a tap (or esc) takes that step back off the history; the phone's back button lands in popstate, below
   function close() { if (history.state && history.state.viewer) history.back(); else hide(); }
@@ -419,10 +435,12 @@ function drawFavs(D) {
       setTimeout(function () { pull(last); }, 0);   // after the closing tap has finished bubbling (a tap elsewhere puts piles back)
     }
   }
+  var ends = "onscrollend" in window;   // the browser says when a swipe (and its snap) has finished; elsewhere, a short quiet spell
   track.addEventListener("scroll", function () {
     count();
-    clearTimeout(rest); rest = setTimeout(wrap, 140);   // "at rest" = no scrolling for a moment (works where scrollend doesn't)
+    if (!ends) { clearTimeout(rest); rest = setTimeout(wrap, 160); }
   }, { passive: true });
+  if (ends) track.addEventListener("scrollend", wrap);
   viewer.addEventListener("click", function (e) {
     if (e.target.closest("a")) return;
     var f = e.target.closest(".v-slide");

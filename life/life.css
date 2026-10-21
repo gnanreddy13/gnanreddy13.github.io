@@ -218,6 +218,8 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
   opacity: 0.35; transform: scale(0.9); transition: opacity 0.25s, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .v-slide.cur { opacity: 1; transform: none; }
+.v-track.jump .v-slide, .v-track.jump .v-slide img { transition: none; }   /* the invisible hop back into the middle copy */
+.v-slide { contain: layout paint; }   /* each slide paints on its own, so a swipe repaints less */
 .v-slide:not(.cur) figcaption { visibility: hidden; }
 .v-slide img {
   width: min(62vw, 15rem); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--obj-line);
