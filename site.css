@@ -127,9 +127,11 @@ a.script::before {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   transition: opacity var(--t);   /* moving away, the stroke fades */
 }
-a.script:hover::before, a.script:focus-visible::before {
-  opacity: 1; transition: none;
-  animation: pen 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;   /* restarts from nothing on every hover; like a hand: a gentle start, quick through the middle, easing off */
+@media (hover: hover) {   /* only with a mouse: phones treat a tap as a hover that lingers, so there the static underline just stays */
+  a.script:hover::before, a.script:focus-visible::before {
+    opacity: 1; transition: none;
+    animation: pen 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;   /* restarts from nothing on every hover; like a hand: a gentle start, quick through the middle, easing off */
+  }
 }
 @keyframes pen { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
