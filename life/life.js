@@ -318,13 +318,25 @@ function drawFavs(D) {
   addEventListener("resize", layout);   // on wide screens the posters follow the screen's height, which the desk's own size doesn't show
 
   // pulling one out: it lifts, the caption under its pile names it; leaving the pile puts it back and clears the caption
+  // a poster pulled out is shown bigger than its small image: fetch its big copy (covers/large/) and swap it in once it's
+  // loaded, so it never blanks; only the ones you actually pull out are fetched
+  function sharpen(card) {
+    var img = card.querySelector("img");
+    if (!img || card.dataset.sharp) return;
+    card.dataset.sharp = "1";
+    var big = new Image(), src = img.getAttribute("src").replace(/^covers\/(large\/)?/, "covers/large/");
+    big.onload = function () { img.src = src; };
+    big.src = src;
+  }
   function pull(card) {
     var pile = card.parentNode, capEl = pile.nextElementSibling;
     // another pile's poster still out (a tap there, then here): put that pile back first, caption and all
     Array.prototype.forEach.call(desk.querySelectorAll(".pile"), function (p) { if (p !== pile && p.querySelector(".out")) putBack(p); });
     Array.prototype.forEach.call(pile.children, function (c) { c.classList.toggle("out", c === card); });
     desk.classList.add("pulling");
-    capEl.innerHTML = "<b>" + esc(card.dataset.n) + "</b> · " + '<span class="' + (card.dataset.live ? "live" : "muted") + '">' + esc(card.dataset.w) + "</span>";
+    capEl.innerHTML = "<b>" + esc(card.dataset.n) + "</b> · " + '<span class="' + (card.dataset.live ? "live" : "muted") + '">' + esc(card.dataset.w) + "</span>" +
+      (card.getAttribute("href") ? " ↗" : "");   // the ↗, like every other link that leaves the site: a click opens its page
+    sharpen(card);
     // a long title under a pile near the right edge would run off the page: slide it back just enough to end at the edge
     capEl.style.transform = "";
     var over = capEl.getBoundingClientRect().right - desk.getBoundingClientRect().right;
@@ -360,7 +372,7 @@ function drawFavs(D) {
     var slides = cards.map(function (c) {
       var img = c.querySelector("img"), href = c.getAttribute("href"), site = href && /anilist/.test(href) ? "AniList" : "TMDB";
       // the big copy (covers/large/, fetched only when it comes into view), over the small one already on the page until it arrives
-      var small = img ? img.getAttribute("src") : "", big = small.replace(/^covers\//, "covers/large/");
+      var small = img ? img.getAttribute("src").replace(/^covers\/large\//, "covers/") : "", big = small.replace(/^covers\//, "covers/large/");
       return '<img src="' + esc(big) + '" alt="" loading="lazy" decoding="async" style="background-image: url(\'' + esc(small) + '\')"' +
         " onerror=\"this.onerror=null; this.src='" + esc(small) + "'\"><figcaption><b>" + esc(c.dataset.n) + "</b> · " +
         '<span class="' + (c.dataset.live ? "live" : "muted") + '">' + esc(c.dataset.w) + "</span>" +
