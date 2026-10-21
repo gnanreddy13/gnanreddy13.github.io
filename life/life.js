@@ -16,6 +16,8 @@ var TOUCH = matchMedia("(hover: none)"), tapped = null;
 function tapOn(t) { if (tapped === t) return; if (tapped) tapped.off(); tapped = t; t.on(); }
 function tapOff() { if (tapped) { tapped.off(); tapped = null; } }
 function tapToggle(t) { if (tapped === t) tapOff(); else tapOn(t); }
+// focus that came from the keyboard (tab), not from a tap or a click: only that should act like hovering
+function keyed(el) { try { return el.matches(":focus-visible"); } catch (e) { return !TOUCH.matches; } }
 document.addEventListener("click", function (e) {
   if (TOUCH.matches && tapped && !tapped.el.contains(e.target) && !e.target.closest(".mention")) tapOff();
 });
@@ -60,8 +62,8 @@ function wireIntro() {
     if (!show) return;
     a.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") show(true); });
     a.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") show(false); });
-    a.addEventListener("focus", function () { show(true); });
-    a.addEventListener("blur", function () { show(false); });
+    a.addEventListener("focus", function () { if (keyed(a)) show(true); });
+    a.addEventListener("blur", function () { if (!TOUCH.matches) show(false); });
     a.addEventListener("click", function (e) { if (document.documentElement.scrollHeight <= innerHeight) e.preventDefault(); });   // nowhere to scroll to
   });
 }
@@ -146,11 +148,12 @@ function fan(items) {
 function wireFans(root, show) {
   Array.prototype.forEach.call(root.querySelectorAll(".fan"), function (fanEl) {
     Array.prototype.forEach.call(fanEl.children, function (p) {
-      p.addEventListener("pointerenter", function () { show(p.dataset.n); });
-      p.addEventListener("focus", function () { show(p.dataset.n); });
+      // a mouse only: a finger touching down to scroll would flash the name for an instant (touch has its own tap, see drawPlaces)
+      p.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") show(p.dataset.n); });
+      p.addEventListener("focus", function () { if (keyed(p)) show(p.dataset.n); });
     });
-    fanEl.addEventListener("pointerleave", function () { show(null); });
-    fanEl.addEventListener("focusout", function (e) { if (!fanEl.contains(e.relatedTarget)) show(null); });
+    fanEl.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") show(null); });
+    fanEl.addEventListener("focusout", function (e) { if (!fanEl.contains(e.relatedTarget) && !TOUCH.matches) show(null); });
   });
 }
 
@@ -350,7 +353,7 @@ function drawFavs(D) {
   Array.prototype.forEach.call(desk.querySelectorAll(".pile"), function (pile) {
     Array.prototype.forEach.call(pile.children, function (card) {
       card.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") pull(card); });
-      card.addEventListener("focus", function () { pull(card); });
+      card.addEventListener("focus", function () { if (keyed(card)) pull(card); });
       // touch: a tap opens the poster big, in the viewer
       card.addEventListener("click", function (e) { if (touch.matches) { e.preventDefault(); view(card); } });
     });
