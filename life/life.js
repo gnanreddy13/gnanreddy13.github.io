@@ -335,7 +335,7 @@ function drawFavs(D) {
     Array.prototype.forEach.call(pile.children, function (c) { c.classList.toggle("out", c === card); });
     desk.classList.add("pulling");
     capEl.innerHTML = "<b>" + esc(card.dataset.n) + "</b> · " + '<span class="' + (card.dataset.live ? "live" : "muted") + '">' + esc(card.dataset.w) + "</span>" +
-      (card.getAttribute("href") ? " ↗" : "");   // the ↗, like every other link that leaves the site: a click opens its page
+      (card.getAttribute("href") && !TOUCH.matches ? " ↗" : "");   // the ↗, like every other link that leaves the site: a click opens its page (a tap on a phone opens the viewer instead)
     sharpen(card);
     // a long title under a pile near the right edge would run off the page: slide it back just enough to end at the edge
     capEl.style.transform = "";
@@ -364,9 +364,10 @@ function drawFavs(D) {
 
   // the viewer (touch screens): one poster at a time, big, with its name, status and page; swipe for the rest of its pile
   // (top of the pile first), tap anywhere to close
-  // it loops: the pile is laid out three times over, you start in the middle copy, and whenever a swipe comes to rest in
-  // the first or last copy the track jumps (invisibly) to the same poster in the middle one, so there's always more either way
-  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0, n = 0, rest = 0;
+  // it loops: the pile is laid out several times over (enough for at least ~30 posters either side, so even a hard fling
+  // glides on as far as it was thrown and settles where it lands), you start in the middle copy, and once a swipe has come
+  // to rest the track jumps (invisibly) to the same poster in the middle copy, so there's always more either way
+  var viewer = $("viewer"), track = $("v-track"), counter = $("v-count"), from = null, shut = 0, n = 0, rest = 0, mid = 0, list = [];
   function view(card) {
     var cards = Array.prototype.slice.call(card.parentNode.children).reverse(), at = cards.indexOf(card);
     var slides = cards.map(function (c) {
@@ -378,15 +379,17 @@ function drawFavs(D) {
         '<span class="' + (c.dataset.live ? "live" : "muted") + '">' + esc(c.dataset.w) + "</span>" +
         (href ? '<br><a href="' + esc(href) + '" target="_blank" rel="noreferrer">' + site + " ↗</a>" : "") + "</figcaption>";
     });
-    n = slides.length;
-    var copies = n > 1 ? [true, false, true] : [false];   // the outer copies are only there to loop into: hidden from screen readers
+    n = slides.length; list = cards;
+    var each = n > 1 ? Math.ceil(30 / n) : 0, copies = [];
+    for (var k = -each; k <= each; k++) copies.push(k !== 0);   // the outer copies are only there to loop into: hidden from screen readers
+    mid = each;
     track.innerHTML = copies.map(function (spare) {
       return slides.map(function (sl) { return '<figure class="v-slide"' + (spare ? ' aria-hidden="true"' : "") + ">" + sl + "</figure>"; }).join("");
     }).join("");
     clearTimeout(shut); from = card;
     viewer.hidden = false; document.documentElement.classList.add("viewing");
     history.pushState({ viewer: true }, "");   // its own step in the history, so the phone's back closes it
-    track.scrollLeft = ((n > 1 ? n : 0) + at) * step();
+    track.scrollLeft = (mid * n + at) * step();
     count(); viewer.focus();
     requestAnimationFrame(function () { viewer.classList.add("open"); });
   }
@@ -399,18 +402,22 @@ function drawFavs(D) {
   }
   function wrap() {   // once a swipe has come to rest, step back into the middle copy
     if (n < 2) return;
-    var i = slot();
-    if (i < n) track.scrollLeft = (i + n) * step();
-    else if (i >= 2 * n) track.scrollLeft = (i - n) * step();
+    var i = slot(), j = mid * n + (i % n);
+    if (i !== j) track.scrollLeft = j * step();
   }
   // closing by a tap (or esc) takes that step back off the history; the phone's back button lands in popstate, below
   function close() { if (history.state && history.state.viewer) history.back(); else hide(); }
   addEventListener("popstate", function () { if (!viewer.hidden) hide(); });
   if (history.state && history.state.viewer) history.replaceState(null, "");   // reloaded with the viewer's step still current
+  // on the way out, the poster you ended on (not the one you opened) is the one pulled out of its pile, named underneath
   function hide() {
+    var last = n ? list[slot() % n] : from;
     viewer.classList.remove("open"); document.documentElement.classList.remove("viewing");
     shut = setTimeout(function () { viewer.hidden = true; track.innerHTML = ""; }, 200);
-    if (from) from.focus({ preventScroll: true });
+    if (last) {
+      last.focus({ preventScroll: true });
+      setTimeout(function () { pull(last); }, 0);   // after the closing tap has finished bubbling (a tap elsewhere puts piles back)
+    }
   }
   track.addEventListener("scroll", function () {
     count();
