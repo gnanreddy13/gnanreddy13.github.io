@@ -1,6 +1,8 @@
 /* site.css: the whole site's look: the home page, the 404 page and the slice of life page (life/life.css adds only that page's own pieces).
    one column on phones, two side by side on wide screens; the writing does the work, the activity graph is the one featured element. */
 @font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+/* the handwriting from slice of life (Caveat, OFL): only the link to that page uses it here, so it loads on its own after the page, no preload */
+@font-face { font-family: "Caveat"; src: url("fonts/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 
 :root {
   --bg: #000; --text: #f2f2f0; --muted: #8f8f8a; --soft: #a6a6a1; --faint: #5c5c58; --line: #1c1c1a;
@@ -14,13 +16,18 @@
   --gutter: 7rem;            /* the label column */
   --col: 36rem;
   /* objects (tiles, button): one surface, one border, one corner, one height */
-  --obj-bg: #0e0e0d; --obj-line: #262624; --obj-hover: #181816; --obj-r: 10px; --obj-h: 2.25rem;
+  --obj-bg: #151514; --obj-line: #262624; --obj-r: 10px; --obj-h: 2.25rem;
+  --obj-on: #e4e4e0;         /* a tile that's picked, selected, hovered or pressed: a soft off-white, not a glare */
+  --t: 0.15s;                /* colour changes: fills, borders, edges, text, logos */
+  --t-fade: 0.2s;            /* things fading in or out: dimmed projects, tooltips, difficulty colours */
+  --obj-hi: inset 0 1px 0 rgba(242, 242, 240, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.5);   /* a faint light along each tile's top edge, like light from above */
+  --obj-hi-lit: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(0, 0, 0, 0.18);   /* the same light on a white tile: a brighter top edge and a faint shade along the bottom */
   color-scheme: dark;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { background: var(--bg); -webkit-text-size-adjust: 100%; }
 body { font-family: var(--sans); color: var(--text); font-size: 1rem; line-height: var(--line-h); -webkit-font-smoothing: antialiased; }
-a { color: inherit; text-decoration: underline; text-decoration-color: #444441; text-underline-offset: 0.2em; text-decoration-thickness: 1px; transition: text-decoration-color 0.15s, color 0.15s; }
+a { color: inherit; text-decoration: underline; text-decoration-color: #444441; text-underline-offset: 0.2em; text-decoration-thickness: 1px; transition: text-decoration-color var(--t), color var(--t); }
 a:hover { text-decoration-color: var(--text); }
 :focus-visible { outline: 1px solid var(--text); outline-offset: 3px; border-radius: 2px; }
 .sm { font-size: 0.8125rem; letter-spacing: var(--track-sm); font-variant-numeric: tabular-nums; }   /* small text: labels, dates, captions */
@@ -70,32 +77,107 @@ main { width: min(var(--col), 100% - 2 * var(--u)); margin: 0 auto; padding: cal
 [data-t="git"] { --icon: url(icons/git.svg); --brand: #F05032; }
 [data-t="github"] { --icon: url(icons/github.svg); --brand: #F2F2F0; }   /* github's official near-black, shown white on the dark page */
 
-/* stack: each tool's official logo in full colour, its name under it.
-   single-colour logos are drawn from simple-icons in their brand colour; python and postgresql use their multi-colour originals (devicon) */
-.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--u) calc(var(--u) * 0.5); }
-.tool { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 0.5); }
-.tool .logo {
-  width: 1.5rem; height: 1.5rem; background: var(--brand);
-  -webkit-mask: var(--icon) left center / contain no-repeat; mask: var(--icon) left center / contain no-repeat;
-}
-.tool img { width: 1.5rem; height: 1.5rem; object-fit: contain; object-position: left center; }
-.tool .nm { font-size: 0.8125rem; letter-spacing: var(--track-sm); color: var(--muted); line-height: 1.3; transition: color 0.15s; }
-.tool.pick:hover .nm { color: var(--text); }   /* only the tools you can pick respond to hover */
+/* phones draw a grey box on whatever is tapped; tiles, chips and links here show their own pressed state instead */
+a, button, .hand { -webkit-tap-highlight-color: transparent; }
 
-/* picking a tool: the build tools are buttons. no box: the picked tool stays bright and every other tool dims,
-   the same way the projects that don't use it dim */
-.tool.pick { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-.tool.pick:focus-visible { outline-offset: 4px; }
-.tool { transition: opacity 0.2s; }
-.tools.picking .tool:not([aria-pressed="true"]) { opacity: 0.3; }
-.tool.pick[aria-pressed="true"] .nm { color: var(--text); }
-.proj { transition: opacity 0.2s; }
-.proj.dim { opacity: 0.3; }
+/* every tile on the page gets the same top-edge highlight, so they read as one family of slightly raised keys */
+.hand a, .btn, .tool, .proj .uses .u, .tab { box-shadow: var(--obj-hi); }
+/* white tiles (picked or selected; hovered or pressed further down) keep the same raised look */
+.tool.pick[aria-pressed="true"], .tab[aria-pressed="true"], .proj .uses .u.on { box-shadow: var(--obj-hi-lit); }
+@media (hover: hover) {
+  .hand a:hover, .hand a:focus-visible, .btn:hover, .btn:focus-visible, .tool.pick:hover, .tab:hover { box-shadow: var(--obj-hi-lit); }
+}
+@media (hover: none) {
+  .hand a[data-n]:active, .btn:active { box-shadow: var(--obj-hi-lit); }
+}
+
+/* stack: each tool is a chip like the resume button: a small official logo and its name inside one tile.
+   single-colour logos are drawn from simple-icons in their brand colour; python and postgresql use their multi-colour originals (devicon).
+   the six you can pick come first; git, github and vs code follow and don't respond to hover */
+.tools { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 0.5); }
+.tool {
+  display: inline-flex; align-items: center; gap: var(--i-gap); height: var(--obj-h); padding: 0 0.75rem;
+  border-radius: var(--obj-r); background: var(--obj-bg); border: 1px solid var(--obj-line);
+  transition: background var(--t), border-color var(--t), color var(--t), box-shadow var(--t);
+}
+.tool .tile { display: grid; place-items: center; width: 0.875rem; height: 0.875rem; flex: none; }
+.tool .logo {
+  width: 100%; height: 100%; background: var(--brand); transition: background var(--t);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.tool img { width: 100%; height: 100%; object-fit: contain; }
+.tool .nm { font-size: 0.8125rem; letter-spacing: var(--track-sm); color: var(--text); white-space: nowrap; transition: color var(--t); }
+
+/* "slice of life" written in that page's hand: same colour and underline as any link, only the letters change.
+   handwriting runs small, so it's set larger to sit evenly in the line */
+a.script { font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.3em; font-weight: 500; letter-spacing: 0; line-height: 1; }
+/* and underlined by hand: a slightly wobbly pen stroke instead of the straight underline, in the link's usual colours */
+a.script { position: relative; text-decoration: none; }
+a.script::after {
+  content: ""; position: absolute; left: -0.05em; right: -0.05em; bottom: -0.12em; height: 0.28em;
+  background: #444441; transition: background var(--t); pointer-events: none;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+/* with a mouse there's no underline at rest: on hover the pen draws it in, left to right, and moving away it fades.
+   phones can't hover, so there the drawn underline simply stays (the grey one above) */
+@media (hover: hover) { a.script::after { display: none; } }
+a.script::before {
+  content: ""; position: absolute; left: -0.05em; right: -0.05em; bottom: -0.12em; height: 0.28em;
+  background: var(--text); opacity: 0; pointer-events: none;   /* only the words count for hover, never the stroke under them */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transition: opacity var(--t);   /* moving away, the stroke fades */
+}
+a.script:hover::before, a.script:focus-visible::before {
+  opacity: 1; transition: none;
+  animation: pen 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;   /* restarts from nothing on every hover; like a hand: a gentle start, quick through the middle, easing off */
+}
+@keyframes pen { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* picking a tool: the chip turns white like a lifted contact tile, its name goes black;
+   the projects that don't use it dim. kafka's mark goes to its official near-black on the white chip */
+.tool.pick { font: inherit; color: inherit; cursor: pointer; }
+.tool.pick:focus-visible { outline-offset: 3px; }
+.tool.pick[aria-pressed="true"] { background: var(--obj-on); border-color: var(--obj-on); }
+.tool.pick[aria-pressed="true"] .nm { color: #000; }
+.tool.pick[aria-pressed="true"][data-t="apachekafka"] .logo { background: #231F20; }
+@media (hover: hover) {   /* hover only where there's a mouse, so a tap doesn't leave a chip looking picked */
+  .tool.pick:hover { background: var(--obj-on); border-color: var(--obj-on); }
+  .tool.pick:hover .nm { color: #000; }
+  .tool.pick:hover[data-t="apachekafka"] .logo { background: #231F20; }
+}
+/* "All projects ↗" closes the projects section: on wide screens at the foot of the gutter, level with the last project
+   (no extra height); in one column, its own line after the list */
+.pall { justify-self: start; margin-top: var(--u); color: var(--muted); text-decoration: none; transition: color var(--t); }
+.pall:hover { color: var(--text); }
+@media (min-width: 561px) {
+  #plabel { grid-column: 1; grid-row: 1; }
+  #plabel + div { grid-column: 2; grid-row: 1; }
+  .pall { grid-column: 1; grid-row: 1; align-self: end; margin-top: 0; line-height: var(--line-h); }
+}
+
+/* the projects heading names the picked tools: "Projects · Go, Docker" on phones; on wide screens, under "Projects" in the gutter */
+.ph .for { color: var(--text); }
+.ph .for:not(:empty)::before { content: " · "; color: var(--muted); }
+@media (min-width: 1100px) {
+  .ph .for { display: block; }
+  .ph .for:not(:empty)::before { content: none; }
+}
+.proj { transition: opacity var(--t-fade); }
+.proj.dim { opacity: 0.3; pointer-events: none; }   /* a dimmed project can't be opened: a tap on it just clears the pick, like a tap anywhere */
+.proj .uses .u.on { background: var(--obj-on); border-color: var(--obj-on); }
 .proj .uses .u.on i { background: var(--brand); }
 .proj .uses .u.on.full i { opacity: 0; }
 .proj .uses .u.on img { opacity: 1; }
+.proj .uses .u.on[data-t="apachekafka"] i { background: #231F20; }
 /* the line under the stack: a hint until a tool is picked, then where that tool is used */
 .used { grid-column: -2 / -1; color: var(--muted); margin-top: var(--u); }   /* under the logos, not in the label gutter */
+/* in one column the line becomes a link to the projects below: the same underline as any link */
+.usedgo {
+  background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left;
+  text-decoration: underline; text-decoration-color: #444441; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+  transition: color var(--t), text-decoration-color var(--t);
+}
+.usedgo:hover, .usedgo:active { color: var(--text); text-decoration-color: var(--text); }
 
 /* projects: name, a dotted lead to the date, what it is underneath */
 .proj { display: block; text-decoration: none; }
@@ -106,20 +188,26 @@ main { width: min(var(--col), 100% - 2 * var(--u)); margin: 0 auto; padding: cal
 .proj .when { white-space: nowrap; color: var(--muted); }
 .proj .when.live { color: var(--l4); }
 .proj .desc { color: var(--soft); text-wrap: pretty; }
-/* the tools a project uses: small logos only, the name on hover */
-.proj .uses { display: flex; gap: calc(var(--u) * 0.5); margin-top: calc(var(--u) * 0.5); }
-/* grey at rest; hovering the project shows each tool's full official logo, like the stack */
-.proj .uses .u { position: relative; width: 0.875rem; height: 0.875rem; }
+/* the tools a project uses: small square tiles with just the logo (the stack names them; the name shows on hover).
+   grey at rest; hovering the project brings each logo to its official colours; picking a tool in the stack
+   turns that tool's tile white here too */
+.proj .uses { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 0.5); margin-top: calc(var(--u) * 0.5); }
+.proj .uses .u {
+  display: grid; place-items: center; width: 1.375rem; height: 1.375rem;
+  border-radius: calc(var(--obj-r) * 0.6); background: var(--obj-bg); border: 1px solid var(--obj-line);
+  transition: background var(--t), border-color var(--t), box-shadow var(--t);
+}
+.proj .uses .ui { position: relative; width: 0.6875rem; height: 0.6875rem; flex: none; }
 .proj .uses i {
   display: block; width: 100%; height: 100%; background: var(--muted);
   -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
-  transition: background 0.2s, opacity 0.2s;
+  transition: background var(--t), opacity var(--t);
 }
-.proj .uses img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.2s; }
+.proj .uses img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity var(--t); }
 .proj:hover .uses i { background: var(--brand); }
 .proj:hover .uses .full i { opacity: 0; }
 .proj:hover .uses img { opacity: 1; }
-.proj .arr { color: var(--faint); transition: color 0.15s, transform 0.15s; }
+.proj .arr { color: var(--faint); transition: color var(--t), transform var(--t); }
 a.proj:hover .name { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 0.2em; }
 a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
 
@@ -127,13 +215,24 @@ a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
 /* the graph is the one block that spans the full width: label and switch on a row above it */
 .blk.fig { grid-template-columns: 1fr; }
 .blk.fig > .k { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: calc(var(--u) * 0.5); }
-.tabs { display: flex; gap: var(--u); }
-.tab { display: inline-flex; align-items: center; gap: var(--i-gap); background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; transition: color 0.15s; }
+/* the graph switch: two chips like the stack's. logos in their official colours; the selected one is white
+   (github's mark goes to its official near-black on white) */
+.tabs { display: flex; gap: calc(var(--u) * 0.5); }
+.tab {
+  display: inline-flex; align-items: center; gap: var(--i-gap); height: var(--obj-h); padding: 0 0.75rem;
+  border-radius: var(--obj-r); background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
+  font: inherit; cursor: pointer; transition: background var(--t), border-color var(--t), color var(--t), box-shadow var(--t);
+}
 .tab svg { width: 0.875rem; height: 0.875rem; fill: currentColor; }
-.tab[aria-pressed="true"], .tab:hover { color: var(--text); }
-.tab[data-g="lc"][aria-pressed="true"] svg { color: #FFA116; }   /* selected: each service in its official colour (github's is white on dark) */
+.tab[data-g="lc"] svg { color: #FFA116; }
+.tab[aria-pressed="true"] { background: var(--obj-on); border-color: var(--obj-on); color: #000; }
+.tab[data-g="gh"][aria-pressed="true"] svg { color: #181717; }
+@media (hover: hover) {
+  .tab:hover { background: var(--obj-on); border-color: var(--obj-on); color: #000; }
+  .tab[data-g="gh"]:hover svg { color: #181717; }
+}
 /* leetcode's official difficulty colours, shown while you're on the graph block (muted at rest) */
-.cap .easy, .cap .med, .cap .hard { transition: color 0.2s; }
+.cap .easy, .cap .med, .cap .hard { transition: color var(--t-fade); }
 .fig:hover .cap .easy, .fig:focus-within .cap .easy { color: #1CBABA; }
 .fig:hover .cap .med, .fig:focus-within .cap .med { color: #FFB700; }
 .fig:hover .cap .hard, .fig:focus-within .cap .hard { color: #F63737; }
@@ -160,7 +259,7 @@ a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
 .hand a {
   position: relative; display: grid; place-items: center; width: var(--obj-h); height: var(--obj-h); border-radius: var(--obj-r);
   background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
-  transform: rotate(var(--r)); transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.15s;
+  transform: rotate(var(--r));   /* its transition is set once, below */
 }
 .hand a + a { margin-left: -0.5rem; }
 .hand a:nth-child(1) { --r: -3deg; } .hand a:nth-child(2) { --r: 2deg; }
@@ -168,11 +267,11 @@ a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
 .hand:hover a, .hand:focus-within a { --r: 0deg; }
 .hand:hover a + a, .hand:focus-within a + a { margin-left: calc(var(--u) * 0.5); }
 /* the lifted tile turns white, like the resume button; github's mark goes to its official near-black on the light tile */
-.hand a:hover, .hand a:focus-visible { transform: translateY(-3px); z-index: 1; background: var(--text); border-color: var(--text); color: #181717; }
-/* the lifted tile shows its brand colour (github's official mark is white on dark, the resume has no brand) */
-.hand a { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.15s, border-color 0.15s, color 0.15s; }
+.hand a:hover, .hand a:focus-visible { transform: translateY(-3px); z-index: 1; background: var(--obj-on); border-color: var(--obj-on); color: #181717; }
+/* the fan-out eases over 0.25s; fill, border, logo colour and edge light change together */
+.hand a { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background var(--t), border-color var(--t), color var(--t), box-shadow var(--t); }
 /* email and linkedin swap to their full official marks: gmail's four-colour M, linkedin's blue square with a white "in" */
-.hand svg { transition: opacity 0.15s; }
+.hand svg { transition: opacity var(--t); }
 .hand svg.full { position: absolute; opacity: 0; }
 .hand a:hover svg.full, .hand a:focus-visible svg.full { opacity: 1; }
 .hand a:hover svg:has(+ svg.full), .hand a:focus-visible svg:has(+ svg.full) { opacity: 0; }
@@ -183,25 +282,38 @@ a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
 .hand a::after {
   content: attr(data-n); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translate(-50%, 3px);
   font-size: 0.8125rem; letter-spacing: var(--track-sm); color: var(--muted); white-space: nowrap; opacity: 0; pointer-events: none;
-  transition: opacity 0.15s, transform 0.15s;
+  transition: opacity var(--t), transform var(--t);
 }
 .hand a:hover::after, .hand a:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
 /* touch screens can't hover: the tiles sit fanned out, straight, with their names always showing underneath */
 @media (hover: none) {
-  .hand { padding-bottom: calc(var(--u) * 1.5); }
-  .hand a { --r: 0deg; }
-  .hand a + a { margin-left: calc(var(--u) * 2); }   /* room for each name under its tile */
-  .hand a::after { bottom: auto; top: calc(100% + 6px); opacity: 1; transform: translate(-50%, 0); }
+  /* phones: the hand stays closed (overlapped and tilted, like the desktop at rest). the first tap fans it out,
+     straight, with each name above its tile; then a tap on a tile opens it. tapping anywhere else closes it (app.js) */
+  .hand { cursor: pointer; }
+  .cap .easy { color: #1CBABA; } .cap .med { color: #FFB700; } .cap .hard { color: #F63737; }   /* phones can't hover, so leetcode's difficulty colours just show */
+  .reach { margin-top: calc(var(--u) * 3); }   /* a little more room above the tiles, so the names have air when the hand opens */
+  .hand:not(.open) a:nth-child(1) { --r: -3deg; } .hand:not(.open) a:nth-child(2) { --r: 2deg; }
+  .hand:not(.open) a:nth-child(3) { --r: -1.5deg; } .hand:not(.open) a:nth-child(4) { --r: 3deg; }
+  .hand:not(.open) a + a { margin-left: -0.5rem; }
+  .hand a::after { transform: translate(-50%, 0); }   /* names sit above the tiles, as on desktop, in the space already there: nothing below moves */
+  .hand:not(.open) a::after { opacity: 0; transition: none; }   /* and vanish at once when the hand folds, instead of fading over the tiles sliding back */
+  .hand.open a { --r: 0deg; }
+  .hand.open a + a { margin-left: calc(var(--u) * 2); }   /* room for each name above its tile */
+  .hand.open a::after { opacity: 1; }
   /* a tap leaves the browser thinking the finger still hovers, so hover looks are undone here
      and tiles and the button respond while pressed instead */
-  .hand:hover a + a, .hand:focus-within a + a { margin-left: calc(var(--u) * 2); }
   .hand a[data-n]:hover { transform: none; background: var(--obj-bg); border-color: var(--obj-line); color: var(--text); }
   .hand a:hover svg.full { opacity: 0; }
   .hand a:hover svg:has(+ svg.full) { opacity: 1; }
-  .hand a[data-n]:active { background: var(--text); border-color: var(--text); color: #181717; }
+  .hand a[data-n]:active { background: var(--obj-on); border-color: var(--obj-on); color: #181717; }
+  /* fanned out, each tile shows its full official logo on the dark tile: gmail's four colours, linkedin's blue square,
+     leetcode's orange (github's official mark on dark is white) */
+  .hand.open a svg.full { opacity: 1; }
+  .hand.open a svg:has(+ svg.full) { opacity: 0; }
+  .hand.open a[data-n="LeetCode"] { color: #FFA116; }
   .btn:hover { background: var(--obj-bg); border-color: var(--obj-line); color: var(--text); }
-  .btn:active { background: var(--text); border-color: var(--text); color: #000; }
-  .proj:hover .uses i { background: var(--muted); }
+  .btn:active { background: var(--obj-on); border-color: var(--obj-on); color: #000; }
+  .proj:hover .uses .u:not(.on) i { background: var(--muted); }
   .proj:hover .uses .full i { opacity: 1; }
   .proj:hover .uses img { opacity: 0; }
 }
@@ -212,22 +324,36 @@ a.proj:hover .arr { color: var(--text); transform: translate(1px, -1px); }
   display: inline-flex; align-items: center; gap: var(--i-gap); height: var(--obj-h); padding: 0 var(--u); border-radius: var(--obj-r);
   background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
   font-size: 0.8125rem; letter-spacing: var(--track-sm); text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  transition: background var(--t), border-color var(--t), color var(--t), box-shadow var(--t), transform 0.1s;
 }
 .btn svg { width: 0.875rem; height: 0.875rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* the resume button fills white on hover: calm at rest, a clear main action when you reach for it */
-.btn:hover, .btn:focus-visible { background: var(--text); border-color: var(--text); color: #000; }
+.btn:hover, .btn:focus-visible { background: var(--obj-on); border-color: var(--obj-on); color: #000; }
 .btn:active { transform: scale(0.97); }
 .status { display: inline-flex; align-items: center; gap: var(--i-gap); color: var(--muted); }
 .status i { width: 6px; height: 6px; border-radius: 50%; background: var(--l4); }
 
 
+/* the top button (phones and tablets, both pages): a small tile in the bottom right corner, there once you're most of a
+   screen down. wide screens don't need it: each page fits on one screen */
+.totop {
+  position: fixed; right: calc(var(--u) + env(safe-area-inset-right)); bottom: calc(var(--u) + env(safe-area-inset-bottom)); z-index: 150;
+  display: grid; place-items: center; width: var(--obj-h); height: var(--obj-h); border-radius: var(--obj-r);
+  background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text); box-shadow: var(--obj-hi);
+  opacity: 0; transform: translateY(6px); pointer-events: none;
+  transition: opacity var(--t-fade), transform var(--t-fade), background var(--t), border-color var(--t), color var(--t), box-shadow var(--t);
+}
+.totop.show { opacity: 1; transform: none; pointer-events: auto; }
+.totop svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.totop:active { background: var(--obj-on); border-color: var(--obj-on); color: #000; box-shadow: var(--obj-hi-lit); }
+@media (min-width: 1100px) { .totop { display: none; } }
+
 /* reduced motion: every hover change happens instantly */
-@media (prefers-reduced-motion: reduce) { *, *::after { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } a.script::before { animation: none !important; } }
 
 /* wide screens: two columns side by side, the whole page on one screen */
 @media (min-width: 1100px) {
-  main { width: min(70rem, 100% - 4 * var(--u)); min-height: 100vh; display: grid; grid-template-columns: 25rem 1fr; align-content: center; gap: calc(var(--u) * 5); padding: calc(var(--u) * 2) 0; }   /* centred on the screen, top to bottom */
+  main { width: min(70rem, 100% - 4 * var(--u)); min-height: 100vh; display: grid; grid-template-columns: 25rem 1fr; align-content: center; gap: calc(var(--u) * 5); padding: calc(var(--u) * 0.5) 0; }   /* centred on the screen, top to bottom */
   .col-a > .blocks { margin-top: calc(var(--u) * 2); }
 }
 

@@ -15,8 +15,8 @@
   <meta name="twitter:card" content="summary">
   <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= is replaced with the commit at every deploy, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="site.css?v=1">
-  <script src="app.js?v=1" defer></script>
+  <link rel="stylesheet" href="site.css?v=45">
+  <script src="app.js?v=44" defer></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -45,7 +45,7 @@
 
     <div class="intro">
       <p>Hi. I build software systems and I'm currently pursuing my master's in Artificial Intelligence and Data Science.</p>
-      <p class="muted">Right now I'm building a multimodal RAG system and learning concurrency &amp; backend with Go. The rest is my <a href="life/">slice of life</a>.</p>
+      <p class="muted">Right now I'm building a multimodal RAG system and learning concurrency &amp; backend with Go. The rest is my <a class="script" href="life/">Slice of Life</a>.</p>
     </div>
 
     <div class="reach">
@@ -66,18 +66,18 @@
       <section class="blk">
         <div class="k sm"><span>Stack</span></div>
         <!-- official logos, saved in icons/: simple-icons for single-colour ones, devicon (*-original) for the multi-colour python, postgresql and vs code -->
-        <div class="tools" role="group" aria-label="Stack: pick one to see the projects that use it">
-          <button class="tool pick" type="button" aria-pressed="false" data-t="go"><span class="logo" aria-hidden="true"></span><span class="nm">Go</span></button>
-          <button class="tool pick" type="button" aria-pressed="false" data-t="python"><img src="icons/python-original.svg" alt="" width="24" height="24"><span class="nm">Python</span></button>
-          <button class="tool pick" type="button" aria-pressed="false" data-t="postgresql"><img src="icons/postgresql-original.svg" alt="" width="24" height="24"><span class="nm">PostgreSQL</span></button>
-          <button class="tool pick" type="button" aria-pressed="false" data-t="apachekafka"><span class="logo" aria-hidden="true"></span><span class="nm">Apache Kafka</span></button>
-          <button class="tool pick" type="button" aria-pressed="false" data-t="minio"><span class="logo" aria-hidden="true"></span><span class="nm">MinIO</span></button>
-          <button class="tool pick" type="button" aria-pressed="false" data-t="docker"><span class="logo" aria-hidden="true"></span><span class="nm">Docker</span></button>
-          <div class="tool" data-t="git"><span class="logo" aria-hidden="true"></span><span class="nm">Git</span></div>
-          <div class="tool" data-t="github"><span class="logo" aria-hidden="true"></span><span class="nm">GitHub</span></div>
-          <div class="tool" data-t="vscode"><img src="icons/vscode-original.svg" alt="" width="24" height="24"><span class="nm">VS Code</span></div>
+        <div class="tools" role="group" aria-label="Stack: pick tools to see the projects that use them">
+          <button class="tool pick" type="button" aria-pressed="false" data-t="go"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">Go</span></button>
+          <button class="tool pick" type="button" aria-pressed="false" data-t="python"><span class="tile"><img src="icons/python-original.svg" alt="" width="24" height="24"></span><span class="nm">Python</span></button>
+          <button class="tool pick" type="button" aria-pressed="false" data-t="postgresql"><span class="tile"><img src="icons/postgresql-original.svg" alt="" width="24" height="24"></span><span class="nm">PostgreSQL</span></button>
+          <button class="tool pick" type="button" aria-pressed="false" data-t="apachekafka"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">Apache Kafka</span></button>
+          <button class="tool pick" type="button" aria-pressed="false" data-t="minio"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">MinIO</span></button>
+          <button class="tool pick" type="button" aria-pressed="false" data-t="docker"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">Docker</span></button>
+          <div class="tool" data-t="git"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">Git</span></div>
+          <div class="tool" data-t="github"><span class="tile"><span class="logo" aria-hidden="true"></span></span><span class="nm">GitHub</span></div>
+          <div class="tool" data-t="vscode"><span class="tile"><img src="icons/vscode-original.svg" alt="" width="24" height="24"></span><span class="nm">VS Code</span></div>
         </div>
-        <p class="used sm" id="used" aria-live="polite">Pick one to see where it's used</p>
+        <p class="used sm" id="used" aria-live="polite">Pick tools to see where they're used</p>
       </section>
     </div>
     </div>
@@ -85,29 +85,30 @@
     <div class="col-b">
     <div class="blocks">
       <section class="blk">
-        <div class="k sm"><span>Projects</span><a href="https://github.com/gnanreddy13?tab=repositories&amp;sort=updated" target="_blank" rel="noreferrer">All ↗</a></div>
+        <div class="k sm" id="plabel"><span class="ph">Projects<span class="for" id="pfor"></span></span></div>
         <div>
           <div class="proj">
             <div class="top"><span class="name">multimodal-rag-system</span><span class="lead"></span><span class="when live sm">In progress</span></div>
             <p class="desc">LLM-based, event-driven RAG system that ingests text and images and answers questions with source citations, supervised by Dr.&nbsp;T.&nbsp;V.&nbsp;Gopal</p>
-            <p class="uses" role="img" aria-label="built with Go, Python, PostgreSQL, Apache Kafka, MinIO, Docker"><span class="u" data-t="go" title="Go"><i></i></span><span class="u full" data-t="python" title="Python"><i></i><img src="icons/python-original.svg" alt="" width="14" height="14"></span><span class="u full" data-t="postgresql" title="PostgreSQL"><i></i><img src="icons/postgresql-original.svg" alt="" width="14" height="14"></span><span class="u" data-t="apachekafka" title="Apache Kafka"><i></i></span><span class="u" data-t="minio" title="MinIO"><i></i></span><span class="u" data-t="docker" title="Docker"><i></i></span></p>
+            <p class="uses" role="img" aria-label="Built with Go, Python, PostgreSQL, Apache Kafka, MinIO, Docker"><span class="u" data-t="go" title="Go"><span class="ui"><i></i></span></span><span class="u full" data-t="python" title="Python"><span class="ui"><i></i><img src="icons/python-original.svg" alt="" width="14" height="14"></span></span><span class="u full" data-t="postgresql" title="PostgreSQL"><span class="ui"><i></i><img src="icons/postgresql-original.svg" alt="" width="14" height="14"></span></span><span class="u" data-t="apachekafka" title="Apache Kafka"><span class="ui"><i></i></span></span><span class="u" data-t="minio" title="MinIO"><span class="ui"><i></i></span></span><span class="u" data-t="docker" title="Docker"><span class="ui"><i></i></span></span></p>
           </div>
           <a class="proj" href="https://github.com/gnanreddy13/webhook-delivery" target="_blank" rel="noreferrer">
             <div class="top"><span class="name">webhook-delivery</span><span class="arr">↗</span><span class="lead"></span><span class="when sm">Oct 2026</span></div>
             <p class="desc">Webhook delivery service that signs, retries and isolates every endpoint, with Postgres as the only queue</p>
-            <p class="uses" role="img" aria-label="built with Go, PostgreSQL, Docker"><span class="u" data-t="go" title="Go"><i></i></span><span class="u full" data-t="postgresql" title="PostgreSQL"><i></i><img src="icons/postgresql-original.svg" alt="" width="14" height="14"></span><span class="u" data-t="docker" title="Docker"><i></i></span></p>
+            <p class="uses" role="img" aria-label="Built with Go, PostgreSQL, Docker"><span class="u" data-t="go" title="Go"><span class="ui"><i></i></span></span><span class="u full" data-t="postgresql" title="PostgreSQL"><span class="ui"><i></i><img src="icons/postgresql-original.svg" alt="" width="14" height="14"></span></span><span class="u" data-t="docker" title="Docker"><span class="ui"><i></i></span></span></p>
           </a>
           <a class="proj" href="https://github.com/gnanreddy13/matscan" target="_blank" rel="noreferrer">
             <div class="top"><span class="name">matscan</span><span class="arr">↗</span><span class="lead"></span><span class="when sm">Sep 2026</span></div>
             <p class="desc">Reads a matrix from standard input and prints it back</p>
-            <p class="uses" role="img" aria-label="built with Go"><span class="u" data-t="go" title="Go"><i></i></span></p>
+            <p class="uses" role="img" aria-label="Built with Go"><span class="u" data-t="go" title="Go"><span class="ui"><i></i></span></span></p>
           </a>
           <a class="proj" href="https://github.com/gnanreddy13/calculator-cli" target="_blank" rel="noreferrer">
             <div class="top"><span class="name">calculator-cli</span><span class="arr">↗</span><span class="lead"></span><span class="when sm">Apr 2026</span></div>
             <p class="desc">Interactive terminal calculator for basic arithmetic</p>
-            <p class="uses" role="img" aria-label="built with Go"><span class="u" data-t="go" title="Go"><i></i></span></p>
+            <p class="uses" role="img" aria-label="Built with Go"><span class="u" data-t="go" title="Go"><span class="ui"><i></i></span></span></p>
           </a>
         </div>
+        <a class="pall sm" href="https://github.com/gnanreddy13?tab=repositories&amp;sort=updated" target="_blank" rel="noreferrer">All projects ↗</a>
       </section>
 
       <section class="blk fig">
@@ -127,6 +128,8 @@
     </div>
     </div>
   </main>
+  <!-- phones and tablets: back to the top, from the bottom right corner once you've scrolled down -->
+  <a href="#top" class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a>
 
 </body>
 </html>

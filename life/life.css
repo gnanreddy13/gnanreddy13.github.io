@@ -232,23 +232,12 @@ main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, 
 .v-slide figcaption .live { color: var(--l4); }
 .v-count { margin: calc(var(--u) * 1.5) 0 0; text-align: center; color: var(--faint); }
 
-/* the top button (phones and tablets): a small tile in the bottom right corner, there once you're a screen down */
-.totop {
-  position: fixed; right: calc(var(--u) + env(safe-area-inset-right)); bottom: calc(var(--u) + env(safe-area-inset-bottom)); z-index: 150;
-  display: grid; place-items: center; width: var(--obj-h); height: var(--obj-h); border-radius: var(--obj-r);
-  background: var(--obj-bg); border: 1px solid var(--obj-line); color: var(--text);
-  opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity 0.2s, transform 0.2s;
-}
-.totop.show { opacity: 1; transform: none; pointer-events: auto; }
-.totop svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
 /* wide screens: the whole page on one screen, like the home page, centred top to bottom. left: who, the routine and the
    way home; right: places, then favourites. (a screen too short for it all just scrolls) */
 @media (min-width: 1100px) {
   main.life { grid-template-columns: 29rem 1fr; align-content: center; padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); }   /* the left a little wider than home's, so the piles on the right sit closer together */
   main.life > .col-a, main.life > .col-b { display: flex; flex-direction: column; }
   main.life > .col-a > .foot { display: none; }
-  .totop { display: none; }   /* all on one screen, the intro's "coding side" is always in view */
   main.life > .col-a > .blocks { margin-top: var(--u); }
   .routine .pinned { width: 19.5rem; }   /* a touch wider than its column, into the gap, so no line of the plan wraps */
   main.life > .col-b > .media { margin-top: 0; }

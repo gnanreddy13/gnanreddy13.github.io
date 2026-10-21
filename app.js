@@ -20,26 +20,87 @@ mail.addEventListener("click", function (e) {
 });
 
 
-// stack: pick a build tool to light up the projects that use it; pick it again, press esc or click elsewhere to clear
+// stack: pick one or more build tools to light up the projects that use all of them; tap a picked tool again to drop it,
+// press esc or click anywhere else to clear
 var picks = document.querySelectorAll(".tool.pick"), projs = document.querySelectorAll(".proj"), used = document.getElementById("used");
-function pick(t) {
-  var hits = [];
-  picks.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.t === t); });
-  document.querySelector(".tools").classList.toggle("picking", !!t);
+var chosen = [];
+var firstLit = null;   // the first project the picked tools light up
+
+function name(t) { return document.querySelector('.tools .pick[data-t="' + t + '"] .nm').textContent; }
+function list(xs) { return xs.length > 1 ? xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1] : xs[0]; }
+function pick(ts) {
+  chosen = ts;
+  var hits = [], first = null, on = ts.length > 0;
+  picks.forEach(function (b) { b.setAttribute("aria-pressed", ts.indexOf(b.dataset.t) >= 0); });
   projs.forEach(function (p) {
-    var u = t && p.querySelector('.u[data-t="' + t + '"]');
-    p.classList.toggle("dim", !!t && !u);
-    p.querySelectorAll(".u").forEach(function (x) { x.classList.toggle("on", x === u); });
-    if (u) hits.push(p.querySelector(".name").textContent);
+    var us = ts.map(function (t) { return p.querySelector('.u[data-t="' + t + '"]'); });
+    var all = on && us.every(Boolean);
+    p.classList.toggle("dim", on && !all);
+    p.querySelectorAll(".u").forEach(function (x) { x.classList.toggle("on", all && us.indexOf(x) >= 0); });
+    if (all) { hits.push(p.querySelector(".name").textContent); if (!first) first = p; }
   });
-  used.textContent = !t ? "Pick one to see where it's used" : hits.length === projs.length ? "Used in every project"
-    : "Used in " + (hits.length > 1 ? hits.slice(0, -1).join(", ") + " and " + hits[hits.length - 1] : hits[0]);
+  // the projects heading names the picked tools, so after the scroll on phones you still know why some are dimmed
+  document.getElementById("pfor").textContent = ts.map(name).join(", ");
+  var together = ts.length > 1 ? "Used together in " : "Used in ";
+  if (!on) used.textContent = "Pick tools to see where they're used";
+  else if (!hits.length) used.textContent = "No project uses " + (ts.length > 1 ? "all of these together" : "it") + " yet";
+  else if (oneCol.matches) {
+    // one column: the projects are further down, so the line counts them and takes you there when you're done picking
+    used.innerHTML = '<button class="usedgo" type="button">' + together + hits.length + (hits.length === 1 ? " project" : " projects") + " ↓</button>";
+  } else used.textContent = hits.length === projs.length ? together + "every project" : together + list(hits);
+  firstLit = first;
+  return first;
+}
+// one column (phones, narrow windows): the projects sit below the stack; the line under it ("Used in 2 projects ↓")
+// brings the projects heading and the first lit project into view
+var oneCol = matchMedia("(max-width: 1099px)"), calm = matchMedia("(prefers-reduced-motion: reduce)");
+function reveal(p) {
+  if (!p || !oneCol.matches) return;
+  // land on the projects heading (which now names the tool) with the lit projects below it;
+  // if the heading and the first lit project are both already on screen, nothing moves
+  var h = document.getElementById("plabel").getBoundingClientRect(), r = p.getBoundingClientRect();
+  if (h.top >= 0 && r.bottom <= innerHeight) return;
+  scrollTo({ top: scrollY + h.top - 24, behavior: calm.matches ? "auto" : "smooth" });
 }
 picks.forEach(function (b) {
-  b.addEventListener("click", function (e) { e.stopPropagation(); pick(b.getAttribute("aria-pressed") === "true" ? null : b.dataset.t); });
+  b.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var t = b.dataset.t, i = chosen.indexOf(t);
+    var next = i >= 0 ? chosen.filter(function (x) { return x !== t; }) : chosen.concat(t);
+    pick(next);   // nothing scrolls: you can keep picking; in one column the line under the stack takes you to the projects
+  });
 });
-document.addEventListener("click", function () { pick(null); });
-document.addEventListener("keydown", function (e) { if (e.key === "Escape") pick(null); });
+used.addEventListener("click", function (e) {
+  if (!e.target.closest(".usedgo")) return;
+  e.stopPropagation();   // going to the projects keeps the picks
+  reveal(firstLit);
+});
+oneCol.addEventListener("change", function () { pick(chosen); });   // the line's wording follows the layout
+document.addEventListener("click", function (e) {
+  pick([]);
+  if (!e.target.closest(".hand")) hand.classList.remove("open");   // a tap anywhere else closes the contact hand
+});
+
+// phones: the contact hand starts closed. the first tap on it only fans it out (no link opens);
+// once it's open, a tap on a tile opens that link as usual
+var hand = document.querySelector(".hand"), touch = matchMedia("(hover: none)");
+hand.addEventListener("click", function (e) {
+  if (!touch.matches) return;
+  if (!hand.classList.contains("open")) {
+    e.preventDefault(); e.stopPropagation();
+    hand.classList.add("open");
+    return;
+  }
+  // a tile was tapped and its link is opening: fold the hand and let go of the tile now, so coming back to the page
+  // doesn't flash the tile (lifted, its name, a focus outline) before it settles
+  var a = e.target.closest("a");
+  if (a) setTimeout(function () { a.blur(); hand.classList.remove("open"); }, 0);
+}, true);
+// back to the page from another tab, the mail app or the back button: start from the closed, unfocused hand
+function settle() { if (!touch.matches) return; hand.classList.remove("open"); if (hand.contains(document.activeElement)) document.activeElement.blur(); }
+addEventListener("pageshow", settle);
+document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") settle(); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") pick([]); });
 
 // the graph: one year from data/, github or leetcode
 function get(u) { return fetch(u).then(function (r) { return r.json(); }); }
@@ -97,3 +158,13 @@ document.querySelectorAll(".tab").forEach(function (b) {
     cur = b.dataset.g; draw();
   };
 });
+
+// the top button (phones and tablets): shows once you're most of a screen down; scrolls up without adding a step to the
+// history, so the phone's back button leaves the page instead of retracing the scroll
+(function () {
+  var b = document.getElementById("totop"), queued = false;
+  function check() { queued = false; b.classList.toggle("show", scrollY > innerHeight * 0.8); }
+  addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(check); } }, { passive: true });
+  b.addEventListener("click", function (e) { e.preventDefault(); scrollTo({ top: 0, behavior: calm.matches ? "auto" : "smooth" }); b.blur(); });
+  check();
+})();
