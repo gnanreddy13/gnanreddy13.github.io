@@ -1,360 +1,321 @@
-// slice of life: draws the page from data.json. everything is scoped to this function, so nothing leaks into the page's globals
+// slice of life: the clock, then everything else drawn from data.json (places, the photo, the lifting week, favourites).
+// scoped to this function, so nothing leaks into the page's globals
 (function () {
 
 function $(id) { return document.getElementById(id); }
-function icon(id) { return '<svg class="i" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; }
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
   });
 }
-var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-var EASE = "cubic-bezier(0.2, 0.7, 0.2, 1)";      // same curve as --ease
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-// ---------- clock: my time (IST), my date, and how far the visitor is from it (same as the home page) ----------
-function renderClock() {
-  var now = new Date();
-  var t = now.toLocaleTimeString("en", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit" }).toLowerCase();
-  var d = now.toLocaleDateString("en", { timeZone: "Asia/Kolkata", weekday: "short", month: "short", day: "numeric" }).toLowerCase();
-  var diff = -now.getTimezoneOffset() - 330;           // visitor minus IST, in minutes
-  var a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
-  var span = (h ? h + "h" : "") + (h && m ? " " : "") + (m ? m + "m" : "");
-  var rel = diff === 0 ? "same time as me" : "you're " + span + (diff < 0 ? " behind" : " ahead");
-  $("clock").innerHTML = icon("clock") + t + " ist";
-  $("date").innerHTML = icon("cal") + d;
-  $("clock-rel").textContent = rel;
+// the time in india, kept current (as on the home page)
+function tick() {
+  $("now").textContent = new Date().toLocaleTimeString("en", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" });
 }
-renderClock();
-setInterval(renderClock, 15000);
-
-// today in IST, as yyyy-mm-dd and as 0 = monday … 6 = sunday
-function istToday() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-}
-function wd(iso) { return (new Date(iso + "T00:00:00Z").getUTCDay() + 6) % 7; }
-function addDays(iso, n) { return new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10); }
-function fmtDay(iso, year) {
-  return new Date(iso + "T00:00:00Z").toLocaleDateString("en", Object.assign(
-    { timeZone: "UTC", weekday: "short", month: "short", day: "numeric" }, year ? { year: "numeric" } : {})).toLowerCase();
-}
-var TODAY = istToday();
-
-// one sliding green underline under the picked item of a row (as under building / built on the home page)
-function underline(row, buttons, isOn) {
-  isOn = isOn || function (b) { return b.getAttribute("aria-pressed") === "true"; };
-  var bar = document.createElement("span");
-  bar.className = "pbar";
-  bar.setAttribute("aria-hidden", "true");
-  row.appendChild(bar);
-  function place() {
-    var box = row.getBoundingClientRect();
-    buttons.forEach(function (b) {
-      if (!isOn(b)) return;
-      var sp = b.querySelector(".sp"), r = b.getBoundingClientRect();
-      var w = sp ? sp.getBoundingClientRect().width : r.width;   // days: as wide as the split's word
-      bar.style.transform = "translateX(" + (r.left - box.left) + "px) scaleX(" + w + ")";
-    });
-  }
-  new ResizeObserver(place).observe(row);
-  return { place: place, slide: function () { bar.classList.add("slide"); place(); } };
-}
+tick(); setInterval(tick, 10000);
 
 // data.json was already requested by the preload in the page's head, so this picks up that download instead of starting another
 function reveal() { document.documentElement.classList.remove("loading"); }   // the page fades in, drawn
 fetch("data.json")
   .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(draw)
-  .catch(function () {
-    $("lately-text").textContent = "couldn't load this part, try a refresh";
-  })
+  .catch(function () { $("lately").textContent = "Couldn't load the rest of this page, try a refresh. "; })
   .then(reveal);
 
 function draw(D) {
-  drawPlaces(D);
-  drawLately(D);
-  var lift = drawWeek(D);
-  drawGym(D, lift);
-  drawFavs(D);
-  makeFold($("lately-label"), $("lately-body"), "lately i'm...", function () { return D.lately && D.lately.sum ? "lately i'm " + D.lately.sum : ""; });
-  makeFold($("past-label"), $("past-body"), "past year...", function () { return "past year: " + $("gym-n").textContent.replace(" in the past year", ""); });
+  drawRoutine(D);
+  drawWeek(D);
+  var place = drawPlaces(D);
+  var favs = drawFavs(D);
+  if (D.lately && D.lately.text) drawLately(D, favs, place);
+  wireIntro();
 }
 
-// ---------- lately: one sentence, then what i'm watching and reading with how far along ----------
-function drawLately(D) {
-  $("lately-text").textContent = (D.lately && D.lately.text) || "";
-  var now = Array.isArray(D.now) ? D.now : [];
-  $("nowlist").innerHTML = now.map(function (n) {
-    var name = n.url
-      ? '<a target="_blank" rel="noreferrer" href="' + esc(n.url) + '">' + esc(n.name) + '<svg class="i sm"><use href="#i-ext"/></svg></a>'
-      : "<b>" + esc(n.name) + "</b>";
-    var share = n.of ? Math.min(1, n.at / n.of) : 0;
-    return '<li><p class="nl">' + esc(n.kind) + " " + name + " · " + esc(n.unit) + " " + Number(n.at) + " of " + Number(n.of) + "</p>" +
-      '<span class="line"><span data-s="' + share + '"></span></span></li>';
-  }).join("");
-  $("nowlist").parentNode.hidden = !now.length;
-  requestAnimationFrame(function () { requestAnimationFrame(function () {   // after the first paint, so the lines fill in
-    Array.prototype.forEach.call(document.querySelectorAll(".nowlist .line > span"), function (s) {
-      s.style.transform = "scaleX(" + s.dataset.s + ")";
-    });
-  }); });
-}
-
-// ---------- places + photos: each place opens its google photos album; one cover photo opens its place's album ----------
-function drawPlaces(D) {
-  var places = Array.isArray(D.places) ? D.places : [];
-  function ext(href, inner, cls) {
-    return '<a' + (cls ? ' class="' + cls + '"' : "") + ' target="_blank" rel="noreferrer" href="' + esc(href) + '">' + inner + '<svg class="i sm"><use href="#i-ext"/></svg></a>';
-  }
-  function name(id) { return (places.filter(function (x) { return x.id === id; })[0] || {}); }
-
-  // the sentence: "hyderabad ↗ (home), mumbai ↗ and delhi ↗, so far." (a place's note sits after it, outside the link)
-  var words = places.map(function (p) {
-    return (p.album ? ext(p.album, esc(p.name), "place") : '<span class="place">' + esc(p.name) + "</span>") + (p.note ? " (" + esc(p.note) + ")" : "");
+// the intro's links: on a phone they scroll down to their sections. on a wide screen everything's already in view, so
+// pointing at one shows its section instead (the fan opens, the note is picked up, the piles lift), and a click stays put
+function wireIntro() {
+  var SHOW = {
+    "#places": function (on) { var f = $("fan").querySelector(".fan"); if (f) f.classList.toggle("on", on); },
+    "#routine": function (on) { document.querySelector(".pinned").classList.toggle("lift", on); $("wk").classList.toggle("on", on); },
+    "#favourites": function (on) { $("desk").classList.toggle("hint", on); }
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('.intro a[href^="#"]'), function (a) {
+    var show = SHOW[a.getAttribute("href")];
+    if (!show) return;
+    a.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") show(true); });
+    a.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") show(false); });
+    a.addEventListener("focus", function () { show(true); });
+    a.addEventListener("blur", function () { show(false); });
+    a.addEventListener("click", function (e) { if (document.documentElement.scrollHeight <= innerHeight) e.preventDefault(); });   // nowhere to scroll to
   });
-  var sentence = words.length > 1 ? words.slice(0, -1).join(", ") + " and " + words[words.length - 1] : words.join("");
-  $("places").innerHTML = sentence + (words.length ? ", so far." : "");
-
-  // the cover: the whole photo, uncropped; place and month under it (the album is linked from the place names above)
-  var c = D.cover, box = $("cover"), cap = $("cap");
-  if (!c) { $("cover").parentNode.hidden = true; return; }
-  var pl = name(c.place);
-  box.innerHTML = '<img src="' + esc(c.src) + '" alt="' + esc(c.alt || "") + '" width="' + (c.w || 4) + '" height="' + (c.h || 3) + '" decoding="async">';
-  var text = esc(pl.name || c.place) + (c.when ? ' <span class="when">· ' + esc(c.when) + "</span>" : "");
-  cap.innerHTML = text;
 }
 
-// ---------- lift: the week (today in white); tap a day, or a square in the gym graph, to see its plan ----------
-function drawWeek(D) {
-  var week = Array.isArray(D.week) && D.week.length === 7 ? D.week : ["", "", "", "", "", "", ""];
-  var SHORT = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"], FULL = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-  var row = $("week"), today = wd(TODAY);
-  row.innerHTML = week.map(function (s, i) {
-    return '<button class="day' + (i === today ? " today" : "") + '" type="button" aria-pressed="false" data-i="' + i + '"' +
-      ' aria-label="' + FULL[i] + ", " + esc(s || "rest") + (i === today ? ", today" : "") + '">' +
-      '<span class="dn">' + SHORT[i] + '</span><span class="sp">' + esc(s || "rest") + "</span></button>";
-  }).join("");
-  var days = Array.prototype.slice.call(row.querySelectorAll(".day"));
-  var bar = underline(row, days);
-  // what i do that day, one per line: the workout on lift days ("push-ups · 3 × failure"), the rest routine on rest days ("walk · 30 min")
-  var plan = Array.isArray(D.plan) ? D.plan : [], restPlan = Array.isArray(D.rest) ? D.rest : [];
-  var list = $("plan"), body = $("plan-body"), grow = null;
-  function lines(xs) {
-    return xs.map(function (x) {
-      return "<li>" + esc(x.name) + (x.sets ? ' <span class="sets">· ' + esc(x.sets) + "</span>" : "") + "</li>";
+// the "lately" line. "the gym" is tied to the sticky note; and
+// every title (or place) in it that's also further down gets its poster (or photo) in miniature beside it, and is tied to that
+// poster: hovering the title pulls it out of its pile; on a touch screen a tap scrolls there and pulls it out. a title in two
+// piles (an anime and its manga) goes by the verb before it: "reading" means the manga, "watching" the screen version
+function drawLately(D, favs, place) {
+  var text = D.lately.text, low = text.toLowerCase(), all = [], hits = [];
+  Object.keys(D.favs || {}).forEach(function (k) {
+    (D.favs[k] || []).forEach(function (f) { if (f.name && f.cover) all.push({ f: f, k: k }); });
+  });
+  (D.places || []).forEach(function (p) { if (p.name && p.photo) all.push({ f: { name: p.name, cover: p.photo }, k: "place" }); });
+  all.sort(function (a, b) { return b.f.name.length - a.f.name.length; });   // longest first, so a long title wins over one inside it
+  all.forEach(function (c) {
+    var name = c.f.name.toLowerCase(), from = 0, at;
+    while ((at = low.indexOf(name, from)) > -1) {
+      var end = at + name.length, same = hits.filter(function (h) { return h.at === at && h.end === end; })[0];
+      if (same) same.cands.push(c);
+      else if (!hits.some(function (h) { return at < h.end && end > h.at; })) hits.push({ at: at, end: end, cands: [c] });
+      from = end;
+    }
+  });
+  // "the gym" (or just "gym") is tied to the sticky note (no picture: the note is right below it)
+  var g = low.indexOf("the gym") > -1 ? { at: low.indexOf("the gym"), len: 7 } : low.indexOf("gym") > -1 ? { at: low.indexOf("gym"), len: 3 } : null;
+  if (g && !hits.some(function (h) { return g.at < h.end && g.at + g.len > h.at; })) hits.push({ at: g.at, end: g.at + g.len, note: true });
+  hits.sort(function (a, b) { return a.at - b.at; });
+  var html = "", pos = 0;
+  hits.forEach(function (h) {
+    var mini = "";
+    if (!h.note) {
+      var before = low.slice(0, h.at), reading = before.lastIndexOf("read") > before.lastIndexOf("watch");
+      h.pick = h.cands.filter(function (c) { return (c.k === "manga") === reading; })[0] || h.cands[0];
+      mini = '<img src="' + esc(h.pick.f.cover) + '" alt="" class="mini' + (h.pick.k === "place" ? " mini-photo" : "") + '">';
+    }
+    html += esc(text.slice(pos, h.at)) + '<span class="mention">' + mini + esc(text.slice(h.at, h.end)) + "</span>";
+    pos = h.end;
+  });
+  $("lately").innerHTML = "Lately I'm " + html + esc(text.slice(pos)) + ". ";
+  Array.prototype.forEach.call($("lately").querySelectorAll(".mention"), function (m, i) {
+    if (hits[i].note) {   // the gym: hovering picks up the sticky note as if you'd hovered it; a tap scrolls to it and does the same
+      var note = document.querySelector(".pinned"), lift = function (on) { note.classList.toggle("lift", on); };
+      m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") lift(true); });
+      m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") lift(false); });
+      m.addEventListener("click", function () {
+        if (!matchMedia("(hover: none)").matches) return;
+        $("routine").scrollIntoView({ behavior: "smooth", block: "center" }); lift(true);
+        setTimeout(function () { lift(false); }, 1800);
+      });
+      return;
+    }
+    if (hits[i].pick.k === "place") {   // a place: hovering opens the fan on its photo; a tap scrolls there and does the same
+      var name = hits[i].pick.f.name;
+      m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") place(name); });
+      m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") place(null); });
+      m.addEventListener("click", function () {
+        if (!matchMedia("(hover: none)").matches) return;
+        $("places").scrollIntoView({ behavior: "smooth", block: "center" }); place(name);
+        setTimeout(function () { place(null); }, 1800);
+      });
+      return;
+    }
+    var pick = hits[i].pick, pile = $("desk").querySelector('.pile[data-k="' + pick.k + '"]');
+    var card = pile && Array.prototype.filter.call(pile.children, function (c) { return c.dataset.n === pick.f.name; })[0];
+    if (!card) return;
+    m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") favs.pull(card); });
+    m.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") favs.putBack(card.parentNode); });
+    m.addEventListener("click", function () {
+      if (!matchMedia("(hover: none)").matches) return;
+      card.scrollIntoView({ behavior: "smooth", block: "center" }); favs.pull(card);
+    });
+  });
+}
+
+// a fanned hand of pictures (posters, photos), like the contact tiles on the home page: each tilted a little,
+// spreading out on hover; each opens its page. items: { name, url, img }; wireFans says which one you're on
+var TILT = [-6, 4, -3, 5, -4, 3];
+function fan(items) {
+  return '<span class="fan">' + items.map(function (f, i) {
+    var img = f.img ? '<img src="' + esc(f.img) + '" alt="" loading="lazy" decoding="async">' : "";
+    var attrs = ' style="--r: ' + TILT[i % TILT.length] + 'deg" data-n="' + esc(f.name) + '" aria-label="' + esc(f.name) + '"';
+    return f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noreferrer"' + attrs + ">" + img + "</a>" : "<span" + attrs + ">" + img + "</span>";
+  }).join("") + "</span>";
+}
+// the picture you're on (or tabbed to) is handed to show(name); leaving the fan hands it null
+function wireFans(root, show) {
+  Array.prototype.forEach.call(root.querySelectorAll(".fan"), function (fanEl) {
+    Array.prototype.forEach.call(fanEl.children, function (p) {
+      p.addEventListener("pointerenter", function () { show(p.dataset.n); });
+      p.addEventListener("focus", function () { show(p.dataset.n); });
+    });
+    fanEl.addEventListener("pointerleave", function () { show(null); });
+    fanEl.addEventListener("focusout", function (e) { if (!fanEl.contains(e.relatedTarget)) show(null); });
+  });
+}
+
+// ---------- routine: the workout, then the rest-day routine, on the sticky note ----------
+function drawRoutine(D) {
+  // handwritten lines on the sticky note: what, then how much
+  function rows(xs) {
+    return (Array.isArray(xs) ? xs : []).map(function (x) {
+      return "<li><span>" + esc(x.name) + "</span><span>" + esc(x.sets || "") + "</span></li>";
     }).join("");
   }
-
-  function pick(i, animate) {
-    days.forEach(function (d) { d.setAttribute("aria-pressed", String(Number(d.dataset.i) === i)); });
-    if (animate) bar.slide(); else bar.place();
-    var rest = (week[i] || "rest") === "rest", whose = i === today ? "today" : FULL[i], xs = rest ? restPlan : plan;
-    var from = body.getBoundingClientRect().height;
-    if (grow) grow.cancel();
-    $("plan-note").textContent = "// " + whose + (rest ? "'s a rest day" : "'s workout");
-    list.innerHTML = lines(xs);
-    list.hidden = !xs.length;
-    if (!animate || reduce) return;
-    // the plan glides to its new height (rest days are shorter) while it fades in, as the tabs' lists do
-    var to = body.getBoundingClientRect().height;
-    if (from !== to) grow = body.animate([{ height: from + "px", overflow: "hidden" }, { height: to + "px", overflow: "hidden" }], { duration: 320, easing: EASE });
-    if (!list.hidden) list.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: EASE });
+  // which days are which, beside each heading ("Lift days · Tue, Thu, Sat", "Rest days · Mon, Wed, Fri, Sun")
+  var week = Array.isArray(D.week) ? D.week : [], DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  function on(lifting) {
+    var xs = DAYS.filter(function (d, i) { return (week[i] && week[i] !== "rest") === lifting; });
+    return xs.length ? " · " + xs.join(", ") : "";
   }
-  days.forEach(function (d) {
-    d.addEventListener("click", function () {
-      if (d.getAttribute("aria-pressed") !== "true") pick(Number(d.dataset.i), true);
-    });
-  });
-  pick(today, false);
-  return { pick: function (i) { if (!days[i] || days[i].getAttribute("aria-pressed") !== "true") pick(i, true); } };
+  $("lift-days").textContent = on(true);
+  $("rest-days").textContent = on(false);
+  $("plan").innerHTML = rows(D.plan);
+  $("rest").innerHTML = rows(D.rest);
 }
 
-// ---------- gym days: the past year in the home page's graph style, one green square per session (a tap shows that weekday's plan) ----------
-function drawGym(D, lift) {
-  var set = {};
-  (Array.isArray(D.gym) ? D.gym : []).forEach(function (d) { if (/^\d{4}-\d{2}-\d{2}$/.test(d)) set[d] = 1; });
-  var week = Array.isArray(D.week) ? D.week : [];
-  // columns are weeks, monday on top (like the week above); it ends with this week, so the last column may be part-empty
-  var start = addDays(TODAY, -wd(TODAY) - 52 * 7), cells = [], n = 0, wk = 0;
-  for (var d = start; d <= TODAY; d = addDays(d, 1)) {
-    var on = set[d] ? 1 : 0;
-    n += on;
-    if (on && d > addDays(TODAY, -7)) wk++;
-    cells.push('<i data-l="' + (on ? 3 : 0) + '" data-d="' + d + '" style="--i:' + Math.floor(cells.length / 7) + '"></i>');
-  }
-  var bars = $("b-gym"), sc = $("sc-gym");
-  bars.innerHTML = '<div class="track">' + cells.join("") + "</div>";
-  if (!reduce) bars.classList.add("anim");
-  // nothing logged yet: say so, and the squares stay grey until the first session
-  var first = Object.keys(set).sort()[0];
-  var weeks = first ? Math.max(1, (Date.parse(TODAY) - Date.parse(first > start ? first : start)) / (7 * 864e5)) : 1;   // the average counts from the first session
-  $("gym-n").textContent = n ? n + (n === 1 ? " session" : " sessions") + " in the past year" : "no sessions yet";
-  $("gym-rng").textContent = n ? wk + " in the last 7 days · about " + (n / weeks).toFixed(1) + " a week" : "// the squares turn green as i go";
-  $("gym-rng").classList.toggle("hint", !n);
-
-  function edges() {
-    sc.dataset.l = bars.scrollLeft > 2 ? "1" : "0";
-    sc.dataset.r = bars.scrollLeft + bars.clientWidth < bars.scrollWidth - 2 ? "1" : "0";
-  }
-  // open on today, and stay there whenever it reappears or resizes (unfolding on phones), until someone scrolls it themselves
-  var browsed = false;
-  ["pointerdown", "wheel", "touchstart", "keydown"].forEach(function (t) {
-    bars.addEventListener(t, function () { browsed = true; }, { passive: true });
+// ---------- this week: monday to sunday on the strip under the note. a day with a session ("gym" in data.json) gets a tick,
+// a lift day gone by without one gets a dash, rest days are in pencil, and today is circled. weeks and today are in IST ----------
+var TODAY = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+function wd(iso) { return (new Date(iso + "T00:00:00Z").getUTCDay() + 6) % 7; }   // 0 = monday … 6 = sunday, the order of "week"
+function addDays(iso, n) { return new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10); }
+function drawWeek(D) {
+  var plan = Array.isArray(D.week) ? D.week : [], went = {};
+  (Array.isArray(D.gym) ? D.gym : []).forEach(function (d) { went[d] = 1; });
+  var mon = addDays(TODAY, -wd(TODAY)), LETTER = "MTWTFSS", NAME = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  $("week").innerHTML = [0, 1, 2, 3, 4, 5, 6].map(function (i) {
+    var day = addDays(mon, i), n = +day.slice(8), lift = !!plan[i] && plan[i] !== "rest", today = day === TODAY;
+    var mark = went[day] ? "went" : lift && day < TODAY ? "missed" : "";
+    var said = NAME[i] + " " + n + ", " + (lift ? "lift day" : "rest day") + (mark === "went" ? ", went" : mark === "missed" ? ", missed" : "") + (today ? ", today" : "");
+    return '<li class="' + [lift ? "lift" : "rest", mark, today ? "today" : ""].join(" ").trim() + '" aria-label="' + said + '">' +
+      '<span class="d" aria-hidden="true">' + LETTER[i] + '</span><span class="n" aria-hidden="true">' + n + "</span></li>";
+  }).join("");
+  // the tally: sessions so far this week against the lift days planned
+  var planned = plan.filter(function (p) { return p && p !== "rest"; }).length, done = 0;
+  for (var i = 0; i < 7; i++) if (went[addDays(mon, i)]) done++;
+  $("wk-tally").textContent = !done ? "No sessions yet this week" : done < planned ? done + " of " + planned + " sessions done"
+    : done === planned ? "All " + planned + " done this week" : done + " sessions this week, " + (done - planned) + " extra";
+  // touch screens have no hover: a tap on the strip shows the tally, a tap anywhere else hides it
+  var wk = $("wk");
+  document.addEventListener("click", function (e) {
+    if (!matchMedia("(hover: none)").matches) return;
+    wk.classList.toggle("on", wk.contains(e.target) && !wk.classList.contains("on"));
   });
-  function toToday() { if (!browsed) bars.scrollLeft = bars.scrollWidth; edges(); }
-  toToday();
-  bars.addEventListener("scroll", edges, { passive: true });
-  new ResizeObserver(toToday).observe(bars);
-  Array.prototype.forEach.call(sc.querySelectorAll(".arr"), function (b) {
-    b.addEventListener("click", function () {
-      browsed = true;
-      bars.scrollBy({ left: Number(b.dataset.dir) * bars.clientWidth * 0.8, behavior: reduce ? "auto" : "smooth" });
-    });
-  });
-
-  // hover (or tap) a day: it shows on the right of the header, with what that day's split was
-  var rd = $("rd-gym"), cur = null;
-  function showDay(cell) {
-    if (cur) cur.classList.remove("on");
-    cur = cell;
-    if (!cell) { rd.hidden = true; return; }
-    cell.classList.add("on");
-    var day = cell.dataset.d, split = week[wd(day)] || "rest";
-    // a session shows its split; a missed lift day says "skipped", but only once i've started (before that: just the date)
-    var what = cell.dataset.l !== "0" ? split : !first || day < first ? "" : split === "rest" ? "rest" : "skipped";
-    rd.innerHTML = icon("cal") + esc(fmtDay(day, day.slice(0, 4) !== TODAY.slice(0, 4)) + (what ? " · " + what : ""));
-    rd.hidden = false;
-  }
-  bars.addEventListener("pointerover", function (e) { if (e.target.tagName === "I") showDay(e.target); });
-  bars.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") showDay(null); });
-  // a tap also picks that weekday in "i lift...", so its plan shows beside the graph
-  bars.addEventListener("click", function (e) { if (e.target.tagName === "I") { showDay(e.target); lift.pick(wd(e.target.dataset.d)); } });
-  document.addEventListener("click", function (e) { if (cur && !bars.contains(e.target)) showDay(null); });
-  // mouse drag to scroll (touch and trackpads scroll natively)
-  var down = false, sx = 0, sl = 0;
-  bars.addEventListener("pointerdown", function (e) {
-    if (e.pointerType !== "mouse") return;
-    down = true; sx = e.clientX; sl = bars.scrollLeft;
-  });
-  window.addEventListener("pointermove", function (e) {
-    if (!down) return;
-    if (Math.abs(e.clientX - sx) > 3) bars.classList.add("dragging");
-    bars.scrollLeft = sl - (e.clientX - sx);
-  });
-  window.addEventListener("pointerup", function () { down = false; bars.classList.remove("dragging"); });
 }
 
-// ---------- favourites: tabs (anime · manga · tv · cinema) with counts; rows like the projects ----------
+// ---------- places: a fan of photos, one per place, each opening its google photos album; then where the backdrop photo was taken ----------
+function drawPlaces(D) {
+  var places = Array.isArray(D.places) ? D.places : [], c = D.cover;
+  // a photo per place, fanned like the posters; each opens that place's album
+  $("fan").innerHTML = fan(places.map(function (p) {
+    return { name: p.name + (p.note ? " (" + p.note + ")" : ""), url: p.album, img: p.photo };
+  }));
+  // the line under the fan: where and when the backdrop photo was taken; while you're on a place's photo,
+  // that place's name takes the line over (like the favourites' captions), and leaving the fan puts the line back
+  var pl = c ? places.filter(function (x) { return x.id === c.place; })[0] || {} : null;
+  var rest = c ? esc("Backdrop: " + (pl.name || cap(c.place)) + (c.when ? ", " + c.when : "")) : "";
+  $("cover-cap").innerHTML = rest;
+  function say(name) { $("cover-cap").innerHTML = name ? "<b>" + esc(name) + "</b>" : rest; }
+  wireFans($("fan"), say);
+  // point at one place from elsewhere (the "lately" line): the fan opens as if hovered, that photo lifts, its name shows
+  return function (name) {
+    var f = $("fan").querySelector(".fan");
+    if (!f) return;
+    f.classList.toggle("on", !!name);
+    Array.prototype.forEach.call(f.children, function (p) { p.classList.toggle("up", p.dataset.n === name); });
+    say(name);
+  };
+}
+
+// ---------- favourites: one messy pile of posters per kind, all on the "desk" at once. the poster you're on (or tabbed to, or tapped)
+// slides out: it lifts to the top, straightens and grows a little, and its pile's caption says what it is. the scatter comes from
+// each title, so the piles look the same on every visit ----------
 function drawFavs(D) {
   var favs = D.favs || {};
-  var kinds = Object.keys(favs).filter(function (k) { return Array.isArray(favs[k]) && favs[k].length; });   // empty categories get no tab
-  var row = $("ftabs"), list = $("favlist"), grow = null;
-  row.innerHTML = kinds.map(function (k, i) {
-    var n = Array.isArray(favs[k]) ? favs[k].length : 0;
-    return '<button class="ptab" type="button" aria-pressed="' + (i === 0) + '" data-k="' + esc(k) + '" aria-label="' + esc(k) + ", " + n + '">' +
-      esc(k) + " <span>" + n + "</span></button>";
-  }).join("");
-  var tabs = Array.prototype.slice.call(row.querySelectorAll(".ptab"));
-  var bar = underline(row, tabs);
-  // the last word and the arrow after it never split, so a long name doesn't leave the arrow alone on a line
-  function keepLast(name, after) {
-    var cut = name.lastIndexOf(" ");
-    return esc(name.slice(0, cut + 1)) + '<span class="nw">' + esc(name.slice(cut + 1)) + after + "</span>";
-  }
-  // each row: the cover (framed like the album sleeve), then name · finished / how far along (series only), then why, then hashtags
-  // ongoing first, then finished; each group a to z (numbers in order: 5, 86, 100)
+  var NAMES = { anime: "Anime", manga: "Manga", tv: "TV", cinema: "Cinema" };
+  var kinds = Object.keys(favs).filter(function (k) { return Array.isArray(favs[k]) && favs[k].length; });
+  var desk = $("desk"), touch = matchMedia("(hover: none)");
+  // ongoing first, then finished; each group a to z (numbers in order: 5, 86, 100); the first ones end up on top of the pile
   function order(a, b) {
-    return (a.progress ? 0 : 1) - (b.progress ? 0 : 1) || a.name.localeCompare(b.name, "en", { numeric: true });
+    return (a.progress ? 1 : 0) - (b.progress ? 1 : 0) || b.name.localeCompare(a.name, "en", { numeric: true });
   }
-  list.innerHTML = kinds.map(function (k) {
-    return favs[k].slice().sort(order).map(function (f) {
-      var name = f.url
-        ? '<a class="name" target="_blank" rel="noreferrer" href="' + esc(f.url) + '">' + keepLast(f.name, '<svg class="i sm"><use href="#i-ext"/></svg>') + "</a>"
-        : '<span class="name">' + esc(f.name) + "</span>";
-      // series say where i am ("ongoing", "season 2", or "finished"); films ("film": true) need nothing, they're seen in one go
-      var when = f.film ? "" : f.progress || "finished";
-      return '<div class="project fav" data-k="' + esc(k) + '">' +
-        '<span class="cover" aria-hidden="true">' + (f.cover ? '<img src="' + esc(f.cover) + '" alt="" loading="lazy" decoding="async">' : "") + "</span>" +
-        '<p class="ftext">' + name +
-        (when ? ' <span class="when">· ' + esc(when) + "</span>" : "") +
-        (f.why ? '<span class="desc">' + esc(f.why) + "</span>" : "") +
-        (f.tags && f.tags.length ? '<span class="tags">' + f.tags.map(function (t) { return '<span class="tag">#' + esc(t) + "</span>"; }).join("") + "</span>" : "") +
-        "</p></div>";
-    }).join("");
+  // a steady "random" number from a title, so its tilt and nudge never change
+  function rand(str, salt) {
+    var h = 2166136261 ^ salt;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return ((h >>> 0) % 10000) / 10000;
+  }
+  // each pile's name is handwritten above it like the section labels, arrow pointing down at it
+  function label(k) { return '<p class="pile-k"><span>' + esc(NAMES[k] || cap(k)) + " · " + favs[k].length + "</span></p>"; }
+  desk.innerHTML = kinds.map(function (k) {
+    var xs = favs[k].slice().sort(order);
+    return '<div class="pile-box">' + label(k) + '<div class="pile" data-k="' + esc(k) + '">' + xs.map(function (f) {
+      var what = f.progress || "Finished";
+      var img = f.cover ? '<img src="' + esc(f.cover) + '" alt="" loading="lazy" decoding="async">' : "";
+      var attrs = ' class="pc" data-n="' + esc(f.name) + '" data-w="' + esc(what) + '"' + (f.progress ? ' data-live="1"' : "") + ' aria-label="' + esc(f.name + ", " + what.toLowerCase()) + '"';
+      return f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noreferrer"' + attrs + ">" + img + "</a>" : "<span" + attrs + ">" + img + "</span>";
+    }).join("") + '</div><p class="sm pile-cap" aria-live="polite"></p></div>';
   }).join("");
 
-  function show(k, animate) {
-    var from = list.getBoundingClientRect().height;
-    if (grow) grow.cancel();
-    var shown = [];
-    Array.prototype.forEach.call(list.children, function (p) {
-      p.hidden = p.dataset.k !== k;
-      if (!p.hidden) shown.push(p);
+  // lay each pile out: a loose grid, every other row nudged over, each card shifted and tilted a little; later cards land on top,
+  // and enough of every card still peeks out to point at
+  function layout() {
+    Array.prototype.forEach.call(desk.querySelectorAll(".pile"), function (pile) {
+      var cards = Array.prototype.slice.call(pile.children), n = cards.length;
+      if (!n) return;
+      var cw = cards[0].offsetWidth, ch = cards[0].offsetHeight;
+      var cols = n <= 2 ? n : n <= 6 ? 3 : Math.ceil(Math.sqrt(n * 1.4));
+      var sx = cw * 0.56, sy = ch * 0.4, pad = cw * 0.25, maxX = 0, maxY = 0, edge = Infinity;
+      cards.forEach(function (c, i) {
+        var col = i % cols, row = Math.floor(i / cols), name = c.dataset.n;
+        var x = pad + col * sx + (row % 2 ? sx / 2 : 0) + (rand(name, 1) - 0.5) * cw * 0.3;
+        var y = pad * 0.6 + row * sy + (rand(name, 2) - 0.5) * ch * 0.18;
+        var r = (rand(name, 3) - 0.5) * 22;                    // up to 11° either way
+        c.style.setProperty("--x", x.toFixed(1) + "px");
+        c.style.setProperty("--y", y.toFixed(1) + "px");
+        c.style.setProperty("--r", r.toFixed(1) + "deg");
+        c.style.zIndex = i + 1;
+        maxX = Math.max(maxX, x + cw); maxY = Math.max(maxY, y + ch);
+        var a = Math.abs(r) * Math.PI / 180;                   // a tilted card reaches this far left of its centre
+        edge = Math.min(edge, x + cw / 2 - (cw / 2 * Math.cos(a) + ch / 2 * Math.sin(a)));
+      });
+      pile.style.width = (maxX + pad) + "px";
+      pile.style.height = (maxY + pad * 0.6) + "px";
+      // the caption starts exactly where the pile's leftmost poster does, tilt included
+      // (worked out from each poster's place and angle: measuring would catch them mid-slide)
+      pile.nextElementSibling.style.paddingLeft = pile.previousElementSibling.style.paddingLeft = Math.max(0, edge).toFixed(1) + "px";
     });
-    tabs.forEach(function (t) { t.setAttribute("aria-pressed", String(t.dataset.k === k)); });
-    if (animate) bar.slide(); else bar.place();
-    if (!animate || reduce) return;
-    // the list glides to its new height while the rows fade in (as on the home page)
-    var to = list.getBoundingClientRect().height;
-    if (from !== to) grow = list.animate([{ height: from + "px", overflow: "hidden" }, { height: to + "px", overflow: "hidden" }], { duration: 320, easing: EASE });
-    shown.forEach(function (p) { p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: EASE }); });
   }
-  tabs.forEach(function (t) {
-    t.addEventListener("click", function () { if (t.getAttribute("aria-pressed") !== "true") show(t.dataset.k, true); });
-  });
-  if (kinds.length) show(kinds[0], false);
-}
+  layout();
+  new ResizeObserver(layout).observe(desk);
+  addEventListener("resize", layout);   // on wide screens the posters follow the screen's height, which the desk's own size doesn't show
 
-// ---------- folds (phones only): "lately i'm..." and "past year..." collapse behind their labels, as on the home page ----------
-var phone = window.matchMedia("(max-width: 600px)");
-function makeFold(label, body, name, summary) {
-  var btn = document.createElement("button"), open = false, anim = null;
-  btn.type = "button";
-  btn.className = "fold";
-  btn.setAttribute("aria-controls", body.id);
-  btn.innerHTML = icon("right");
-  var title = btn.appendChild(document.createTextNode(name));
-  function renderButton() {
-    btn.setAttribute("aria-expanded", String(open));
-    title.nodeValue = (!open && summary()) || name;
+  // pulling one out: it lifts, the caption under its pile names it; leaving the pile puts it back and clears the caption
+  function pull(card) {
+    var pile = card.parentNode, capEl = pile.nextElementSibling;
+    // another pile's poster still out (a tap there, then here): put that pile back first, caption and all
+    Array.prototype.forEach.call(desk.querySelectorAll(".pile"), function (p) { if (p !== pile && p.querySelector(".out")) putBack(p); });
+    Array.prototype.forEach.call(pile.children, function (c) { c.classList.toggle("out", c === card); });
+    desk.classList.add("pulling");
+    capEl.innerHTML = "<b>" + esc(card.dataset.n) + "</b> · " + '<span class="' + (card.dataset.live ? "live" : "muted") + '">' + esc(card.dataset.w) + "</span>";
+    // a long title under a pile near the right edge would run off the page: slide it back just enough to end at the edge
+    capEl.style.transform = "";
+    var over = capEl.getBoundingClientRect().right - desk.getBoundingClientRect().right;
+    if (over > 0) capEl.style.transform = "translateX(" + -Math.ceil(over) + "px)";
   }
-  function renderBody() {
-    body.hidden = !open;
-    label.classList.toggle("folded", !open);
+  function putBack(pile) {
+    Array.prototype.forEach.call(pile.children, function (c) { c.classList.remove("out"); });
+    pile.nextElementSibling.innerHTML = ""; pile.nextElementSibling.style.transform = "";
+    desk.classList.toggle("pulling", !!desk.querySelector(".pc.out"));
   }
-  function glide(opening, grow) {
-    var h = body.getBoundingClientRect().height,
-        gap = parseFloat(getComputedStyle(label).marginBottom),
-        tap = parseFloat(getComputedStyle(btn).marginBottom),
-        top = parseFloat(getComputedStyle(body).marginTop),
-        shut = { height: Math.max(0, opening ? -grow : 0) + "px", marginTop: (tap - gap) + "px", opacity: 0, overflow: "hidden" },
-        full = { height: Math.max(0, opening ? h : h - grow) + "px", marginTop: top + "px", opacity: 1, overflow: "hidden" };
-    var a = anim = body.animate(opening ? [shut, full] : [full, shut], { duration: 300, easing: EASE });
-    a.finished.then(function () { if (anim === a) { anim = null; renderBody(); } }, function () {});
-  }
-  function apply() {
-    if (anim) { anim.cancel(); anim = null; }
-    if (phone.matches) {
-      label.textContent = "";
-      label.appendChild(btn);
-      renderButton();
-      renderBody();
-    } else {
-      label.textContent = name;
-      label.classList.remove("folded");
-      body.hidden = false;
-    }
-  }
-  btn.addEventListener("click", function () {
-    if (anim) { anim.cancel(); anim = null; }
-    var before = label.getBoundingClientRect().height;
-    open = !open;
-    renderButton();
-    var grow = label.getBoundingClientRect().height - before;
-    if (open || reduce) renderBody();
-    if (!reduce) glide(open, grow);
+  Array.prototype.forEach.call(desk.querySelectorAll(".pile"), function (pile) {
+    Array.prototype.forEach.call(pile.children, function (card) {
+      card.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") pull(card); });
+      card.addEventListener("focus", function () { pull(card); });
+      // touch: the first tap pulls a poster out (and shows what it is); a second tap on it opens its page
+      card.addEventListener("click", function (e) {
+        if (touch.matches && !card.classList.contains("out")) { e.preventDefault(); pull(card); }
+      });
+    });
+    pile.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") putBack(pile); });
+    pile.addEventListener("focusout", function (e) { if (!pile.contains(e.relatedTarget)) putBack(pile); });
   });
-  phone.addEventListener("change", apply);
-  apply();
+  // a tap anywhere else puts every pile back
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".pile, .mention")) Array.prototype.forEach.call(desk.querySelectorAll(".pile"), putBack);
+  });
+  return { pull: pull, putBack: putBack };
 }
 
 })();

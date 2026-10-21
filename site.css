@@ -1,6 +1,5 @@
-/* site.css: the home page and the 404 page.
-   one column on phones, two side by side on wide screens; the writing does the work, the activity graph is the one featured element.
-   life/ still uses style.css until it moves over. */
+/* site.css: the whole site's look: the home page, the 404 page and the slice of life page (life/life.css adds only that page's own pieces).
+   one column on phones, two side by side on wide screens; the writing does the work, the activity graph is the one featured element. */
 @font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
 
 :root {

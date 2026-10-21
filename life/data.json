@@ -1,35 +1,35 @@
 {
- "_note": "add each gym day to \"gym\" as \"yyyy-mm-dd\"",
+ "_note": "after each gym session, add its date to \"gym\" as \"yyyy-mm-dd\"",
  "lately": {
-  "text": "starting the gym, and watching dexter (just finished season 5)",
-  "sum": "starting the gym"
+  "text": "starting the gym, clicking pictures around Hyderabad, watching Dexter and reading Chainsaw Man"
  },
- "now": [],
  "places": [
   {
    "id": "hyderabad",
-   "name": "hyderabad",
-   "note": "home",
-   "album": "https://photos.app.goo.gl/4MrRC3xNi1msTM1H8"
+   "name": "Hyderabad",
+   "album": "https://photos.app.goo.gl/4MrRC3xNi1msTM1H8",
+   "photo": "photos/place-hyderabad.jpg"
   },
   {
    "id": "mumbai",
-   "name": "mumbai",
-   "album": "https://photos.app.goo.gl/7GU3g34GahkLxeAaA"
+   "name": "Mumbai",
+   "album": "https://photos.app.goo.gl/7GU3g34GahkLxeAaA",
+   "photo": "photos/place-mumbai.jpg"
   },
   {
    "id": "delhi",
-   "name": "delhi",
-   "album": "https://photos.app.goo.gl/VjqvEZt2DLDvrQjn6"
+   "name": "Delhi",
+   "album": "https://photos.app.goo.gl/VjqvEZt2DLDvrQjn6",
+   "photo": "photos/place-delhi.jpg"
   }
  ],
  "cover": {
-  "src": "photos/hyderabad-cover.jpg",
+  "src": "photos/hyderabad-banner.jpg",
   "place": "hyderabad",
-  "when": "oct 2025",
-  "alt": "sunset over the rooftops, the clouds lit orange",
-  "w": 1400,
-  "h": 1050
+  "when": "Aug 2023",
+  "alt": "A wide blue sky with clouds over green fields",
+  "w": 2000,
+  "h": 1125
  },
  "week": [
   "rest",
@@ -44,337 +44,179 @@
  "favs": {
   "anime": [
    {
-    "name": "100 meters",
+    "name": "100 Meters",
     "year": 2025,
     "film": true,
-    "why": "",
-    "tags": [
-     "drama",
-     "sports"
-    ],
     "url": "https://anilist.co/anime/177687",
     "cover": "covers/a-100-meters.jpg"
    },
    {
-    "name": "5 centimeters per second",
+    "name": "5 Centimeters per Second",
     "year": 2007,
     "film": true,
-    "why": "",
-    "tags": [
-     "drama",
-     "romance",
-     "sliceoflife"
-    ],
     "url": "https://anilist.co/anime/1689",
     "cover": "covers/a-5-centimeters-per-second.jpg"
    },
    {
-    "name": "86 eighty-six",
+    "name": "86 Eighty-Six",
     "year": 2021,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "mecha",
-     "scifi"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/anime/116589",
     "cover": "covers/a-86-eighty-six.jpg"
    },
    {
-    "name": "a silent voice",
+    "name": "A Silent Voice",
     "year": 2016,
     "film": true,
-    "why": "",
-    "tags": [
-     "drama",
-     "romance",
-     "sliceoflife"
-    ],
     "url": "https://anilist.co/anime/20954",
     "cover": "covers/a-a-silent-voice.jpg"
    },
    {
-    "name": "attack on titan",
+    "name": "Attack on Titan",
     "year": 2013,
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "fantasy",
-     "mystery"
-    ],
     "url": "https://anilist.co/anime/16498",
     "cover": "covers/a-attack-on-titan.jpg"
    },
    {
-    "name": "chainsaw man",
+    "name": "Chainsaw Man",
     "year": 2022,
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "horror",
-     "supernatural"
-    ],
     "url": "https://anilist.co/anime/127230",
     "cover": "covers/a-chainsaw-man.jpg"
    },
    {
-    "name": "cyberpunk: edgerunners",
+    "name": "Cyberpunk: Edgerunners",
     "year": 2022,
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "psychological",
-     "scifi"
-    ],
     "url": "https://anilist.co/anime/120377",
     "cover": "covers/a-cyberpunk-edgerunners.jpg"
    },
    {
-    "name": "devilman crybaby",
+    "name": "Devilman Crybaby",
     "year": 2018,
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "horror",
-     "psychological",
-     "supernatural"
-    ],
     "url": "https://anilist.co/anime/98460",
     "cover": "covers/a-devilman-crybaby.jpg"
    },
    {
-    "name": "jujutsu kaisen",
+    "name": "Jujutsu Kaisen",
     "year": 2020,
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "supernatural"
-    ],
     "url": "https://anilist.co/anime/113415",
     "cover": "covers/a-jujutsu-kaisen.jpg"
    },
    {
-    "name": "orb: on the movements of the earth",
+    "name": "Orb: On the Movements of the Earth",
     "year": 2024,
-    "why": "",
-    "tags": [
-     "drama"
-    ],
     "url": "https://anilist.co/anime/151514",
     "cover": "covers/a-orb.jpg"
    },
    {
-    "name": "solo leveling",
+    "name": "Solo Leveling",
     "year": 2024,
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "fantasy"
-    ],
     "url": "https://anilist.co/anime/151807",
     "cover": "covers/a-solo-leveling.jpg"
    },
    {
-    "name": "steins;gate",
+    "name": "Steins;Gate",
     "year": 2011,
-    "why": "",
-    "tags": [
-     "drama",
-     "psychological",
-     "scifi",
-     "thriller"
-    ],
     "url": "https://anilist.co/anime/9253",
     "cover": "covers/a-steins-gate.jpg"
    },
    {
-    "name": "vinland saga",
+    "name": "Vinland Saga",
     "year": 2019,
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "drama"
-    ],
     "url": "https://anilist.co/anime/101348",
     "cover": "covers/a-vinland-saga.jpg"
    },
    {
-    "name": "march comes in like a lion",
+    "name": "March Comes in Like a Lion",
     "year": 2016,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "drama",
-     "sliceoflife"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/anime/21366",
     "cover": "covers/a-march-comes-in-like-a-lion.jpg"
    }
   ],
   "manga": [
    {
-    "name": "chainsaw man",
+    "name": "Chainsaw Man",
     "year": 2018,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "action",
-     "comedy",
-     "drama",
-     "horror",
-     "supernatural"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/manga/105778",
     "cover": "covers/chainsaw-man.jpg"
    },
    {
-    "name": "jujutsu kaisen",
+    "name": "Jujutsu Kaisen",
     "year": 2018,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "action",
-     "drama",
-     "supernatural"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/manga/101517",
     "cover": "covers/jujutsu-kaisen.jpg"
    },
    {
-    "name": "solo leveling",
+    "name": "Solo Leveling",
     "year": 2018,
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "fantasy"
-    ],
     "url": "https://anilist.co/manga/105398",
     "cover": "covers/solo-leveling.jpg"
    },
    {
-    "name": "vinland saga",
+    "name": "Vinland Saga",
     "year": 2005,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "drama"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/manga/30642",
     "cover": "covers/vinland-saga.jpg"
    },
    {
-    "name": "vagabond",
+    "name": "Vagabond",
     "year": 1998,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "drama"
-    ],
+    "progress": "Ongoing",
     "url": "https://anilist.co/manga/30656",
     "cover": "covers/vagabond.jpg"
    }
   ],
   "tv": [
    {
-    "name": "dexter",
+    "name": "Dexter",
     "year": 2006,
-    "progress": "ongoing",
-    "why": "",
-    "tags": [
-     "crime",
-     "drama",
-     "mystery"
-    ],
+    "progress": "Ongoing",
     "url": "https://www.themoviedb.org/tv/1405",
     "cover": "covers/dexter.jpg"
    },
    {
-    "name": "chernobyl",
+    "name": "Chernobyl",
     "year": 2019,
-    "why": "",
-    "tags": [
-     "drama"
-    ],
     "url": "https://www.themoviedb.org/tv/87108",
     "cover": "covers/chernobyl.jpg"
    }
   ],
   "cinema": [
    {
-    "name": "interstellar",
+    "name": "Interstellar",
     "year": 2014,
     "film": true,
-    "why": "",
-    "tags": [
-     "adventure",
-     "drama",
-     "scifi"
-    ],
     "url": "https://www.themoviedb.org/movie/157336",
     "cover": "covers/interstellar.jpg"
    },
    {
-    "name": "inception",
+    "name": "Inception",
     "year": 2010,
     "film": true,
-    "why": "",
-    "tags": [
-     "action",
-     "scifi",
-     "adventure"
-    ],
     "url": "https://www.themoviedb.org/movie/27205",
     "cover": "covers/inception.jpg"
    },
    {
-    "name": "spider-man 2",
+    "name": "Spider-Man 2",
     "year": 2004,
     "film": true,
-    "why": "",
-    "tags": [
-     "action",
-     "adventure",
-     "scifi"
-    ],
     "url": "https://www.themoviedb.org/movie/558",
     "cover": "covers/spider-man-2.jpg"
    },
    {
-    "name": "goodachari",
+    "name": "Goodachari",
     "year": 2018,
     "film": true,
-    "why": "",
-    "tags": [
-     "thriller",
-     "action",
-     "crime"
-    ],
     "url": "https://www.themoviedb.org/movie/540189",
     "cover": "covers/goodachari.jpg"
    },
    {
-    "name": "ee nagaraniki emaindi?",
+    "name": "Ee Nagaraniki Emaindi?",
     "year": 2018,
     "film": true,
-    "why": "",
-    "tags": [
-     "comedy",
-     "drama"
-    ],
     "url": "https://www.themoviedb.org/movie/532789",
     "cover": "covers/ee-nagaraniki-emaindi.jpg"
    }
@@ -382,37 +224,37 @@
  },
  "plan": [
   {
-   "name": "warm-up",
+   "name": "Warm-up",
    "sets": "5 min"
   },
   {
-   "name": "push-ups",
+   "name": "Push-ups",
    "sets": "3 × failure"
   },
   {
-   "name": "lat pulldown",
+   "name": "Lat pulldown",
    "sets": "3 × 8"
   },
   {
-   "name": "leg press",
+   "name": "Leg press",
    "sets": "3 × 8"
   },
   {
-   "name": "bicep + tricep",
+   "name": "Bicep + tricep",
    "sets": "3 × 12, superset"
   },
   {
-   "name": "lateral raise + calf raise",
+   "name": "Lateral raise + calf raise",
    "sets": "3 × 12, superset"
   }
  ],
  "rest": [
   {
-   "name": "walk",
+   "name": "Walk",
    "sets": "30 min"
   },
   {
-   "name": "stretch",
+   "name": "Stretch",
    "sets": "10 min"
   }
  ]

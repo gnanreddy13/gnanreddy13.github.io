@@ -1,190 +1,250 @@
-/* slice of life: only this page's own pieces; tokens, fonts and everything shared come from ../style.css */
+/* life.css: only the slice of life page's own pieces. the whole look (tokens, type, spacing, blocks, graph, tabs, project rows)
+   comes from ../site.css; nothing here repeats it */
 
-/* ---------- spacing tiers (same as the home page's groups) ---------- */
-.lately,
-.places,
-.photos,
-.lift,
-.past,
-.favs { margin-top: calc(var(--u) * 1.6); }
+/* the handwriting: Caveat (OFL), latin, one variable file for both weights used here */
+@font-face { font-family: "Caveat"; src: url("../fonts/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 
-/* both columns scroll together here: the home page's sticky left side only works when it's the taller one,
-   and on this page either side can be (a shorter left would stay put, then get pushed up at the end) */
-.split .col-me { position: static; }
+[hidden] { display: none !important; }   /* site.css gives blocks display: grid, which would otherwise show a hidden block */
 
-/* loading (set in the page's head): hidden until life.js has drawn everything, then the usual fade-in (rise in style.css) plays once */
-.loading main { visibility: hidden; animation: none; }
+/* the backdrop: a wide photo behind the top of the page, dimmed, fading into black behind the header and intro.
+   the page itself sits exactly where it would without it. --banner is how far down it reaches */
+:root { --banner: clamp(16rem, 48vh, 28rem); }
+@media (max-width: 560px) { :root { --banner: clamp(13rem, 38vh, 18rem); } }
+.banner { position: absolute; top: 0; left: 0; right: 0; height: var(--banner); overflow: hidden; pointer-events: none; }
+.banner img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.42; }   /* dim enough for the text on top to stay easy to read */
+.banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55) 55%, var(--bg)); }
+main.life { position: relative; }
+/* the intro's links glide down to their sections, which stop a little short of the top edge */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+.life section[id] { scroll-margin-top: calc(var(--u) * 2); }
+/* the gaps above and below the page match the gap at its sides (the page is centred, so that's half the spare width), up to 5 units on big screens */
+main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); padding-bottom: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); }
+@media (max-width: 560px) { main.life { padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); } }   /* phones: the side gap alone is tight under the notch */
 
-/* one column (phones, tablets): the columns stack, so topics regroup into a story: lately, then the gym (week + past year),
-   then places with their photo, then media last (like "find me..." on the home page); the two-column layout is untouched */
-@media (max-width: 959px) {
-  .split .places,
-  .split .photos { order: 1; }
-  .split .favs   { order: 2; }
-  .split::after  { order: 3; }
+/* loading (set in the page's head): hidden until life.js has drawn everything, then one fade-in */
+.loading main { visibility: hidden; }
+main.life { animation: in 0.4s ease both; }
+.loading main.life { animation: none; }
+@keyframes in { from { opacity: 0; } to { opacity: 1; } }
+
+.fanrow .fan > * { width: 4rem; aspect-ratio: 3 / 4; }   /* bigger than the posters; 3:4 like the photos, so nothing is cropped */
+.fanrow .fan > * + * { margin-left: -1.8rem; }
+
+/* places: a fanned hand of photos, built like the home page's contact tiles (.hand in site.css):
+   overlapped and tilted at rest; on hover they straighten and spread, the one you're on lifts and its title shows beside the fan */
+.fan { display: flex; width: max-content; padding: calc(var(--u) * 0.25) 0; }
+.fan > * {
+  position: relative; display: block; flex: none; width: 3.8rem; aspect-ratio: 2 / 3; border-radius: 4px;
+  background: var(--l0); border: 1px solid var(--obj-line); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transform: rotate(var(--r)); text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.15s;
+}
+.fan > * + * { margin-left: -1.9rem; }
+.fan img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 3px; }
+.fan:hover > *, .fan:focus-within > *, .fan.on > * { transform: none; }   /* each tilt is set on the poster itself, so the rotation is switched off rather than the angle reset */
+.fan:hover > * + *, .fan:focus-within > * + *, .fan.on > * + * { margin-left: calc(var(--u) * 0.4); }
+.fan > a:hover, .fan > a:focus-visible, .fan > .up { transform: translateY(-4px); z-index: 1; border-color: var(--text); }   /* .on / .up: pointed at from the intro */
+/* the title of the poster you're on, beside the fan in the row's own space (above it, it would collide with what's above) */
+/* touch screens can't hover: the posters sit spread out and straight, ready to tap */
+@media (hover: none) {
+  .fan > * { transform: none; }
+  .fan > * + *, .fanrow .fan > * + * { margin-left: calc(var(--u) * 0.4); }
+  .fan > a:hover { transform: none; border-color: var(--obj-line); }
 }
 
-/* the way back home, under the intro */
-.back { margin-top: 0.35rem; }
-.back .i { margin-right: 0.4em; transition: transform var(--t) var(--ease); }
-@media (hover: hover) { .back a:hover .i { transform: translateX(-2px); } }   /* the arrow leans the way it goes, like ↗ on the home page's links */
+/* routine: a yellow sticky note, pinned, tilted, its bottom corner curling up off the page; it straightens and lifts on hover
+   (like the contact tiles on the home page). the one physical object on the site, on purpose */
+/* .pinned tilts the whole thing and casts the shadows (behind the note); .note is the paper.
+   it hangs from the pin: it turns around the pin's centre, so on hover it swings straight while the pin stays put */
+.pinned {
+  --tilt: -2.2deg;
+  position: relative; width: min(100%, 18.5rem); margin: calc(var(--u) * 0.75) 0 calc(var(--u) * 0.5) 0.25rem;
+  transform: rotate(var(--tilt)); transform-origin: 50% 1.075rem;   /* the pin's centre */
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* the lifted corner's shadow: longer under the right edge, falling away from the page */
+.pinned::after {
+  content: ""; position: absolute; right: 0.6rem; bottom: 0.7rem; width: 55%; height: 30%;
+  box-shadow: 0 0.9rem 1.2rem rgba(0, 0, 0, 0.75); transform: rotate(3.5deg) skewX(-6deg);
+  transition: box-shadow 0.35s, transform 0.35s;
+}
+.pinned::before {   /* and a softer one along the left, where it's flat against the page */
+  content: ""; position: absolute; left: 0.6rem; bottom: 0.5rem; width: 40%; height: 20%;
+  box-shadow: 0 0.6rem 0.8rem rgba(0, 0, 0, 0.55); transform: rotate(-2.5deg);
+}
+.pinned:hover, .pinned.lift { transform: rotate(0deg); }   /* .lift: picked up from "the gym" in the intro */
+.pinned:hover::after, .pinned.lift::after { transform: rotate(2.5deg) skewX(-6deg) translateX(-2px); }   /* the curl's shadow shifts as it swings */
+.note {
+  position: relative; z-index: 1; padding: 2.35rem 1.1rem 1.2rem;   /* room under the pin for the heading */
+  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-weight: 500; font-size: 1.05rem; line-height: 1.3; color: #2a2a3a;   /* pen ink */
+  /* paper: the glue strip a shade darker at the top, the curled corner catching the light, a touch deeper yellow towards the bottom */
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0) 2rem),
+    radial-gradient(120% 90% at 100% 100%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 30%),
+    linear-gradient(172deg, #fff36f 0%, #fde95c 55%, #f6db45 100%);
+  border-radius: 2px 2px 3px 18px / 2px 2px 3px 6px;   /* the bottom corner bends */
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+/* the pin: a glossy red head with a highlight, and its shadow on the paper */
+.pin {
+  position: absolute; top: 0.55rem; left: 50%; width: 1.05rem; height: 1.05rem; margin-left: -0.525rem; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffb3b3 0 12%, #f23b3b 34%, #b3121a 70%, #6d070c 100%);
+  box-shadow: 0.25rem 0.35rem 0.3rem rgba(0, 0, 0, 0.35), inset -1px -2px 2px rgba(0, 0, 0, 0.35);
+  /* turns the opposite way to the note, in step with it, so the pin (and its highlight and shadow) never moves */
+  transform: rotate(calc(var(--tilt) * -1)); transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pinned:hover .pin, .pinned.lift .pin { transform: rotate(0deg); }
+.pin::after {   /* the needle's shadow, slanting down and right from under the head */
+  content: ""; position: absolute; left: 0.62rem; top: 0.72rem; width: 0.18rem; height: 0.7rem; border-radius: 1px;
+  background: rgba(0, 0, 0, 0.28); transform: rotate(-38deg); transform-origin: top; filter: blur(0.6px); z-index: -1;
+}
+.note .h { font-weight: 700; font-size: 1.2rem; line-height: 1.2; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.18em; }
+.note .h .days { font-weight: 500; text-decoration: none; display: inline-block; margin-left: 0.15em; color: #3d3d55; }   /* the days, beside the heading but not underlined */
+.note .h + ul { margin-top: 0.3rem; }
 
-/* label → content gaps, as on the home page: a hint sits right under its label, then the content */
-.lately .label,
-.photos .label { margin-bottom: calc(var(--u) * 0.8); }
-.places .label,
-.lift .label,
-.favs .label { margin-bottom: 0.25rem; }
-.places .snote,
-.lift .snote { margin: 0 0 0.55rem; }
-.favs .label-row { margin-top: 0.55rem; }
+/* this week: a strip of off-white paper under the note, tilted the other way, the days across it in the same pen.
+   a red tick on each day I went, a pencil dash on a lift day I missed, rest days in pencil, today circled in red */
+.weekstrip {
+  display: flex; align-items: center; gap: 0.7rem; margin-top: calc(var(--u) * 1.25); padding: 0.4rem 0.8rem 0.45rem;
+  background: linear-gradient(170deg, #f4f0e7, #e8e2d4); color: #2a2a3a; border-radius: 1px; transform: rotate(1.2deg);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 7px 14px -5px rgba(0, 0, 0, 0.65);
+  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; letter-spacing: 0;
+}
+.wk-h { margin: 0; font-size: 1.1rem; font-weight: 700; line-height: 1.1; white-space: nowrap; }
+/* on hover (a tap on phones) the strip is picked up, level and a little higher, its shadow longer, and the week's tally is
+   written under it. the tally floats, so showing it moves nothing */
+.wk { position: relative; width: min(100%, 19.5rem); }
+.weekstrip { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s; }
+.wk:hover .weekstrip, .wk.on .weekstrip { transform: translateY(-2px) rotate(0deg); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3), 0 12px 20px -6px rgba(0, 0, 0, 0.7); }
+.wk-tally {
+  position: absolute; left: 0.8rem; top: calc(100% + 0.35rem); margin: 0; white-space: nowrap; pointer-events: none;
+  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.1rem; line-height: 1.1; letter-spacing: 0; color: var(--soft);
+  opacity: 0; transform: translateY(-3px) rotate(-1.5deg); transition: opacity 0.2s, transform 0.25s;
+}
+.wk:hover .wk-tally, .wk.on .wk-tally { opacity: 1; transform: translateY(0) rotate(-1.5deg); }
+.week { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); margin: 0; padding: 0; list-style: none; text-align: center; }
+.week li { line-height: 1; }
+.week .d { display: block; font-size: 0.85rem; color: #6d6a62; }
+.week .n { position: relative; display: inline-block; min-width: 1.3rem; padding: 0.1rem 0; font-size: 1.2rem; font-weight: 500; }
+.week .rest .n { color: #8f8a7e; }   /* pencil */
+.week .today .n::before {   /* a quick pen circle round today */
+  content: ""; position: absolute; inset: -0.08rem -0.12rem; border: 1.5px solid #c0392b;
+  border-radius: 52% 46% 55% 48% / 56% 50% 47% 52%; transform: rotate(-8deg);
+}
+.week .went .n::after {   /* the tick, over the date */
+  content: ""; position: absolute; left: 0.7rem; top: 0; width: 1rem; height: 0.9rem; background: #c0392b;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 10.5 C 4 12, 5.5 14, 7 16 C 9.5 10, 13 5, 18 2'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 10.5 C 4 12, 5.5 14, 7 16 C 9.5 10, 13 5, 18 2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.week .missed .n::after {   /* a pencil dash through a lift day that didn't happen */
+  content: ""; position: absolute; left: 0.1rem; right: 0.1rem; top: 52%; height: 1.5px; background: #8f8a7e; transform: rotate(-14deg);
+}
+.note ul + .h { margin-top: 0.9rem; }
+.note ul { list-style: none; }
+.note li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.note li span:last-child { white-space: nowrap; color: #3d3d55; }
 
-/* ---------- lately: what i'm up to, then what i'm watching and reading, each with a thin progress line ---------- */
-.onnow { margin-top: 0.75rem; }
-.nowlist { list-style: none; margin-top: 0.5rem; }
-.nowlist li + li { margin-top: 0.6rem; }
-.nl {
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-ui);
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.nl b { font-weight: 400; color: var(--text); }
-/* a static version of the player's line: faint track, green for how far along */
-.line {
-  position: relative;
-  display: block;
-  height: 1px;
-  margin-top: 0.4rem;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--muted) 30%, transparent);
-  overflow: hidden;
-}
-.line > span {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.6s var(--ease);
+/* the "lately" line: a title from the piles gets its poster in miniature beside it */
+.mention { white-space: nowrap; }
+.mini { display: inline-block; height: 1.25em; width: auto; aspect-ratio: 2 / 3; margin: 0 0.3em 0 0.1em; vertical-align: -0.28em; border-radius: 2px; object-fit: cover; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+.mini-photo { aspect-ratio: 3 / 4; }   /* a place's photo, which is 3:4 */
+
+/* places: each place's album, then where the backdrop photo was taken */
+.places .used { margin-top: calc(var(--u) * 0.5); min-height: 1.3em; }   /* the line under the fan: the backdrop's credit, or the place you're on */
+.places .used b { font-weight: 500; color: var(--text); }
+/* "Slice of Life" under the name, in the labels' pen */
+.head .script {
+  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.3rem; font-weight: 500; line-height: 1.1; letter-spacing: 0;
+  color: var(--soft); transform: rotate(-2deg); transform-origin: left center;
 }
 
-/* ---------- places: a sentence ---------- */
-.places .stack { text-wrap: pretty; }
 
-/* ---------- places: album links in a sentence (mono like the home page's names) ---------- */
-.places .place { font-family: var(--mono); white-space: nowrap; }   /* the name and its arrow never split */
-a.place .i.sm { margin-left: 0.15em; }
-.places a.place { padding: var(--tap) 0; }  /* a taller tap area (padding on a word in a sentence doesn't move the lines) */
+/* favourites: a messy pile of posters per kind, side by side like piles on a desk (they wrap on narrow screens).
+   positions, tilts and stacking come from life.js; the one you're on slides out: on top, straight, a little bigger */
+.desk { display: flex; flex-wrap: wrap; align-items: flex-start; gap: calc(var(--u) * 2); }
+.pile-box { position: relative; min-width: 0; padding-bottom: calc(var(--u) * 1.6); }   /* the bottom of it is kept for the caption */
+.pile { position: relative; }
+.pc {
+  --cw: 5.25rem;
+  position: absolute; left: 0; top: 0; display: block; width: var(--cw); aspect-ratio: 2 / 3; border-radius: 5px; overflow: hidden;
+  background: var(--l0); border: 1px solid var(--obj-line); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.55);
+  transform: translate(var(--x), var(--y)) rotate(var(--r));
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s, border-color 0.15s, filter 0.25s;
+}
+.pc img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* pointed at from the intro ("the stories I love"): every pile lifts a little and its name brightens */
+.pile-box { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.pile-k > span { transition: color 0.2s; }
+.desk.hint .pile-box { transform: translateY(-4px); }
+.desk.hint .pile-k > span { color: var(--text); }
+/* while one is pulled out, every other poster on the desk steps back (darkened, not faded, so the piles keep their shape) */
+.desk.pulling .pc:not(.out) { filter: brightness(0.32) saturate(0.6); }
+.pc.out {
+  z-index: 100 !important; border-color: var(--text); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
+  transform: translate(var(--x), var(--y)) translateY(-10px) rotate(0deg) scale(1.18);
+}
+.pc:focus-visible { outline: none; }   /* the pulled-out look (white edge, lifted) is the focus mark */
+/* the caption: right under its own pile, however tall, always on one line (a long title runs on past the pile's edge
+   rather than wrapping and pushing the next row down) */
+.pile-cap { position: absolute; left: 0; bottom: 0; z-index: 101; white-space: nowrap; color: var(--muted); }
+.pile-cap b { font-weight: 500; color: var(--text); }
+.pile-cap .live { color: var(--l4); }
+.favs .cap:last-child { margin-top: var(--u); }
+/* each pile's handwritten name: the same as the section labels below (favourites has no label of its own) */
+.pile-k { margin: 0 0 calc(var(--u) * 0.25); }
+@media (max-width: 560px) { .pc { --cw: 4.25rem; } .desk { gap: calc(var(--u) * 1.5) var(--u); } }   /* phones: smaller posters; small piles share a line */
 
-/* ---------- photos: one cover, whole and framed like the profile photo ---------- */
-.cover-photo img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 3px;
-  background: var(--l0);                    /* dark grey while it loads */
-  outline: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
-  outline-offset: -1px;
-}
-/* two columns: a bit smaller than the column, so it doesn't outweigh everything beside it (phones keep the full width) */
-@media (min-width: 960px) {
-  .cover-photo { max-width: 30rem; }
-}
-/* under it: place and month */
-.cap {
-  margin-top: 0.5rem;
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-ui);
-  color: var(--text);
-}
-.cap .when { color: var(--muted); }
+/* the footer: the link home, last thing on the page (phones and tablets only: there the page is long) */
+.foot { margin-top: calc(var(--u) * 2); }
 
-/* ---------- lift: the week as seven tappable days (today in white, the picked one with the green underline), then its plan ---------- */
-.week {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  column-gap: 0.25rem;                      /* five-letter words never touch on phones */
+/* wide screens: the whole page on one screen, like the home page, centred top to bottom. left: who, the routine and the
+   way home; right: places, then favourites. (a screen too short for it all just scrolls) */
+@media (min-width: 1100px) {
+  main.life { grid-template-columns: 29rem 1fr; align-content: center; padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); }   /* the left a little wider than home's, so the piles on the right sit closer together */
+  main.life > .col-a, main.life > .col-b { display: flex; flex-direction: column; }
+  main.life > .col-a > .foot { display: none; }   /* all on one screen, the intro's "coding side" is always in view */
+  main.life > .col-a > .blocks { margin-top: var(--u); }
+  .routine .pinned { width: 19.5rem; }   /* a touch wider than its column, into the gap, so no line of the plan wraps */
+  main.life > .col-b > .media { margin-top: 0; }
+  .desk { display: grid; grid-template-columns: auto auto; justify-content: space-between; align-items: start; }   /* a fixed two by two: anime and manga, then tv and cinema, spread to both edges of the column */
+  .pc { --cw: clamp(3.25rem, (100vh - 28.75rem) / 5.4, 5.25rem); }   /* the posters size to the screen's height, so the right column always fits */
 }
-.day {
-  padding: var(--tap) 0;
-  margin: calc(var(--tap) * -1) 0;          /* taller tap area without moving the row */
-  border: 0;
-  background: none;
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-ui);
-  color: var(--muted);
-  text-align: left;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  transition: color var(--t) var(--ease);
+/* short wide screens (a 720px-tall laptop window): less air round the edges and between blocks, so it still all fits */
+@media (min-width: 1100px) and (max-height: 760px) {
+  main.life { padding-top: var(--u); padding-bottom: var(--u); }
+  main.life > .col-a > .blocks { margin-top: 0; }
+  .life .routine { padding-top: calc(var(--u) * 0.25); }
+  .weekstrip { margin-top: calc(var(--u) * 0.75); }
 }
-.day .dn { display: block; color: var(--faint); transition: color var(--t) var(--ease); }   /* the day: quieter than the word under it */
-.day.today .dn { color: var(--text); }
-.day[aria-pressed="true"] { color: var(--text); }
-.day:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
-@media (hover: hover) { .day:hover { color: var(--text); } }
-.week .pbar { bottom: -0.2rem; }
-/* the workout under it: exercise in white, sets × reps in grey, one per line */
-.plan { margin-top: 0.75rem; }             /* content → its "// note", as the song note sits under "now i'm..." */
-.plist-plan { list-style: none; margin-top: 0.5rem; }   /* note → what it introduces, as the note → player */
-.plist-plan li {
-  font-family: var(--mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-ui);
-  color: var(--text);
-}
-.plist-plan li + li { margin-top: 0.2rem; }
-.plist-plan .sets { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }   /* wraps as one piece */
 
-/* ---------- past year: the gym graph, in the home page's activity graph styles; only its spacing is set here ---------- */
-.past .label { margin-bottom: calc(var(--u) * 0.8); }   /* label → content, like "now i'm..." */
-.gym .rng { margin-top: 0.5rem; }
-.gym .rng.hint { font-style: italic; }       /* the "// ..." aside while nothing is logged */
 
-/* ---------- favourites: rows like the projects (name and year, why, hashtags), with a small cover on the left ---------- */
-.fav {
-  display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr);
-  column-gap: 0.75rem;                      /* the same gap as between the album and the track */
-  align-items: start;
+/* sections: no hairlines on this page; each label is handwritten (the sticky note's pen) with a curly arrow drawn
+   towards its section: to the right on wide screens, downwards where the label sits above (favourites, and every label on phones) */
+.life .blk { border-top: 0; padding: calc(var(--u) * 1.25) 0; }
+.life .favs { padding-bottom: 0; }   /* the last section: the page ends as close to the bottom as it starts to the top */
+.life .blk > .k > span:first-child, .pile-k > span {
+  position: relative; display: inline-flex; align-items: center; gap: 0.2rem;
+  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.6rem; font-weight: 500; line-height: 1.15; letter-spacing: 0;
+  color: var(--soft); transform: rotate(-3deg); transform-origin: left center;
 }
-.cover {                                    /* a poster: same corners and edge as the album sleeve */
-  display: block;
-  aspect-ratio: 2 / 3;
-  border-radius: 3px;
-  overflow: hidden;
-  background: var(--l0);                    /* dark grey while it loads (or until there is one) */
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+.life .blk > .k > span:first-child::after, .pile-k > span::after {
+  content: ""; flex: none; width: 2.5rem; height: 1.5rem; background: currentColor; opacity: 0.85;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 16 C 9 4, 19 4, 17 12 C 15 19, 8 15, 12 9 C 17 2, 28 6, 37 13'/%3E%3Cpath d='M37 13 L 30.5 12.4 M37 13 L 33.6 7.4'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 16 C 9 4, 19 4, 17 12 C 15 19, 8 15, 12 9 C 17 2, 28 6, 37 13'/%3E%3Cpath d='M37 13 L 30.5 12.4 M37 13 L 33.6 7.4'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: translateY(0.25rem);
 }
-.cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.project span.name { font-family: var(--mono); }
-.nw { white-space: nowrap; }
-.credit { margin-top: calc(var(--u) * 0.8); }   /* under the list, the same distance as between rows */
-.credit a { color: var(--muted); }
+.life .blk.fig > .k > span:first-child::after, .pile-k > span::after { transform: translate(-0.1rem, 0.55rem) rotate(62deg); }   /* label above its section: point down */
+@media (max-width: 560px) {
+  .life .blk > .k > span:first-child::after, .pile-k > span::after { transform: translate(-0.1rem, 0.55rem) rotate(62deg); }
+}
 
-/* wider screens: the rows sit side by side (two columns on tablets, three when the page has its two columns),
-   so a long tab grows in rows of three instead of one long column */
-@media (min-width: 601px) {
-  .favs .plist {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: clamp(1.5rem, 3vw, 3rem);
-    row-gap: calc(var(--u) * 0.8);
-  }
-  .favs .plist > .project:not([hidden]) { margin-top: 0; }   /* the grid's row gap spaces them now (beats style.css's stacked-project gap) */
-}
-/* the smallest phones (320px): four tabs with their counts only just fit, so the gaps and count padding tighten */
-@media (max-width: 380px) {
-  .favs .ptabs { gap: 0.6rem; }
-  .favs .ptab span { min-width: 0; margin-left: 0; padding: 0 0 0 0.1rem; }
-}
-@media (min-width: 960px) {
-  .split > .favs { grid-column: 1 / -1; }      /* the whole bottom row, under both columns */
-  .favs .plist { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* one column: the columns open up and the blocks regroup by topic under the intro:
+   the routine, then places, then favourites */
+@media (max-width: 1099px) {
+  main.life { display: flex; flex-direction: column; }
+  main.life .col-a, main.life .col-b, main.life .blocks { display: contents; }
+  main.life .intro { margin-bottom: calc(var(--u) * 3); }
+  .life .routine { order: 2; }
+  .life .places { order: 4; }
+  .life .favs { order: 5; }
+  .life .foot { order: 6; }
 }
