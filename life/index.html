@@ -30,7 +30,7 @@
   <link rel="preload" href="data.json" as="fetch" crossorigin>
   <link rel="preload" href="photos/hyderabad-banner-1000.jpg" as="image" media="(max-width: 560px)">
   <link rel="preload" href="photos/hyderabad-banner.jpg" as="image" media="(min-width: 561px)">
-  <!-- with javascript: the page stays hidden until life.js has drawn it, then fades in once, whole (or after 2.5s, whichever comes first) -->
+  <!-- with javascript: all but the header stays hidden until life.js has drawn it, then fades in once (or after 2.5s, whichever comes first) -->
   <script>document.documentElement.classList.add("loading"); setTimeout(function () { document.documentElement.classList.remove("loading"); }, 2500);</script>
   <noscript><style>.needs-js { display: none; }</style></noscript>
 </head>

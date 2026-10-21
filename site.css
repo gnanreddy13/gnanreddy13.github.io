@@ -30,6 +30,15 @@ a:hover { text-decoration-color: var(--text); }
 main { width: min(var(--col), 100% - 2 * var(--u)); margin: 0 auto; padding: calc(var(--u) * 5) 0 calc(var(--u) * 3); }
 
 /* who: photo, name, role. nothing else */
+/* moving between the pages (home, slice of life, and back): the browser cross-fades them, and the header (photo, name,
+   clock), which sits in the same place on each, holds steady through it, so it reads as one site. no script; browsers
+   without it just load the page as usual, and it's off for anyone who's asked for less motion */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+.head img { view-transition-name: me-photo; }
+.head h1 { view-transition-name: me-name; }
+.head .here { view-transition-name: me-clock; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.3s; }
+
 .head { display: flex; align-items: center; gap: var(--u); }
 .head img { width: 2.75rem; height: 2.75rem; border-radius: 50%; object-fit: cover; }
 .head h1 { font-size: 1rem; font-weight: 500; line-height: 1.3; }

@@ -26,10 +26,10 @@ main.life { position: relative; }
 main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); padding-bottom: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); }
 @media (max-width: 560px) { main.life { padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); } }   /* phones: the side gap alone is tight under the notch */
 
-/* loading (set in the page's head): hidden until life.js has drawn everything, then one fade-in */
-.loading main { visibility: hidden; }
-main.life { animation: in 0.4s ease both; }
-.loading main.life { animation: none; }
+/* loading (set in the page's head): all but the header hidden until life.js has drawn everything, then one fade-in */
+.loading .intro, .loading .needs-js, .loading .foot { visibility: hidden; }   /* the header shows at once: it carries over from the home page */
+.life .intro, .life .needs-js, .life .foot { animation: in 0.4s ease both; }
+.loading .intro, .loading .needs-js, .loading .foot { animation: none; }
 @keyframes in { from { opacity: 0; } to { opacity: 1; } }
 
 .fanrow .fan > * { width: 4rem; aspect-ratio: 3 / 4; }   /* bigger than the posters; 3:4 like the photos, so nothing is cropped */
