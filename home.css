@@ -1,0 +1,162 @@
+/* home.css: the home page and the 404 page. one narrow column in the middle of the screen, everything as text, almost no colour */
+@font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+@font-face { font-family: "Caveat"; src: url("fonts/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+
+:root {
+  --bg: #000; --text: #ededea; --muted: #8a8a85; --faint: #4a4a47; --line: #1a1a18;
+  --u: 1rem;
+  color-scheme: dark;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body {
+  font: 400 0.9375rem/1.6 "Geist", system-ui, sans-serif; color: var(--muted);
+  -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+}
+/* links: a faint underline at rest; on hover a bright one draws in over it, left to right */
+a {
+  color: var(--text); text-decoration: none; padding-bottom: 1px;
+  background:
+    linear-gradient(var(--text), var(--text)) 0 100% / 0% 1px no-repeat,
+    linear-gradient(var(--faint), var(--faint)) 0 100% / var(--rest, 100%) 1px no-repeat;
+  transition: background-size 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+a:hover, a:focus-visible { background-size: 100% 1px, var(--rest, 100%) 1px; }
+@media (prefers-reduced-motion: reduce) { a { transition: none; } }
+:focus-visible { outline: 1px solid var(--text); outline-offset: 3px; }
+
+/* the void: the column sits in the middle of the screen, top to bottom and side to side, on every screen.
+   (if it's ever taller than the screen, the page simply grows and scrolls: nothing is cut off) */
+main {
+  width: min(36rem, 100% - 2 * var(--u)); min-height: 100vh; min-height: 100svh; margin: 0 auto;   /* svh: the phone's visible height, browser bars included */
+  display: flex; flex-direction: column; justify-content: center; padding: var(--u) 0;
+}
+section + section { margin-top: calc(var(--u) * 2); }
+.label { color: var(--muted); margin-bottom: calc(var(--u) * 0.5); }
+.bright { color: var(--text); }
+.name { font-weight: 500; }   /* the name anchors the header */
+.lede { letter-spacing: -0.01em; }   /* lowercase at this size reads a touch loose without it */
+
+/* who */
+.who { display: flex; align-items: center; gap: calc(var(--u) * 0.75); }
+.who img { width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover; }
+.who p { line-height: 1.35; }
+.who .time { margin-left: auto; text-align: right; }
+/* the time as a small seven-segment display: lit segments in white, the unlit ones just visible, like an old lcd */
+.lcd { display: inline-flex; align-items: flex-end; gap: 2.5px; line-height: 1; color: var(--text); }
+.lcd svg { width: 7px; height: 12.5px; overflow: visible; }
+.lcd line { stroke: #1d1d1b; stroke-width: 1.8; stroke-linecap: round; }
+.lcd line.on { stroke: currentColor; }
+.lcd .colon { display: grid; gap: 3px; padding: 0 0.5px 2.5px; }
+.lcd .colon i { width: 1.6px; height: 1.6px; border-radius: 50%; background: currentColor; }
+.lcd .ap { align-self: flex-start; margin: -1px 0 0 3px; font-size: 0.625rem; line-height: 1; letter-spacing: 0.04em; color: var(--muted); }   /* like an lcd's little pm mark: small, up by the top of the digits */
+.lcd .colon { animation: blink 1s steps(1) infinite; }   /* the colon ticks once a second */
+@keyframes blink { 50% { opacity: 0.15; } }
+@media (prefers-reduced-motion: reduce) { .lcd .colon { animation: none; } }
+.intro p + p { margin-top: calc(var(--u) * 0.75); }
+.script { font-family: "Caveat", cursive; font-size: 1.3em; line-height: 1; }
+/* "slice of life": muted text, always; no underline at rest, and on hover a pen draws a white hand-drawn underline
+   under it, left to right. phones can't hover, so there a faint hand-drawn underline just stays */
+a.script { position: relative; color: var(--muted); background: none; padding: 0; }
+a.script::after {
+  content: ""; position: absolute; left: -0.05em; right: -0.05em; bottom: -0.12em; height: 0.28em; pointer-events: none;
+  background: var(--text); opacity: 0; transition: opacity 0.15s;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.5 C 18 4.5, 34 7.5, 52 5.8 S 86 4.2, 100 5.6 S 114 6.4, 118 4.8' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+@media (hover: hover) {
+  a.script:hover::after, a.script:focus-visible::after { opacity: 1; transition: none; animation: pen 0.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+}
+@media (hover: none) { a.script::after { opacity: 1; background: #444441; } }
+@keyframes pen { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@media (prefers-reduced-motion: reduce) { a.script::after { animation: none !important; } }
+
+/* stack: the same row of official logos as contact, names in the bubble on hover */
+.icons img, .icons i { display: block; width: 1.125rem; height: 1.125rem; }
+.icons i { background: var(--brand); -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.icons.stack { flex-wrap: wrap; }
+section.tools { margin-top: calc(var(--u) * 3); }   /* a little more room above, so the name bubbles float clear of the intro */
+
+/* the last row: resume on the left, contact on the right */
+.foot { display: flex; justify-content: space-between; align-items: center; }
+section.foot { margin-top: calc(var(--u) * 2); }
+.resume { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); background: none; padding: 0; transition: color 0.15s; }   /* like "all": no underline, it brightens on hover */
+.resume:hover, .resume:focus-visible { color: var(--text); }
+.resume svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* contact: the official logos in their colours; hovering one shows its name above it, in a small message bubble */
+.icons { display: flex; gap: var(--u); }
+.icons a, .lclink { background: none; padding: 0; }
+.icons > * { position: relative; display: grid; place-items: center; width: 1.25rem; height: 1.25rem; }
+.icons svg { width: 1.125rem; height: 1.125rem; }
+.icons .gh { color: var(--text); }
+.icons .lc { color: #FFA116; }
+.icons > *::after {
+  content: attr(data-n); position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translate(-50%, 3px);
+  padding: 0.2rem 0.6rem; border-radius: 0.6rem; background: #1f1f1d; color: var(--text);
+  font-size: 0.8125rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s, transform 0.15s;
+}
+/* the bubble's little tail, pointing down at the icon */
+.icons > *::before {
+  content: ""; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translate(-50%, 3px);
+  border: 5px solid transparent; border-top-color: #1f1f1d; border-bottom: 0; opacity: 0; pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+}
+@media (hover: hover) {
+  .icons > :hover::after, .icons > :hover::before { opacity: 1; transform: translate(-50%, 0); }
+}
+.icons > :focus-visible::after, .icons > :focus-visible::before { opacity: 1; transform: translate(-50%, 0); }
+/* the last contact icon sits at the column's right edge: its bubble lines up with that edge instead of hanging past it */
+.foot .icons > :last-child::after { left: auto; right: -0.25rem; transform: translateY(3px); }
+.foot .icons > :last-child:hover::after, .foot .icons > :last-child:focus-visible::after { transform: none; }
+@media (hover: none) { .foot .icons > *::before, .foot .icons > *::after { display: none; } }   /* touch: a contact tap just opens the link */
+/* touch: a tap on a stack logo shows its name, until another tap anywhere */
+.stack > .show::after, .stack > .show::before { opacity: 1; transform: translate(-50%, 0); }
+
+/* projects: name and date on one line, what it is underneath */
+.proj + .proj { margin-top: calc(var(--u) * 0.25); }   /* one line each now: a quiet list */
+.proj .top { display: flex; align-items: baseline; gap: calc(var(--u) * 0.5); }
+.proj .live { color: #26a641; }   /* in progress: the graph's own mid green, so it reads as part of the same system */
+.proj .lead { flex: 1; min-width: var(--u); border-bottom: 1px dotted #2e2e2b; transform: translateY(-0.3em); }
+.proj .top a, .proj .top span:first-child { color: var(--text); }
+.proj .top a { --rest: 0%; }   /* project names: no underline at rest; it draws in on hover */
+.label.row { display: flex; justify-content: space-between; }   /* "All projects" sits in the date column */
+.all { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--muted); background: none; padding: 0; transition: color 0.15s; }   /* all the repos, on github: no underline, it brightens on hover */
+.all:hover, .all:focus-visible { color: var(--text); }
+.all svg { width: 0.875rem; height: 0.875rem; color: var(--text); }
+
+/* the past year: the usual green activity grid, one caption */
+.graph { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-auto-columns: 1fr; gap: 2px; }   /* square cells that fill the width, the same gap both ways */
+.graph i { display: block; aspect-ratio: 1; border-radius: 3.5px; background: #17191c; }   /* well-rounded squares, not quite dots */
+.graph i[data-l="1"] { background: #0e4429; } .graph i[data-l="2"] { background: #006d32; }
+.graph i[data-l="3"] { background: #26a641; } .graph i[data-l="4"] { background: #39d353; }   /* github's own greens */
+.graph i.out { visibility: hidden; }
+.cap { margin-top: calc(var(--u) * 0.5); }
+/* the whole caption opens the leetcode profile, like "all" and "resume": grey, brightening on hover */
+.lclink { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); transition: color 0.15s; }
+.lclink:hover, .lclink:focus-visible { color: var(--text); }
+.lclink svg { width: 0.95rem; height: 0.95rem; color: #FFA116; }
+.lclink .bright { margin-right: -0.15rem; }
+.lclink .bright:empty { display: none; }   /* until the count loads, it reads "LeetCode solved", still a link */
+
+@media (max-width: 560px) {
+  /* phones: the year keeps its full-size cells and slides sideways instead of shrinking.
+     native scrolling (momentum and all, on the compositor); it opens on the latest week, and the edges fade
+     only where there's more to see */
+  .slide {
+    margin: 0 calc(var(--u) * -1); padding: 0 var(--u);
+    overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    direction: rtl;   /* the scroll starts from the right edge by itself, so the latest weeks show first even before any script runs */
+    --fl: 0px; --fr: 0px;
+    -webkit-mask: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
+            mask: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
+  }
+  .slide::-webkit-scrollbar { display: none; }
+  .slide.more-l { --fl: 2rem; } .slide.more-r { --fr: 2rem; }
+  .graph { width: max-content; grid-auto-columns: 10px; direction: ltr; }   /* the weeks themselves still run left to right */
+}
+
+/* moving between home and slice of life: the browser cross-fades the pages and the photo glides between the two headers
+   (life's site.css opts in the same way and gives its photo the same name) */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+.who img { view-transition-name: me-photo; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.3s; }
