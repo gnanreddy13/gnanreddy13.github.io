@@ -1,281 +1,135 @@
-/* life.css: only the slice of life page's own pieces. the whole look (tokens, type, spacing, blocks, graph, tabs, project rows)
-   comes from ../site.css; nothing here repeats it */
+/* life.css: the slice of life page. everything comes from ../home.css (type, colours, links, the header, the clock, the
+   centred column, project rows, the name bubbles); this only adds what the page has that home doesn't */
 
-/* the handwriting: Caveat (OFL), latin, one variable file for both weights used here */
-@font-face { font-family: "Caveat"; src: url("../fonts/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+.who h1 { font: inherit; }
+/* "<coding side>": grey, its brackets mark it out; no underline, it brightens on hover, like home's "all" and resume */
+.lede a { color: var(--muted); background: none; padding: 0; transition: color 0.15s; }
+.lede a:focus-visible { color: var(--text); }
+.who .script { color: var(--muted); display: inline-block; transform: rotate(-2deg); transform-origin: left center; }
+.gym { margin: calc(var(--u) * 0.25) 0 calc(var(--u) * 0.9); }   /* the year's graph, above the plan */
 
-[hidden] { display: none !important; }   /* site.css gives blocks display: grid, which would otherwise show a hidden block */
+/* the plan: rows like the home page's projects (what, a dotted line, how much), in two columns side by side;
+   "ss": done as a superset. phones: one column */
+#plan { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 0.2) calc(var(--u) * 2); }
+#plan .top { display: flex; align-items: baseline; gap: calc(var(--u) * 0.5); white-space: nowrap; }
+#plan .top span:first-child { color: var(--text); }
+#plan .top span:last-child { color: var(--muted); }
+#plan .lead { flex: 1; min-width: calc(var(--u) * 0.5); border-bottom: 1px dotted #2e2e2b; transform: translateY(-0.3em); }
+@media (max-width: 560px) { #plan { grid-template-columns: 1fr; } }
+/* the same even gap between every section */
+main > section + section { margin-top: calc(var(--u) * 1.35); }
 
-/* the backdrop: a wide photo behind the top of the page, dimmed, fading into black behind the header and intro.
-   the page itself sits exactly where it would without it. --banner is how far down it reaches */
-:root { --banner: clamp(16rem, 48vh, 28rem); }
-@media (max-width: 560px) { :root { --banner: clamp(18rem, 52vh, 26rem); } }
-.banner { position: absolute; top: 0; left: 0; right: 0; height: var(--banner); overflow: hidden; pointer-events: none; }
-.banner picture { display: contents; }
-.banner img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.42; }   /* dim enough for the text on top to stay easy to read */
-.banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55) 55%, var(--bg)); }
-@media (max-width: 560px) {   /* phones: a narrow slice of a wide photo, so it's shown taller and less dimmed, or it reads as murk */
-  .banner img { opacity: 0.6; object-position: center 60%; }
-  .banner::after { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.4) 55%, var(--bg)); }
-}
-main.life { position: relative; }
-/* the intro's links glide down to their sections, which stop a little short of the top edge */
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
-.life section[id] { scroll-margin-top: calc(var(--u) * 2); }
-/* the gaps above and below the page match the gap at its sides (the page is centred, so that's half the spare width), up to 5 units on big screens */
-main.life { padding-top: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); padding-bottom: min((100% - min(var(--col), 100% - 2 * var(--u))) / 2, var(--u) * 5); }
-@media (max-width: 560px) { main.life { padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); } }   /* phones: the side gap alone is tight under the notch */
+/* places: each photo uncropped in its own shape (3:4), small, with the name beneath; the photo and name open the album */
+.pl { display: flex; gap: var(--u); }
+.pcard { display: flex; flex-direction: column; gap: 0.4rem; width: 4.25rem; padding: 0; background: none; color: var(--muted); font-size: 0.8125rem; line-height: 1.2; transition: color 0.15s; }
+.pcard img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; background: #17191c; transition: transform 0.15s; }   /* dark until it loads */
+.pcard span { white-space: nowrap; }
+.pcard:focus-visible { color: var(--text); }
 
-/* loading (set in the page's head): all but the header hidden until life.js has drawn everything, then one fade-in */
-.loading .intro, .loading .needs-js { visibility: hidden; }   /* the header shows at once: it carries over from the home page */
-.life .intro, .life .needs-js { animation: in 0.4s ease both; }
-.loading .intro, .loading .needs-js { animation: none; }
-@keyframes in { from { opacity: 0; } to { opacity: 1; } }
-
-.fanrow .fan > * { width: 4rem; aspect-ratio: 3 / 4; }   /* bigger than the posters; 3:4 like the photos, so nothing is cropped */
-.fanrow .fan > * + * { margin-left: -1.8rem; }
-
-/* places: a fanned hand of photos, built like the home page's contact tiles (.hand in site.css):
-   overlapped and tilted at rest; on hover they straighten and spread, the one you're on lifts and its title shows beside the fan */
-.fan { display: flex; width: max-content; padding: calc(var(--u) * 0.25) 0; }
-.fan > * {
-  position: relative; display: block; flex: none; width: 3.8rem; aspect-ratio: 2 / 3; border-radius: 4px;
-  background: var(--l0); border: 1px solid var(--obj-line); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  transform: rotate(var(--r)); text-decoration: none;
-  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), margin 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.15s;
+/* places as polaroids: each photo, untouched, in an off-white frame that's wider at the bottom, where the name is
+   written by hand in dark marker (a little heavier than a pen), the way you'd caption a print. they lie a touch askew,
+   every other one the other way, like prints on a table; on hover one straightens and lifts, and the glow comes up
+   behind the whole print */
+#places { gap: calc(var(--u) * 0.75); }
+#places .pcard {
+  width: 5rem; gap: 0; padding: 0.3rem 0.3rem 0; background: #e6e6e2; border-radius: 2px; color: #3a3a37;
+  transform: rotate(-1.5deg); transition: transform 0.15s, box-shadow 0.2s;
 }
-.fan > * + * { margin-left: -1.9rem; }
-.fan img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 3px; }
-.fan:hover > *, .fan:focus-within > *, .fan.on > * { transform: none; }   /* each tilt is set on the poster itself, so the rotation is switched off rather than the angle reset */
-.fan:hover > * + *, .fan:focus-within > * + *, .fan.on > * + * { margin-left: calc(var(--u) * 0.4); }
-.fan > a:hover, .fan > a:focus-visible, .fan > .up { transform: translateY(-4px); z-index: 1; border-color: var(--text); }   /* .on / .up: pointed at from the intro */
-/* the title of the poster you're on, beside the fan in the row's own space (above it, it would collide with what's above) */
-/* touch screens can't hover: the posters sit spread out and straight, ready to tap */
-@media (hover: none) {
-  .fan > * { transform: none; }
-  .fan > * + *, .fanrow .fan > * + * { margin-left: calc(var(--u) * 0.4); }
-  .fan > a:hover { transform: none; border-color: var(--obj-line); }
-}
-
-/* routine: a yellow sticky note, pinned, tilted, its bottom corner curling up off the page; it straightens and lifts on hover
-   (like the contact tiles on the home page). the one physical object on the site, on purpose */
-/* .pinned tilts the whole thing and casts the shadows (behind the note); .note is the paper.
-   it hangs from the pin: it turns around the pin's centre, so on hover it swings straight while the pin stays put */
-.pinned {
-  --tilt: -2.2deg;
-  position: relative; width: min(100%, 18.5rem); margin: calc(var(--u) * 0.75) 0 calc(var(--u) * 0.5) 0.25rem;
-  transform: rotate(var(--tilt)); transform-origin: 50% 1.075rem;   /* the pin's centre */
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-/* the lifted corner's shadow: longer under the right edge, falling away from the page */
-.pinned::after {
-  content: ""; position: absolute; right: 0.6rem; bottom: 0.7rem; width: 55%; height: 30%;
-  box-shadow: 0 0.9rem 1.2rem rgba(0, 0, 0, 0.75); transform: rotate(3.5deg) skewX(-6deg);
-  transition: box-shadow 0.35s, transform 0.35s;
-}
-.pinned::before {   /* and a softer one along the left, where it's flat against the page */
-  content: ""; position: absolute; left: 0.6rem; bottom: 0.5rem; width: 40%; height: 20%;
-  box-shadow: 0 0.6rem 0.8rem rgba(0, 0, 0, 0.55); transform: rotate(-2.5deg);
-}
-.pinned:hover, .pinned.lift { transform: rotate(0deg); }   /* .lift: picked up from "the gym" in the intro */
-.pinned:hover::after, .pinned.lift::after { transform: rotate(2.5deg) skewX(-6deg) translateX(-2px); }   /* the curl's shadow shifts as it swings */
-.note {
-  position: relative; z-index: 1; padding: 2.35rem 1.1rem 1.2rem;   /* room under the pin for the heading */
-  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-weight: 500; font-size: 1.05rem; line-height: 1.3; color: #2a2a3a;   /* pen ink */
-  /* paper: the glue strip a shade darker at the top, the curled corner catching the light, a touch deeper yellow towards the bottom */
-  background:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0) 2rem),
-    radial-gradient(120% 90% at 100% 100%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 30%),
-    linear-gradient(172deg, #fff36f 0%, #fde95c 55%, #f6db45 100%);
-  border-radius: 2px 2px 3px 18px / 2px 2px 3px 6px;   /* the bottom corner bends */
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-/* the pin: a glossy red head with a highlight, and its shadow on the paper */
-.pin {
-  position: absolute; top: 0.55rem; left: 50%; width: 1.05rem; height: 1.05rem; margin-left: -0.525rem; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffb3b3 0 12%, #f23b3b 34%, #b3121a 70%, #6d070c 100%);
-  box-shadow: 0.25rem 0.35rem 0.3rem rgba(0, 0, 0, 0.35), inset -1px -2px 2px rgba(0, 0, 0, 0.35);
-  /* turns the opposite way to the note, in step with it, so the pin (and its highlight and shadow) never moves */
-  transform: rotate(calc(var(--tilt) * -1)); transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.pinned:hover .pin, .pinned.lift .pin { transform: rotate(0deg); }
-.pin::after {   /* the needle's shadow, slanting down and right from under the head */
-  content: ""; position: absolute; left: 0.62rem; top: 0.72rem; width: 0.18rem; height: 0.7rem; border-radius: 1px;
-  background: rgba(0, 0, 0, 0.28); transform: rotate(-38deg); transform-origin: top; filter: blur(0.6px); z-index: -1;
-}
-.note .h { font-weight: 700; font-size: 1.2rem; line-height: 1.2; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.18em; }
-.note .h .days { font-weight: 500; text-decoration: none; display: inline-block; margin-left: 0.15em; color: #3d3d55; }   /* the days, beside the heading but not underlined */
-.note .h + ul { margin-top: 0.3rem; }
-
-/* this week: a strip of off-white paper under the note, tilted the other way, the days across it in the same pen.
-   a red tick on each day I went, a pencil dash on a lift day I missed, rest days in pencil, today circled in red */
-.weekstrip {
-  display: flex; align-items: center; gap: 0.7rem; margin-top: calc(var(--u) * 1.25); padding: 0.4rem 0.8rem 0.45rem;
-  background: linear-gradient(170deg, #f4f0e7, #e8e2d4); color: #2a2a3a; border-radius: 1px; transform: rotate(1.2deg);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 7px 14px -5px rgba(0, 0, 0, 0.65);
-  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; letter-spacing: 0;
-}
-.wk-h { margin: 0; font-size: 1.1rem; font-weight: 700; line-height: 1.1; white-space: nowrap; }
-/* on hover (a tap on phones) the strip is picked up, level and a little higher, its shadow longer, and the week's tally is
-   written under it. the tally floats, so showing it moves nothing */
-.wk { position: relative; width: min(100%, 19.5rem); }
-.weekstrip { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s; }
-.wk:hover .weekstrip, .wk.on .weekstrip { transform: translateY(-2px) rotate(0deg); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3), 0 12px 20px -6px rgba(0, 0, 0, 0.7); }
-.wk-tally {
-  position: absolute; left: 0.8rem; top: calc(100% + 0.35rem); margin: 0; white-space: nowrap; pointer-events: none;
-  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.1rem; line-height: 1.1; letter-spacing: 0; color: var(--soft);
-  opacity: 0; transform: translateY(-3px) rotate(-1.5deg); transition: opacity 0.2s, transform 0.25s;
-}
-.wk:hover .wk-tally, .wk.on .wk-tally { opacity: 1; transform: translateY(0) rotate(-1.5deg); }
-.week { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); margin: 0; padding: 0; list-style: none; text-align: center; }
-.week li { line-height: 1; }
-.week .d { display: block; font-size: 0.85rem; color: #6d6a62; }
-.week .n { position: relative; display: inline-block; min-width: 1.3rem; padding: 0.1rem 0; font-size: 1.2rem; font-weight: 500; }
-.week .rest .n { color: #8f8a7e; }   /* pencil */
-.week .today .n::before {   /* a quick pen circle round today */
-  content: ""; position: absolute; inset: -0.08rem -0.12rem; border: 1.5px solid #c0392b;
-  border-radius: 52% 46% 55% 48% / 56% 50% 47% 52%; transform: rotate(-8deg);
-}
-.week .went .n::after {   /* the tick, over the date */
-  content: ""; position: absolute; left: 0.7rem; top: 0; width: 1rem; height: 0.9rem; background: #c0392b;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 10.5 C 4 12, 5.5 14, 7 16 C 9.5 10, 13 5, 18 2'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 18' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 10.5 C 4 12, 5.5 14, 7 16 C 9.5 10, 13 5, 18 2'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-.week .missed .n::after {   /* a pencil dash through a lift day that didn't happen */
-  content: ""; position: absolute; left: 0.1rem; right: 0.1rem; top: 52%; height: 1.5px; background: #8f8a7e; transform: rotate(-14deg);
-}
-.note ul + .h { margin-top: 0.9rem; }
-.note ul { list-style: none; }
-.note li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
-.note li span:last-child { white-space: nowrap; color: #3d3d55; }
-
-/* the "lately" line: a title from the piles gets its poster in miniature beside it */
-.mention { white-space: nowrap; }
-.mini { display: inline-block; height: 1.25em; width: auto; aspect-ratio: 2 / 3; margin: 0 0.3em 0 0.1em; vertical-align: -0.28em; border-radius: 2px; object-fit: cover; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
-.mini-photo { aspect-ratio: 3 / 4; }   /* a place's photo, which is 3:4 */
-
-/* places: each place's album, then where the backdrop photo was taken */
-.places .used { margin-top: calc(var(--u) * 0.5); min-height: 1.3em; }   /* the line under the fan: the backdrop's credit, or the place you're on */
-.places .used b { font-weight: 500; color: var(--text); }
-/* "Slice of Life" under the name, in the labels' pen */
-.head .script {
-  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.3rem; font-weight: 500; line-height: 1.1; letter-spacing: 0;
-  color: var(--soft); transform: rotate(-2deg); transform-origin: left center;
-}
-
-
-/* favourites: a messy pile of posters per kind, side by side like piles on a desk (they wrap on narrow screens).
-   positions, tilts and stacking come from life.js; the one you're on slides out: on top, straight, a little bigger */
-.desk { display: flex; flex-wrap: wrap; align-items: flex-start; gap: calc(var(--u) * 2); }
-.pile-box { position: relative; min-width: 0; padding-bottom: calc(var(--u) * 1.6); }   /* the bottom of it is kept for the caption */
-.pile { position: relative; }
-.pc {
-  --cw: 5.25rem;
-  position: absolute; left: 0; top: 0; display: block; width: var(--cw); aspect-ratio: 2 / 3; border-radius: 5px; overflow: hidden;
-  background: var(--l0); border: 1px solid var(--obj-line); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.55);
-  transform: translate(var(--x), var(--y)) rotate(var(--r));
-  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s, border-color 0.15s, filter 0.25s;
-}
-.pc img { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* pointed at from the intro ("the stories I love"): every pile lifts a little and its name brightens */
-.pile-box { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.pile-k > span { transition: color 0.2s; }
-.desk.hint .pile-box { transform: translateY(-4px); }
-.desk.hint .pile-k > span { color: var(--text); }
-/* while one is pulled out, every other poster on the desk steps back (darkened, not faded, so the piles keep their shape) */
-.desk.pulling .pc:not(.out) { filter: brightness(0.32) saturate(0.6); }
-.pc.out {
-  z-index: 100 !important; border-color: var(--text); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
-  transform: translate(var(--x), var(--y)) translateY(-10px) rotate(0deg) scale(1.18);
-}
-.pc:focus-visible { outline: none; }   /* the pulled-out look (white edge, lifted) is the focus mark */
-/* the caption: right under its own pile, however tall, always on one line (a long title runs on past the pile's edge
-   rather than wrapping and pushing the next row down) */
-.pile-cap { position: absolute; left: 0; bottom: 0; z-index: 101; white-space: nowrap; color: var(--muted); }
-.pile-cap b { font-weight: 500; color: var(--text); }
-.pile-cap .live { color: var(--l4); }
-.favs .cap:last-child { margin-top: var(--u); }
-/* each pile's handwritten name: the same as the section labels below (favourites has no label of its own) */
-.pile-k { margin: 0 0 calc(var(--u) * 0.25); }
-@media (max-width: 560px) { .pc { --cw: 4.25rem; } .desk { gap: calc(var(--u) * 1.5) var(--u); } }
-@media (max-width: 560px) { .fanrow .fan > * { width: 5.5rem; } }   /* phones: the place photos (laid out straight here) a good deal bigger */   /* phones: smaller posters; small piles share a line */
-
-
-/* the poster viewer (touch screens): a tap on a pile opens its posters one at a time, big, with the name and status under
-   each; swipe sideways for the others (each snaps into place), tap anywhere to close */
-.viewer { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; justify-content: center; background: rgba(0, 0, 0, 0.88); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.2s; }
-.viewer.open { opacity: 1; }
-.viewer:focus { outline: none; }
-.viewing, .viewing body { overflow: hidden; }   /* the page stays put underneath */
-.v-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 0 14%; }   /* the padding lets the first and last centre */
-.v-track::-webkit-scrollbar { display: none; }
-/* each poster takes a little under three quarters of the width, so the ones either side peek in at the edges, dimmed and
-   smaller: there's more to swipe to. a tap on one of those brings it to the middle */
-.v-slide {
-  flex: 0 0 72%; margin: 0; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--u);
-  opacity: 0.35; transform: scale(0.9); transition: opacity 0.25s, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.v-slide.cur { opacity: 1; transform: none; }
-.v-track.jump .v-slide, .v-track.jump .v-slide img { transition: none; }   /* the invisible hop back into the middle copy */
-.v-slide { contain: layout paint; }   /* each slide paints on its own, so a swipe repaints less */
-.v-slide:not(.cur) figcaption { visibility: hidden; }
-.v-slide img {
-  width: min(62vw, 15rem); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--obj-line);
-  background: var(--l0) center / cover no-repeat;   /* the small poster shows through until the big one has loaded */
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); transform: scale(0.94); transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.viewer.open .v-slide img { transform: none; }   /* it pops up as the viewer opens */
-.v-slide figcaption { text-align: center; line-height: 1.6; color: var(--muted); }
-.v-slide figcaption b { font-weight: 500; color: var(--text); }
-.v-slide figcaption .live { color: var(--l4); }
-.v-count { margin: calc(var(--u) * 1.5) 0 0; text-align: center; color: var(--faint); }
-
-/* wide screens: the whole page on one screen, like the home page, centred top to bottom. left: who, the routine and the
-   way home; right: places, then favourites. (a screen too short for it all just scrolls) */
-@media (min-width: 1100px) {
-  main.life { grid-template-columns: 29rem 1fr; align-content: center; padding-top: calc(var(--u) * 2); padding-bottom: calc(var(--u) * 2); }   /* the left a little wider than home's, so the piles on the right sit closer together */
-  main.life > .col-a, main.life > .col-b { display: flex; flex-direction: column; }
-  main.life > .col-a > .blocks { margin-top: var(--u); }
-  .routine .pinned { width: 19.5rem; }   /* a touch wider than its column, into the gap, so no line of the plan wraps */
-  main.life > .col-b > .media { margin-top: 0; }
-  .desk { display: grid; grid-template-columns: auto auto; justify-content: space-between; align-items: start; }   /* a fixed two by two: anime and manga, then tv and cinema, spread to both edges of the column */
-  .pc { --cw: clamp(3.25rem, (100vh - 28.75rem) / 5.4, 5.25rem); }   /* the posters size to the screen's height, so the right column always fits */
-}
-/* short wide screens (a 720px-tall laptop window): less air round the edges and between blocks, so it still all fits */
-@media (min-width: 1100px) and (max-height: 760px) {
-  main.life { padding-top: var(--u); padding-bottom: var(--u); }
-  main.life > .col-a > .blocks { margin-top: 0; }
-  .life .routine { padding-top: calc(var(--u) * 0.25); }
-  .weekstrip { margin-top: calc(var(--u) * 0.75); }
-}
-
-
-/* sections: no hairlines on this page; each label is handwritten (the sticky note's pen) with a curly arrow drawn
-   towards its section: to the right on wide screens, downwards where the label sits above (favourites, and every label on phones) */
-.life .blk { border-top: 0; padding: calc(var(--u) * 1.25) 0; }
-.life .favs { padding-bottom: 0; }   /* the last section: the page ends as close to the bottom as it starts to the top */
-.life .blk > .k > span:first-child, .pile-k > span {
-  position: relative; display: inline-flex; align-items: center; gap: 0.2rem;
-  font-family: "Caveat", "Bradley Hand", "Segoe Print", cursive; font-size: 1.6rem; font-weight: 500; line-height: 1.15; letter-spacing: 0;
-  color: var(--soft); transform: rotate(-3deg); transform-origin: left center;
-}
-.life .blk > .k > span:first-child::after, .pile-k > span::after {
-  content: ""; flex: none; width: 2.5rem; height: 1.5rem; background: currentColor; opacity: 0.85;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 16 C 9 4, 19 4, 17 12 C 15 19, 8 15, 12 9 C 17 2, 28 6, 37 13'/%3E%3Cpath d='M37 13 L 30.5 12.4 M37 13 L 33.6 7.4'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 16 C 9 4, 19 4, 17 12 C 15 19, 8 15, 12 9 C 17 2, 28 6, 37 13'/%3E%3Cpath d='M37 13 L 30.5 12.4 M37 13 L 33.6 7.4'/%3E%3C/svg%3E") center / contain no-repeat;
-  transform: translateY(0.25rem);
-}
-.life .blk.fig > .k > span:first-child::after, .pile-k > span::after { transform: translate(-0.1rem, 0.55rem) rotate(62deg); }   /* label above its section: point down */
+#places .pcard:nth-child(even) { transform: rotate(1.2deg); }
+#places .pcard img { border-radius: 0; box-shadow: none; transform: none; }
+#places .pcard span { padding: 0.3rem 0 0.35rem; font-family: "Caveat", cursive; font-weight: 600; font-size: 1.1rem; line-height: 1; text-align: center; }
+#places .pcard:focus-visible { color: #0a0a09; transform: translateY(-2px); box-shadow: 0 0 26px 3px rgba(237, 237, 234, 0.45); }
+/* phones: the polaroids and the posters a touch smaller, and the sections a little closer (still well apart from each
+   label's own gap), so the page scrolls a little less */
 @media (max-width: 560px) {
-  .life .blk > .k > span:first-child::after, .pile-k > span::after { transform: translate(-0.1rem, 0.55rem) rotate(62deg); }
+  #places .pcard { width: 4.5rem; }
+  #places .pcard span { font-size: 1rem; }
+  .mcard { width: 3.9rem; }
+  main > section + section { margin-top: var(--u); }
+  .gym { margin-bottom: calc(var(--u) * 0.6); }
 }
 
-/* one column: the columns open up and the blocks regroup by topic under the intro:
-   the routine, then places, then favourites */
-@media (max-width: 1099px) {
-  main.life { display: flex; flex-direction: column; }
-  main.life .col-a, main.life .col-b, main.life .blocks { display: contents; }
-  main.life .intro { margin-bottom: calc(var(--u) * 3); }
-  .life .routine { order: 2; }
-  .life .places { order: 4; }
-  .life .favs { order: 5; }
+/* the credit's logos: home's icon row (each its brand colour, its name in a bubble on hover), set into the caption's
+   line, a little smaller and closer than home's */
+.cap .src { display: inline-flex; gap: 0.5rem; margin-left: 0.3rem; vertical-align: middle; }
+.cap .src > * { width: 1.1rem; height: 1.1rem; }
+.cap .src i { width: 0.95rem; height: 0.95rem; }
+main > section.credit { margin-top: calc(var(--u) * 0.75); }   /* the posters' credit: right under the last row */
+/* the stories' tabs: the kinds in a line, plain and grey like the other section labels. the picked one is bright with a
+   "#" before it; hovering another shows its "#", in its own grey. the "#" hangs out to the left of its word, so no word
+   ever moves and the first word stays in line with the column. the line never wraps: if there are ever more kinds than
+   fit, it scrolls sideways out to the screen's edges, like the rows */
+.tabs {
+  display: flex; flex-wrap: nowrap; gap: 0 calc(var(--u) * 1.15); overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  margin: calc(-0.1rem - 5px) calc(50% - 50vw) calc(var(--u) * 0.5 - 5px);
+  padding: 5px calc(50vw - 50%);
+}
+.tabs::-webkit-scrollbar { display: none; }
+/* the row below reaches up under the tabs (room for the covers' glow) and down under the credit; while it fades in it
+   would sit on top of both and catch their clicks, so they always stay above it */
+.tabs, section.credit { position: relative; z-index: 1; }
+.tabs button {
+  position: relative; flex: none; padding: 0.1rem 0; border: 0; background: none; cursor: pointer;
+  font: inherit; line-height: 1.2; color: var(--muted);
+}
+.tabs button::before { content: "#"; position: absolute; right: 100%; margin-right: 0.2em; visibility: hidden; }
+.tabs [aria-selected="true"]::before { visibility: visible; }
+.tabs [aria-selected="true"] { color: var(--text); }
+@keyframes swap { from { opacity: 0; } }
+#shelf.swap { animation: swap 0.15s ease-out; }
+
+/* places, and each kind of story: one row that runs past the column out to both edges of the screen; it scrolls
+   sideways (a swipe, a trackpad, shift + wheel). the page itself never scrolls sideways */
+.kind .pl, #places {
+  flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  /* the row spans the whole screen, edge to edge, so scrolled posters slide out past the column on either side rather than
+     being cut at it; its padding lines the first poster up with the column's left edge at rest, and the last with its
+     right edge at the end */
+  margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: calc(50vw - 50%); padding-right: calc(50vw - 50%);
+  /* a scrolling row clips anything past its top and bottom: room for the hover lift, the focus ring and the covers' glow,
+     taken back with margins so nothing moves */
+  padding-top: 6px; padding-bottom: 6px; margin-top: -6px; margin-bottom: -6px;
+}
+.kind .pl::-webkit-scrollbar, #places::-webkit-scrollbar { display: none; }
+.kind .pl > *, #places > * { flex: none; }
+body { overflow-x: clip; }   /* the rows reach the screen's edge; nothing past it ever makes the page scroll sideways */
+.mcard img { aspect-ratio: 2 / 3; }
+/* on hover a soft glow comes up behind the photo or cover, the same off-white for every one */
+.pcard img { box-shadow: 0 0 0 0 transparent; transition: transform 0.15s, box-shadow 0.2s; }
+.pcard:focus-visible img { box-shadow: 0 0 26px 3px rgba(237, 237, 234, 0.45); }
+/* titles take up two lines, even when they need just one, so every kind's row is the same height and the credit under
+   it never moves when you switch tabs */
+.mcard span {
+  white-space: normal; font-size: 0.75rem; line-height: 1.25; min-height: 2.5em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* what's ongoing (watching, reading, playing): a small dot before its title, in the activity graph's green, the one
+   colour in the row; it breathes, slowly fading and coming back, to say it's still going */
+.mcard.live span::before {
+  content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 0.35em; border-radius: 50%;
+  background: #39d353; vertical-align: 0.1em; animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe { 50% { opacity: 0.4; } }
+
+/* short laptop windows (720px tall): the sections a little closer */
+@media (min-width: 561px) and (max-height: 760px) {
+  main > section + section { margin-top: calc(var(--u) * 0.9); }
+}
+
+/* the rows need room for the hover glow (it spreads all round the photo or cover) */
+.kind .pl, #places { padding-top: 30px; padding-bottom: 30px; margin-top: -30px; margin-bottom: -30px; }
+
+/* hover effects only where something really hovers: on a phone a tap counts as a hover and stays stuck on (back from an
+   album, its polaroid would still be lifted and glowing) */
+@media (hover: hover) {
+  .lede a:hover, .pcard:hover { color: var(--text); }
+  .pcard:hover img { transform: translateY(-2px); box-shadow: 0 0 26px 3px rgba(237, 237, 234, 0.45); }
+  #places .pcard:hover { color: #0a0a09; transform: translateY(-2px); box-shadow: 0 0 26px 3px rgba(237, 237, 234, 0.45); }
+  .tabs button:hover::before { visibility: visible; }
+}
+
+/* reduced motion: every change happens at once, with nothing sliding, fading or lifting into place */
+@media (prefers-reduced-motion: reduce) {
+  .lede a, .pcard, .pcard img, #places .pcard { transition: none; }
+  #shelf.swap, .mcard.live span::before { animation: none; }
 }

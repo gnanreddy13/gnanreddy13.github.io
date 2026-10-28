@@ -155,8 +155,9 @@ section.foot { margin-top: calc(var(--u) * 2); }
   .graph { width: max-content; grid-auto-columns: 10px; direction: ltr; }   /* the weeks themselves still run left to right */
 }
 
-/* moving between home and slice of life: the browser cross-fades the pages and the photo glides between the two headers
-   (life's site.css opts in the same way and gives its photo the same name) */
+/* moving between home and slice of life: the browser cross-fades the pages, and the header (photo, name, clock), which
+   both pages share, glides as one from where it sits on the one to where it sits on the other (home centres its column,
+   life starts near the top); only the line under the name changes on the way */
 @media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
-.who img { view-transition-name: me-photo; }
+.who { view-transition-name: me-who; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.3s; }

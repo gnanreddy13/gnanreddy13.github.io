@@ -4,124 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000">
-  <title>Slice of Life · Gnan Reddy Bobba</title>
-  <meta name="description" content="The other half: places, lifting and the stories I love">
+  <title>slice of life · gnan reddy bobba</title>
+  <meta name="description" content="the other half: places, lifting and the media i love">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ctext x='16' y='20' font-family='system-ui,sans-serif' font-size='22' font-weight='600' text-anchor='middle' fill='%23f2f2f0'%3Eg%3C/text%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://gnanreddy13.github.io/life/">
-  <meta property="og:title" content="Slice of Life · Gnan Reddy Bobba">
-  <meta property="og:description" content="The other half: places, lifting and the stories I love">
+  <meta property="og:title" content="slice of life · gnan reddy bobba">
+  <meta property="og:description" content="the other half: places, lifting and the media i love">
   <meta property="og:image" content="https://gnanreddy13.github.io/life/photos/hyderabad-banner.jpg">
   <meta property="og:image:width" content="2000">
   <meta property="og:image:height" content="1125">
   <meta property="og:image:alt" content="A wide blue sky with clouds over green fields, Hyderabad">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="../fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- the handwriting (labels, the sticky note, the week strip): Caveat, served from here like Geist -->
+  <!-- the handwriting ("slice of life" under the name, the polaroids' captions): Caveat, served from here like Geist -->
   <link rel="preload" href="../fonts/caveat.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- the home page's site.css gives the whole look; life.css only adds this page's own pieces.
-       ?v= is replaced with the commit at every deploy, so visitors never get a stale copy -->
-  <link rel="stylesheet" href="../site.css?v=1">
+  <!-- the home page's home.css gives the whole look (type, colours, links, the header, the clock); life.css only adds this
+       page's own pieces. ?v= is replaced with the commit at every deploy, so visitors never get a stale copy -->
+  <link rel="stylesheet" href="../home.css?v=1">
   <link rel="stylesheet" href="life.css?v=1">
   <script src="life.js?v=1" defer></script>
-  <!-- everything after the first paragraph is drawn from data.json by life.js; it and the backdrop photo start downloading now,
-       alongside the styles -->
+  <!-- everything after the intro is drawn from data.json by life.js; it starts downloading now, alongside the styles -->
   <link rel="preload" href="data.json" as="fetch" crossorigin>
-  <link rel="preload" href="photos/hyderabad-banner-1000.jpg" as="image" media="(max-width: 560px)">
-  <link rel="preload" href="photos/hyderabad-banner.jpg" as="image" media="(min-width: 561px)">
-  <!-- with javascript: all but the header stays hidden until life.js has drawn it, then fades in once (or after 2.5s, whichever comes first) -->
-  <script>document.documentElement.classList.add("loading"); setTimeout(function () { document.documentElement.classList.remove("loading"); }, 2500);</script>
-  <noscript><style>.needs-js { display: none; }</style></noscript>
 </head>
 <body>
-  <!-- the backdrop: one wide photo behind the top of the page, dimmed and fading into black; the page sits where it would without it.
-       its place and month are credited under Places ("cover" in data.json: keep the two in sync) -->
-  <div class="banner" aria-hidden="true"><picture>
-    <!-- phones show a narrow, dimmed slice of it: a 1000px copy is plenty there, and a third of the download -->
-    <source media="(max-width: 560px)" srcset="photos/hyderabad-banner-1000.jpg">
-    <img src="photos/hyderabad-banner.jpg" alt="" width="2000" height="1125" fetchpriority="high">
-  </picture></div>
-  <main class="life">
-    <!-- wide screens: everything on one screen, no scrolling. left: who, the routine; right: places, favourites.
-         phones: one column, regrouped by topic (see life.css) -->
-    <div class="col-a">
-    <header class="head">
-      <img src="../me.jpg" alt="" width="120" height="120">
-      <div>
-        <h1>Gnan Reddy Bobba</h1>
-        <p class="muted script">Slice of Life</p>
+  <main>
+    <!-- the same header as the home page -->
+    <section>
+      <div class="who">
+        <img src="../me.jpg" alt="" width="120" height="120">
+        <div>
+          <h1 class="bright name">gnan reddy bobba</h1>
+          <p class="script">slice of life</p>
+        </div>
+        <div class="time">
+          <p class="lcd" id="now" role="img" aria-label="local time in india">utc+5:30</p>
+          <p>india · ist</p>
+        </div>
       </div>
-      <div class="here">
-        <p class="now" id="now">UTC+5:30</p>
-        <p class="muted">India · IST</p>
-      </div>
-    </header>
+    </section>
 
-    <div class="intro">
-      <!-- each thing named here links down to its section -->
-      <p>La pasión. This is my slice of life: <a href="#places">places</a>, <a href="#routine">lifting</a> and <a href="#favourites">the stories I love</a>.</p>
-      <!-- "lately" comes from data.json; without javascript this line still leads back home -->
-      <p class="muted"><span id="lately"></span>The rest is my <a class="line" href="../">coding side</a>.</p>
-    </div>
+    <section class="intro">
+      <!-- one paragraph, like the home page's, which ends the other way round: "the rest is my slice of life" -->
+      <p class="bright lede">this is my slice of life: places, lifting and the media i love. the rest is my <a href="../">&lt;coding side&gt;</a>.</p>
+    </section>
 
-    <div class="blocks">
-      <!-- the workout on lift days, and the rest-day routine -->
-      <section class="blk routine needs-js" id="routine">
-        <div class="k sm"><span>Routine</span></div>
-        <div>
-          <!-- the plan, handwritten on a pinned yellow sticky note -->
-          <div class="pinned">
-            <div class="note">
-              <span class="pin" aria-hidden="true"></span>
-              <p class="h">Lift days<span class="days" id="lift-days"></span></p>
-              <ul id="plan"></ul>
-              <p class="h">Rest days<span class="days" id="rest-days"></span></p>
-              <ul id="rest"></ul>
-            </div>
-          </div>
-          <!-- this week, on a strip of paper under the note: a red tick on each day I went ("gym" in data.json), a pencil dash
-               on a lift day I missed, today circled. hovering (or tapping) it picks it up and shows the week's tally under it -->
-          <div class="wk" id="wk">
-            <div class="weekstrip"><p class="wk-h">This week</p><ol class="week" id="week" aria-label="This week at the gym"></ol></div>
-            <p class="wk-tally" id="wk-tally"></p>
-          </div>
-        </div>
-      </section>
-    </div>
-    </div>
+    <!-- in the intro's order: places, lifting, then the stories, a section each -->
+    <!-- places: a small grey card each, its photo with the name beneath; the card opens the album -->
+    <section>
+      <p class="label">places</p>
+      <div class="pl" id="places"></div>
+    </section>
 
-    <div class="col-b">
-    <div class="blocks">
-      <!-- places: a fan of photos, one per place, each opening its google photos album; and where the backdrop photo was taken -->
-      <section class="blk places needs-js" id="places">
-        <div class="k sm"><span>Places</span></div>
-        <div>
-          <div class="fanrow" id="fan"></div>
-          <p class="used sm" id="cover-cap"></p>
-        </div>
-      </section>
+    <!-- lifting: the past year as a graph, then the workout, the way home lists projects -->
+    <section>
+      <p class="label">lifting</p>
+      <!-- the past year, like the home page's activity graph: a square a day, green on the days i went -->
+      <div class="slide gym" id="gslide"><div class="graph" id="graph" role="img"></div></div>
+      <div id="plan"></div>
+    </section>
 
-    </div>
-    <!-- favourites: under places on wide screens, last on phones. a messy pile of posters per kind, each under its own handwritten name; the one you're on
-         slides out and its caption says what it is -->
-    <div class="blocks media">
-      <!-- no section label: each pile's own handwritten name is the heading -->
-      <section class="blk fig favs needs-js" id="favourites" aria-label="Favourites">
-        <div>
-          <div class="desk" id="desk"></div>
-          <p class="cap sm"><span>Posters from <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMDB ↗</a> and <a href="https://anilist.co/" target="_blank" rel="noreferrer">AniList ↗</a></span></p>
-        </div>
-      </section>
-    </div>
-    </div>
+    <!-- the stories: the kinds (anime, manga, tv, cinema, games) as tabs in the labels' hand, and the picked kind's posters
+         in one row underneath, like places: each uncropped and small with its title beneath, what's ongoing first.
+         life.js draws them from data.json -->
+    <section class="kind">
+      <div class="tabs" id="tabs" role="tablist" aria-label="media"></div>
+      <div class="pl" id="shelf" role="tabpanel"></div>
+    </section>
+
+    <section class="credit" id="credit">
+      <!-- each source as its official logo, in its colour, like home's contact row: the name comes up in a bubble on hover
+           (steam's logo is black, so off-white here, as home does for github) -->
+      <p class="cap">posters from <span class="icons src"><a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer" aria-label="TMDB" data-n="TMDB"><i style="--icon: url(../icons/themoviedatabase.svg); --brand: #01B4E4"></i></a><a href="https://anilist.co/" target="_blank" rel="noreferrer" aria-label="AniList" data-n="AniList"><i style="--icon: url(../icons/anilist.svg); --brand: #02A9FF"></i></a><a href="https://store.steampowered.com/" target="_blank" rel="noreferrer" aria-label="Steam" data-n="Steam"><i style="--icon: url(../icons/steam.svg); --brand: #F2F2F0"></i></a></span></p>
+    </section>
   </main>
-  <!-- phones and tablets: back to the top, from the bottom right corner once you've scrolled down -->
-  <a href="#top" class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a>
-  <!-- phones and tablets: a tap on a pile opens its posters here, one at a time (life.js) -->
-  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Posters: swipe for more, tap to close" tabindex="-1" hidden>
-    <div class="v-track" id="v-track"></div>
-    <p class="v-count sm" id="v-count"></p>
-  </div>
 </body>
 </html>
