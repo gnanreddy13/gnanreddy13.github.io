@@ -20,3 +20,4 @@ my corner of the internet. plain html, css and js, no build step. a github actio
 - the action uses the `GH_STATS_TOKEN` secret if it's set, otherwise the default `GITHUB_TOKEN`
 - after a gym session, add its date (`yyyy-mm-dd`) to `"gym"` in `life/data.json`: it shows as a tick on the week strip under the sticky note
 - no need to bump the `?v=` on `home.css` / `home.js` / `site.css` / `life.css` / `life.js`: the deploy sets it to the commit
+- to update the resume, just replace `gnan-reddy-bobba-resume.pdf`: the deploy gives its link a new `?v=` whenever the pdf changes, so no one gets a cached copy

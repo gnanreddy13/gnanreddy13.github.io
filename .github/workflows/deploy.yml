@@ -38,6 +38,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_STATS_TOKEN || secrets.GITHUB_TOKEN }}
       - name: stamp asset versions   # ?v= becomes the commit, so visitors never get a stale stylesheet or script
         run: sed -i -E "s/(site\.css|home\.css|home\.js|life\.css|life\.js)\?v=[0-9a-z]+/\1?v=${GITHUB_SHA::7}/g" index.html 404.html life/index.html
+      - name: stamp the resume   # ?v= becomes a hash of the pdf, so a new resume gets a new link and phones stop showing a cached copy
+        run: sed -i -E "s/(resume\.pdf)\?v=[0-9a-z]+/\1?v=$(sha1sum gnan-reddy-bobba-resume.pdf | cut -c1-7)/g" index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
