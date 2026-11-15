@@ -6,7 +6,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "30 20 * * *"   # 02:00 IST every night, so the graphs stay current
+    - cron: "30 0 * * *"    # 06:00 IST, just after leetcode's day (utc) ends, so the latest day is complete
   workflow_dispatch:         # lets you run it manually from the Actions tab
 
 permissions:

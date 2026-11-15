@@ -33,11 +33,5 @@ Promise.all(["data/leetcode.json", "data/leetcode-stats.json"].map(function (u) 
   var cells = new Array(new Date(days[0].date + "T00:00:00Z").getUTCDay() + 1).join('<i class="out"></i>');
   days.forEach(function (d) { cells += '<i data-l="' + level(d.count) + '"></i>'; });
   document.getElementById("graph").innerHTML = cells;
-  // phones: fade an edge only while there's more year past it
-  var sl = document.getElementById("slide"), queued = false;
-  // (the strip scrolls right-to-left, so its scroll position counts from the right edge: 0 there, growing as you go back)
-  function edges() { queued = false; var back = Math.abs(sl.scrollLeft); sl.classList.toggle("more-l", back < sl.scrollWidth - sl.clientWidth - 1); sl.classList.toggle("more-r", back > 1); }
-  edges();
-  sl.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(edges); } }, { passive: true });
   document.getElementById("solved").textContent = s.solved;
 });

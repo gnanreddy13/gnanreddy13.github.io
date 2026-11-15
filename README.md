@@ -13,7 +13,7 @@ my corner of the internet. plain html, css and js, no build step. a github actio
 - `fonts/`: Geist for the type, Caveat for the handwriting on the life page (both self-hosted, OFL)
 - `data/`: github + leetcode activity. the deploy fetches fresh copies; the ones in the repo are only a fallback
 - `scripts/update-activity.mjs`: fetches that data
-- `.github/workflows/deploy.yml`: runs the script, then publishes the site (on push, and at 02:00 IST)
+- `.github/workflows/deploy.yml`: runs the script, then publishes the site (on push, and at 06:00 IST)
 
 ## notes
 

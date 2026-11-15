@@ -140,19 +140,16 @@ section.foot { margin-top: calc(var(--u) * 2); }
 
 @media (max-width: 560px) {
   /* phones: the year keeps its full-size cells and slides sideways instead of shrinking.
-     native scrolling (momentum and all, on the compositor); it opens on the latest week, and the edges fade
-     only where there's more to see */
+     native scrolling (momentum and all, on the compositor); it opens on the latest week, and the cells simply run off
+     the screen's edges (no fade: on a phone it read as a black strip) */
   .slide {
-    margin: 0 calc(var(--u) * -1); padding: 0 var(--u);
+    margin: 0 calc(var(--u) * -1);
     overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch;
     direction: rtl;   /* the scroll starts from the right edge by itself, so the latest weeks show first even before any script runs */
-    --fl: 0px; --fr: 0px;
-    -webkit-mask: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
-            mask: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
   }
   .slide::-webkit-scrollbar { display: none; }
-  .slide.more-l { --fl: 2rem; } .slide.more-r { --fr: 2rem; }
-  .graph { width: max-content; grid-auto-columns: 10px; direction: ltr; }   /* the weeks themselves still run left to right */
+  .graph { width: max-content; grid-auto-columns: 10px; direction: ltr; padding: 0 var(--u); }   /* the weeks themselves still run left to right.
+     the gutter lives on the graph, not the scroller: safari drops a scroller's padding at the end it scrolls to (the left, here) */
 }
 
 /* moving between home and slice of life: the browser cross-fades the pages, and the header (photo, name, clock), which
