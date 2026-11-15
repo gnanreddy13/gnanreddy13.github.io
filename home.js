@@ -25,11 +25,13 @@ function tick() {
 // redraw right on each new minute
 (function next() { tick(); setTimeout(next, 60000 - Date.now() % 60000 + 50); })();
 
-// the past year on leetcode, in greys
+// the past year on leetcode, shaded like leetcode's own calendar
 Promise.all(["data/leetcode.json", "data/leetcode-stats.json"].map(function (u) { return fetch(u).then(function (r) { return r.json(); }); })).then(function (r) {
-  var days = r[0].slice(-364), s = r[1], max = Math.max.apply(null, days.map(function (d) { return d.count; })) || 1;
+  var days = r[0].slice(-364), s = r[1];
+  // leetcode's own steps: 1-2 submissions, 3-5, 6-8, 9 or more
+  function level(n) { return n >= 9 ? 4 : n >= 6 ? 3 : n >= 3 ? 2 : n ? 1 : 0; }
   var cells = new Array(new Date(days[0].date + "T00:00:00Z").getUTCDay() + 1).join('<i class="out"></i>');
-  days.forEach(function (d) { cells += '<i data-l="' + (d.count ? Math.ceil(d.count / max * 4) : 0) + '"></i>'; });
+  days.forEach(function (d) { cells += '<i data-l="' + level(d.count) + '"></i>'; });
   document.getElementById("graph").innerHTML = cells;
   // phones: fade an edge only while there's more year past it
   var sl = document.getElementById("slide"), queued = false;

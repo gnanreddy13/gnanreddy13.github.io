@@ -115,7 +115,7 @@ section.foot { margin-top: calc(var(--u) * 2); }
 /* projects: name and date on one line, what it is underneath */
 .proj + .proj { margin-top: calc(var(--u) * 0.25); }   /* one line each now: a quiet list */
 .proj .top { display: flex; align-items: baseline; gap: calc(var(--u) * 0.5); }
-.proj .live { color: #26a641; }   /* in progress: the graph's own mid green, so it reads as part of the same system */
+.proj .live { color: #28c244; }   /* in progress: the graph's own mid green, so it reads as part of the same system */
 .proj .lead { flex: 1; min-width: var(--u); border-bottom: 1px dotted #2e2e2b; transform: translateY(-0.3em); }
 .proj .top a, .proj .top span:first-child { color: var(--text); }
 .proj .top a { --rest: 0%; }   /* project names: no underline at rest; it draws in on hover */
@@ -126,9 +126,9 @@ section.foot { margin-top: calc(var(--u) * 2); }
 
 /* the past year: the usual green activity grid, one caption */
 .graph { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-auto-columns: 1fr; gap: 2px; }   /* square cells that fill the width, the same gap both ways */
-.graph i { display: block; aspect-ratio: 1; border-radius: 3.5px; background: #17191c; }   /* well-rounded squares, not quite dots */
-.graph i[data-l="1"] { background: #0e4429; } .graph i[data-l="2"] { background: #006d32; }
-.graph i[data-l="3"] { background: #26a641; } .graph i[data-l="4"] { background: #39d353; }   /* github's own greens */
+.graph i { display: block; aspect-ratio: 1; border-radius: 3.5px; background: rgba(255, 255, 255, 0.08); }   /* well-rounded squares, not quite dots */
+.graph i[data-l="1"] { background: #016620; } .graph i[data-l="2"] { background: #109932; }
+.graph i[data-l="3"] { background: #28c244; } .graph i[data-l="4"] { background: #7fe18b; }   /* leetcode's own dark-mode greens */
 .graph i.out { visibility: hidden; }
 .cap { margin-top: calc(var(--u) * 0.5); }
 /* the whole caption opens the leetcode profile, like "all" and "resume": grey, brightening on hover */
